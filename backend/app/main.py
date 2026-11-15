@@ -1,8 +1,9 @@
 """
 SDD Section 5.2.2: API Gateway & Unified Microservice Entrypoint
-Exposes all REST endpoints for Auth, Chat/RAG, Document Ingestion, Analytics/Feedback,
-Users/RBAC, and Kubernetes Health/Readiness probes (/healthz, /readyz).
+Exposes all REST endpoints for Auth (Google OAuth2 + SSO/Local), Chat/RAG,
+Document Ingestion, Analytics/Feedback, Users/RBAC, and Kubernetes Health/Readiness probes.
 """
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, UploadFile, File, Form, Header, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse
@@ -18,10 +19,17 @@ from app.services.ingestion_service import DocumentIngestionService
 from app.services.chat_orchestrator import ChatOrchestratorService
 from app.services.analytics_service import AnalyticsFeedbackService
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Initialize DB schema and seed baseline documents on startup
+    seed_all()
+    yield
+
 app = FastAPI(
     title=settings.PROJECT_NAME,
     version=settings.VERSION,
-    description="CAPSTONE PROJECT II - Team-20, NIIT University (Under Supervision of Prof. Manish Hurkat)"
+    description="CAPSTONE PROJECT II - Team-20, NIIT University (Under Supervision of Prof. Manish Hurkat)",
+    lifespan=lifespan
 )
 
 app.add_middleware(
@@ -31,10 +39,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-@app.on_event("startup")
-def on_startup():
-    seed_all()
 
 def extract_token(authorization: Optional[str]) -> str:
     if not authorization:
@@ -48,6 +52,9 @@ class LoginRequest(BaseModel):
     email: str
     password: Optional[str] = None
     is_sso: bool = False
+
+class GoogleLoginRequest(BaseModel):
+    credential: str
 
 class ChatQueryRequest(BaseModel):
     query_text: str
@@ -74,6 +81,7 @@ def liveness_probe():
         "status": "UP",
         "service": "nu-knowledge-assistant-gateway",
         "version": settings.VERSION,
+        "llm_engine": f"{settings.LLM_MODEL_NAME} ({'Gemini API Active' if settings.GEMINI_API_KEY else 'Offline Semantic Engine'})",
         "kubernetes_probes": {
             "api-gateway": "Healthy (2/2 replicas)",
             "auth-svc": "Healthy (2/2 replicas)",
@@ -97,10 +105,27 @@ def readiness_probe():
     finally:
         conn.close()
 
+@app.get("/api/config")
+def get_public_config():
+    """Provides public configuration and metadata to the web frontend."""
+    return {
+        "project_name": settings.PROJECT_NAME,
+        "version": settings.VERSION,
+        "university_name": settings.UNIVERSITY_NAME,
+        "google_client_id": settings.GOOGLE_CLIENT_ID,
+        "llm_model": settings.LLM_MODEL_NAME,
+        "gemini_active": bool(settings.GEMINI_API_KEY),
+    }
+
 # --- 2. Authentication & Session Endpoints (REQ-AUTH-01 to 04) ---
 @app.post("/api/auth/login")
 def login(req: LoginRequest):
     return AuthService.authenticate_user(email=req.email, password=req.password, is_sso=req.is_sso)
+
+@app.post("/api/auth/google")
+def google_login(req: GoogleLoginRequest):
+    """Real Google OAuth2 / OpenID Connect login via Google Identity Services."""
+    return AuthService.authenticate_google_user(credential=req.credential)
 
 @app.get("/api/auth/me")
 def get_current_user(authorization: Optional[str] = Header(None)):
@@ -298,7 +323,6 @@ def change_user_role(target_user_id: int, req: RoleUpdateRequest, authorization:
         return dict(updated)
     finally:
         conn.close()
-
 
 @app.get("/", response_class=HTMLResponse)
 def serve_web_application():

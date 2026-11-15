@@ -30,6 +30,10 @@ class Settings:
     OLLAMA_BASE_URL: str = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
     LLM_MODEL_NAME: str = os.getenv("LLM_MODEL_NAME", "gemini-2.5-flash")
 
+    # Real Google OAuth 2.0 Credentials (REQ-AUTH-01, TBD-3)
+    GOOGLE_CLIENT_ID: str = os.getenv("GOOGLE_CLIENT_ID", "")
+    GOOGLE_CLIENT_SECRET: str = os.getenv("GOOGLE_CLIENT_SECRET", "")
+
     SUPPORTED_FILE_TYPES = {"PDF", "DOCX", "TXT"}
     FALLBACK_MESSAGE = "I don't have information on that in the official NIIT University knowledge base. Please contact the relevant university department or Academic Office."
 

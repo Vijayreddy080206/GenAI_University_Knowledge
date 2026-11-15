@@ -236,5 +236,19 @@ class TestGenAIUniversityKnowledgeAssistant(unittest.TestCase):
         purged = AnalyticsFeedbackService.purge_expired_pii_logs(retention_days=90)
         self.assertGreaterEqual(purged, 0)
 
+    def test_10_google_oauth_endpoint(self):
+        """REQ-AUTH-01: Verify Real Google OAuth endpoint rejects invalid/fake tokens with 401."""
+        resp = self.client.post("/api/auth/google", json={"credential": "invalid_fake_google_token"})
+        self.assertEqual(resp.status_code, 401)
+        self.assertIn("Google OAuth verification failed", resp.json()["detail"])
+
+    def test_11_public_config_endpoint(self):
+        """Verify /api/config returns system metadata, LLM model, and Google Client ID."""
+        resp = self.client.get("/api/config")
+        self.assertEqual(resp.status_code, 200)
+        data = resp.json()
+        self.assertEqual(data["university_name"], "NIIT University")
+        self.assertIn("llm_model", data)
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

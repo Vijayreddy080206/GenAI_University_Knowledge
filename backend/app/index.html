@@ -6,638 +6,788 @@
   <title>NIIT University — AI Knowledge Assistant</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
       --nu-crimson: #7A1C1C;
-      --nu-crimson-deep: #581111;
-      --nu-amber: #D9531E;
-      --surface-bg: #F8F7F4;
+      --nu-crimson-hover: #5E1414;
+      --nu-gold: #C84B11;
     }
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: var(--surface-bg);
+      background-color: #FAF9F6;
       color: #18181B;
       -webkit-font-smoothing: antialiased;
     }
-    .font-mono-code { font-family: 'JetBrains Mono', monospace; }
-    .nu-gradient {
-      background: linear-gradient(135deg, #6A1414 0%, #8A1F1F 55%, #7A1C1C 100%);
+    .font-serif-editorial {
+      font-family: 'Instrument Serif', Georgia, serif;
     }
-    .srs-error-banner {
+    .font-mono-code {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .nu-brand-gradient {
+      background: linear-gradient(145deg, #581111 0%, #7A1C1C 50%, #932424 100%);
+    }
+    .composer-shadow {
+      box-shadow: 0 10px 30px -5px rgba(24, 24, 27, 0.07), 0 4px 12px -2px rgba(24, 24, 27, 0.04);
+    }
+    .srs-alert-banner {
       border: 1.5px solid #DC2626;
       background-color: #FEF2F2;
       color: #991B1B;
       border-radius: 0.75rem;
       padding: 0.875rem 1rem;
     }
-    .citation-chip {
-      border: 1px solid #E5E7EB;
-      background-color: #FFFFFF;
-      color: #374151;
-      transition: all 0.15s ease;
-    }
-    .citation-chip:hover {
-      border-color: #7A1C1C;
-      background-color: #FEF2F2;
-      color: #7A1C1C;
-      transform: translateY(-1px);
-    }
-    @keyframes fadeSlideUp {
-      from { opacity: 0; transform: translateY(8px); }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(6px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    .animate-msg { animation: fadeSlideUp 0.22s ease-out; }
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    .msg-enter { animation: fadeUp 0.2s ease-out forwards; }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #D4D4D8; border-radius: 9999px; }
     ::-webkit-scrollbar-thumb:hover { background: #A1A1AA; }
   </style>
 </head>
-<body class="min-h-screen flex flex-col selection:bg-[#7A1C1C] selection:text-white">
+<body class="h-screen overflow-hidden flex flex-col selection:bg-[#7A1C1C] selection:text-white">
 
-  <!-- TOP APPLICATION BAR (Clean, Role-Aware Navigation) -->
-  <header id="appHeader" class="hidden nu-gradient text-white shadow-sm sticky top-0 z-30 border-b border-white/10">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
-      <!-- Brand -->
-      <div class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-xl bg-white flex flex-col items-center justify-center shadow-sm shrink-0">
-          <span class="text-[8px] font-extrabold tracking-tight text-[#D9531E] leading-none">अनादि</span>
-          <span class="text-sm font-black tracking-tight text-[#7A1C1C] leading-none mt-0.5">NU</span>
+  <!-- ===================================================================== -->
+  <!-- SCREEN 1: INSTITUTIONAL SIGN-IN PORTAL (Stanford / Harvard Style)     -->
+  <!-- ===================================================================== -->
+  <div id="screenLogin" class="flex-1 flex min-h-screen bg-[#FAF9F6] overflow-y-auto">
+    <!-- Left Editorial Showcase (Hidden on small mobile, visible on lg+) -->
+    <div class="hidden lg:flex lg:w-5/12 xl:w-1/2 nu-brand-gradient text-white p-12 flex-col justify-between relative overflow-hidden">
+      <!-- Subtle geometric background rings -->
+      <div class="absolute -right-24 -top-24 w-96 h-96 rounded-full border border-white/10 pointer-events-none"></div>
+      <div class="absolute -left-16 -bottom-24 w-[28rem] h-[28rem] rounded-full border border-white/10 pointer-events-none"></div>
+
+      <!-- Top University Crest -->
+      <div class="relative z-10 flex items-center justify-between">
+        <div class="flex items-center gap-3.5">
+          <div class="w-11 h-11 rounded-xl bg-white text-[#7A1C1C] flex flex-col items-center justify-center shadow-lg">
+            <span class="text-[8px] font-extrabold tracking-widest text-[#C84B11] leading-none">अनादि</span>
+            <span class="text-base font-black tracking-tight leading-none mt-0.5">NU</span>
+          </div>
+          <div>
+            <div class="text-sm font-bold tracking-tight">NIIT UNIVERSITY</div>
+            <div class="text-[11px] text-red-100/80">Neemrana • Institutional AI Initiative</div>
+          </div>
         </div>
-        <div>
-          <h1 class="font-bold text-sm sm:text-base tracking-tight leading-tight">NIIT University Assistant</h1>
-          <p class="text-[11px] text-red-100/85 hidden sm:block">Official Academic &amp; Campus Knowledge Portal</p>
-        </div>
+        <span class="px-3 py-1 rounded-full bg-white/10 border border-white/15 text-[11px] font-medium backdrop-blur-xs">
+          Verified RAG Corpus
+        </span>
       </div>
 
-      <!-- Role-Gated Center Navigation (Students ONLY see Chat; Faculty see Chat + Upload; Admin sees Chat + Console) -->
-      <nav id="topNavBar" class="flex items-center gap-1 bg-black/20 p-1 rounded-xl border border-white/10 text-xs font-semibold">
-        <button id="navChatBtn" onclick="switchSurface('CHAT')" class="px-3.5 py-1.5 rounded-lg bg-white text-[#7A1C1C] shadow-sm transition">
-          Assistant Chat
-        </button>
-        <button id="navFacultyDocsBtn" onclick="switchSurface('FACULTY_DOCS')" class="hidden px-3.5 py-1.5 rounded-lg text-white/90 hover:text-white transition">
-          Course Documents
-        </button>
-        <button id="navAdminBtn" onclick="switchSurface('ADMIN')" class="hidden px-3.5 py-1.5 rounded-lg text-white/90 hover:text-white transition">
-          Admin Console
-        </button>
-      </nav>
-
-      <!-- User Profile & Actions -->
-      <div class="flex items-center gap-2.5">
-        <div id="sessionBadge" class="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-black/20 border border-white/10 text-[11px] font-medium text-red-50" title="Automatic inactivity timeout">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-          <span id="sessionTimerText">30:00</span>
+      <!-- Center Editorial Headline -->
+      <div class="relative z-10 max-w-md space-y-5 my-auto py-8">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/25 border border-white/15 text-xs text-red-100">
+          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+          <span>Grounded in Official University Handbooks</span>
         </div>
+        <h1 class="font-serif-editorial text-4xl xl:text-5xl font-normal tracking-tight leading-[1.12]">
+          Instant, source-cited answers across every campus department.
+        </h1>
+        <p class="text-sm text-red-100/85 leading-relaxed">
+          Search academic regulations, semester fee circulars, hostel policies, course syllabi, and examination schedules in plain English—with direct paragraph citations from approved NIIT University documents.
+        </p>
+      </div>
 
-        <button id="btnHelp" onclick="toggleHelpModal(true)" class="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 border border-white/15 flex items-center justify-center text-xs font-bold transition" title="Help &amp; Quick Guide">
-          ?
-        </button>
-
-        <div class="flex items-center gap-2 pl-2 border-l border-white/15">
-          <div id="headerAvatar" class="w-8 h-8 rounded-full bg-white text-[#7A1C1C] font-bold text-xs flex items-center justify-center shadow-sm shrink-0">
-            VR
-          </div>
-          <div class="hidden sm:block text-left leading-tight">
-            <div id="headerUserName" class="text-xs font-semibold text-white truncate max-w-[140px]">Vijay Reddy</div>
-            <div id="headerUserRole" class="text-[10px] text-red-100/80 uppercase tracking-wider font-semibold">Student</div>
-          </div>
-          <button id="btnLogout" onclick="logoutUser()" class="ml-1 px-2.5 py-1.5 rounded-lg bg-black/25 hover:bg-black/40 text-xs font-medium text-white/90 border border-white/15 transition">
-            Sign out
-          </button>
+      <!-- Bottom Institutional Trust Footer -->
+      <div class="relative z-10 pt-6 border-t border-white/15 grid grid-cols-3 gap-4 text-xs">
+        <div>
+          <div class="font-bold text-white">100% Cited</div>
+          <div class="text-red-100/75 text-[11px] mt-0.5">Clickable source excerpts</div>
+        </div>
+        <div>
+          <div class="font-bold text-white">Private &amp; Secure</div>
+          <div class="text-red-100/75 text-[11px] mt-0.5">Protected campus data</div>
+        </div>
+        <div>
+          <div class="font-bold text-white">Role-Tailored</div>
+          <div class="text-red-100/75 text-[11px] mt-0.5">Students, Faculty &amp; Staff</div>
         </div>
       </div>
     </div>
-  </header>
 
-  <!-- GLOBAL INLINE ALERT BANNER -->
-  <div id="globalAlertWrap" class="max-w-7xl w-full mx-auto px-4 sm:px-6 mt-3 hidden">
-    <div class="srs-error-banner flex items-center justify-between gap-3 shadow-sm">
-      <div class="flex items-center gap-2.5 text-xs sm:text-sm font-medium">
-        <span class="font-bold text-red-600">!</span>
-        <span id="globalAlertMsg"></span>
-      </div>
-      <button id="btnDismissGlobalAlert" onclick="hideGlobalAlert()" class="text-xs font-semibold px-2.5 py-1 rounded-md bg-red-100 hover:bg-red-200 text-red-900">
-        Dismiss
-      </button>
-    </div>
-  </div>
-
-  <!-- ===================================================================== -->
-  <!-- SCREEN 1: PREMIUM SPLIT-SCREEN LOGIN (Google OAuth + SSO + Email)     -->
-  <!-- ===================================================================== -->
-  <main id="screenLogin" class="flex-1 flex items-center justify-center p-4 sm:p-8 bg-gradient-to-br from-[#F8F7F4] via-[#F3EFEA] to-[#EDE6DF]">
-    <div class="max-w-4xl w-full bg-white rounded-3xl shadow-2xl border border-stone-200/80 overflow-hidden grid grid-cols-1 md:grid-cols-12">
-
-      <!-- Left Brand Showcase Panel -->
-      <div class="md:col-span-5 nu-gradient p-8 text-white flex flex-col justify-between relative overflow-hidden">
-        <div class="relative z-10 space-y-5">
-          <div class="inline-flex items-center gap-2.5 bg-white/10 backdrop-blur-sm px-3 py-1.5 rounded-full border border-white/20">
-            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-            <span class="text-[11px] font-semibold tracking-wide">NIIT University • Neemrana</span>
-          </div>
-          <div class="space-y-2">
-            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight leading-tight">University Knowledge Assistant</h1>
-            <p class="text-xs sm:text-sm text-red-100/90 leading-relaxed">
-              Instant, source-verified answers for academic regulations, fee circulars, hostel rules, course syllabi, and exam schedules.
-            </p>
+    <!-- Right Sign-In Container -->
+    <div class="flex-1 flex flex-col justify-center items-center p-6 sm:p-12">
+      <div class="w-full max-w-md space-y-7">
+        <!-- Mobile Logo -->
+        <div class="flex lg:hidden items-center gap-3">
+          <div class="w-10 h-10 rounded-xl nu-brand-gradient text-white font-black text-sm flex items-center justify-center shadow">NU</div>
+          <div>
+            <div class="text-sm font-bold text-zinc-900">NIIT University</div>
+            <div class="text-xs text-zinc-500">AI Knowledge Assistant</div>
           </div>
         </div>
 
-        <div class="relative z-10 mt-8 pt-6 border-t border-white/15 space-y-2.5 text-xs text-red-100/90">
-          <div class="flex items-center gap-2">
-            <span class="w-5 h-5 rounded-full bg-white/15 flex items-center justify-center text-[10px]">✓</span>
-            <span>Every answer cited from official NU documents</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <span class="w-5 h-5 rounded-full bg-white/15 flex items-center justify-center text-[10px]">✓</span>
-            <span>Role-based access for Students, Faculty &amp; Staff</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <span class="w-5 h-5 rounded-full bg-white/15 flex items-center justify-center text-[10px]">✓</span>
-            <span>Zero hallucination fallback protection</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Right Authentication Form Panel -->
-      <div class="md:col-span-7 p-6 sm:p-10 flex flex-col justify-center space-y-5">
-        <div>
-          <h2 class="text-xl font-extrabold text-zinc-900 tracking-tight">Welcome back</h2>
-          <p class="text-xs text-zinc-500 mt-1">Sign in with your NIIT University Google account or campus credentials.</p>
+        <!-- Sign-in Header -->
+        <div class="space-y-1.5">
+          <h2 class="text-2xl font-extrabold tracking-tight text-zinc-900">Sign in to your account</h2>
+          <p class="text-xs sm:text-sm text-zinc-500">Use your official <span class="font-medium text-zinc-700">@st.niituniversity.in</span> or <span class="font-medium text-zinc-700">@niituniversity.in</span> workspace identity.</p>
         </div>
 
-        <!-- Inline Login Error Banner -->
-        <div id="loginErrorBox" class="srs-error-banner hidden text-xs font-medium">
-          <span id="loginErrorMsg"></span>
+        <!-- Inline Error Banner -->
+        <div id="loginAlertBox" class="srs-alert-banner hidden text-xs font-medium">
+          <span id="loginAlertText"></span>
         </div>
 
-        <!-- Primary Social & Institutional Auth Buttons -->
-        <div class="space-y-2.5">
-          <button id="btnGoogleSignIn" type="button" onclick="openGooglePickerModal()" class="w-full py-2.5 px-4 rounded-xl bg-white hover:bg-zinc-50 border border-zinc-300 text-zinc-800 font-semibold text-sm shadow-sm flex items-center justify-center gap-2.5 transition">
+        <!-- Primary OAuth & SSO Buttons -->
+        <div class="space-y-3">
+          <button id="btnGoogleLogin" type="button" onclick="openGoogleAccountModal()" class="w-full py-3 px-4 rounded-xl bg-white hover:bg-zinc-50 border border-zinc-300 text-zinc-800 font-semibold text-sm shadow-2xs flex items-center justify-center gap-3 transition">
             <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
               <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
               <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.14C3.26 21.3 7.31 24 12 24z"/>
               <path fill="#FBBC05" d="M5.28 14.24c-.24-.72-.38-1.49-.38-2.24s.14-1.52.38-2.24V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.14z"/>
               <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.14c.95-2.85 3.6-4.96 6.72-4.96z"/>
             </svg>
-            <span>Continue with Google (@niituniversity.in)</span>
+            <span>Continue with Google Workspace</span>
           </button>
 
-          <button id="btnCampusSso" type="button" onclick="loginWithAccount('bharadwaj.bandi23@st.niituniversity.in', 'SSO')" class="w-full py-2.5 px-4 rounded-xl bg-zinc-100 hover:bg-zinc-200/80 border border-zinc-200 text-zinc-800 font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 transition">
-            <span>🏛</span>
-            <span>Sign in with University SSO / LDAP</span>
+          <button id="btnSsoLogin" type="button" onclick="signInWithEmail('bharadwaj.bandi23@st.niituniversity.in', 'SSO')" class="w-full py-3 px-4 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-white font-semibold text-sm shadow-2xs flex items-center justify-center gap-2.5 transition">
+            <svg class="w-4 h-4 text-zinc-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            <span>Sign in with Campus SSO</span>
           </button>
         </div>
 
-        <div class="relative flex py-1 items-center">
+        <div class="relative flex items-center">
           <div class="flex-grow border-t border-zinc-200"></div>
-          <span class="flex-shrink mx-3 text-[11px] font-medium text-zinc-400">or use email &amp; password</span>
+          <span class="flex-shrink mx-3 text-[11px] font-medium uppercase tracking-wider text-zinc-400">or sign in with email</span>
           <div class="flex-grow border-t border-zinc-200"></div>
         </div>
 
-        <!-- Email / Password Form -->
-        <form id="emailLoginForm" onsubmit="handleEmailLogin(event)" class="space-y-3">
+        <!-- Standard Email Form -->
+        <form id="formEmailLogin" onsubmit="handleStandardLogin(event)" class="space-y-3.5">
           <div>
-            <label for="inputLoginEmail" class="block text-xs font-semibold text-zinc-700 mb-1">University Email</label>
-            <input id="inputLoginEmail" type="email" required value="vijay.reddy23@st.niituniversity.in" class="w-full px-3.5 py-2.5 rounded-xl border border-zinc-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#7A1C1C]/30 focus:border-[#7A1C1C]" />
+            <label for="loginEmail" class="block text-xs font-semibold text-zinc-700 mb-1.5">University Email</label>
+            <input id="loginEmail" type="email" required value="vijay.reddy23@st.niituniversity.in" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-zinc-300 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-[#7A1C1C]/20 focus:border-[#7A1C1C] transition" />
           </div>
           <div>
-            <label for="inputLoginPass" class="block text-xs font-semibold text-zinc-700 mb-1">Password</label>
-            <input id="inputLoginPass" type="password" required value="student123" class="w-full px-3.5 py-2.5 rounded-xl border border-zinc-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#7A1C1C]/30 focus:border-[#7A1C1C]" />
+            <div class="flex items-center justify-between mb-1.5">
+              <label for="loginPass" class="block text-xs font-semibold text-zinc-700">Password</label>
+              <span class="text-[11px] text-zinc-400">30-min session protection</span>
+            </div>
+            <input id="loginPass" type="password" required value="student123" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-zinc-300 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-[#7A1C1C]/20 focus:border-[#7A1C1C] transition" />
           </div>
-          <button id="btnEmailSignIn" type="submit" class="w-full py-2.5 px-4 rounded-xl bg-[#7A1C1C] hover:bg-[#5E1414] text-white font-semibold text-sm shadow-sm transition">
+          <button id="btnSubmitEmailLogin" type="submit" class="w-full py-2.5 px-4 rounded-xl bg-[#7A1C1C] hover:bg-[#5E1414] text-white font-semibold text-sm shadow-sm transition">
             Sign in
           </button>
         </form>
 
-        <!-- Clean Quick Demo Access -->
-        <div class="pt-3 border-t border-zinc-200/80">
-          <p class="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider mb-2">Quick Role Demo Access</p>
+        <!-- Clean Quick Role Preview Pills -->
+        <div class="pt-4 border-t border-zinc-200/80">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider">Instant Role Preview</span>
+            <span class="text-[11px] text-zinc-400">1-Click Switch</span>
+          </div>
           <div class="grid grid-cols-3 gap-2">
-            <button id="btnDemoStudent" type="button" onclick="quickDemoLogin('STUDENT')" class="py-2 px-2.5 rounded-xl border border-zinc-200 hover:border-[#7A1C1C] hover:bg-red-50/40 text-left transition">
+            <button id="btnRoleStudent" type="button" onclick="quickRoleLogin('STUDENT')" class="p-2.5 rounded-xl bg-white hover:bg-red-50/50 border border-zinc-200 hover:border-[#7A1C1C]/50 text-left transition">
               <div class="text-xs font-bold text-zinc-900">Student</div>
-              <div class="text-[10px] text-zinc-500 truncate">Chat &amp; Citations</div>
+              <div class="text-[10px] text-zinc-500 truncate mt-0.5">Vijay Reddy</div>
             </button>
-            <button id="btnDemoFaculty" type="button" onclick="quickDemoLogin('FACULTY')" class="py-2 px-2.5 rounded-xl border border-zinc-200 hover:border-[#7A1C1C] hover:bg-red-50/40 text-left transition">
+            <button id="btnRoleFaculty" type="button" onclick="quickRoleLogin('FACULTY')" class="p-2.5 rounded-xl bg-white hover:bg-red-50/50 border border-zinc-200 hover:border-[#7A1C1C]/50 text-left transition">
               <div class="text-xs font-bold text-zinc-900">Faculty</div>
-              <div class="text-[10px] text-zinc-500 truncate">Chat + Course Docs</div>
+              <div class="text-[10px] text-zinc-500 truncate mt-0.5">Prof. M. Hurkat</div>
             </button>
-            <button id="btnDemoAdmin" type="button" onclick="quickDemoLogin('ADMIN')" class="py-2 px-2.5 rounded-xl border border-zinc-200 hover:border-[#7A1C1C] hover:bg-red-50/40 text-left transition">
+            <button id="btnRoleAdmin" type="button" onclick="quickRoleLogin('ADMIN')" class="p-2.5 rounded-xl bg-white hover:bg-red-50/50 border border-zinc-200 hover:border-[#7A1C1C]/50 text-left transition">
               <div class="text-xs font-bold text-zinc-900">Admin Staff</div>
-              <div class="text-[10px] text-zinc-500 truncate">Full Console</div>
+              <div class="text-[10px] text-zinc-500 truncate mt-0.5">System Console</div>
             </button>
           </div>
         </div>
       </div>
     </div>
-  </main>
+  </div>
 
   <!-- ===================================================================== -->
-  <!-- SCREEN 2: CLEAN CONVERSATIONAL CHAT INTERFACE (Student/Faculty/Admin) -->
+  <!-- AUTHENTICATED APPLICATION SHELL (Sidebar + Main Workspace + Drawer)   -->
   <!-- ===================================================================== -->
-  <main id="screenChat" class="hidden flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-5 flex flex-col lg:flex-row gap-5">
-    <!-- Left Sidebar: Clean Chat History & Department Scope -->
-    <aside class="w-full lg:w-72 bg-white rounded-2xl border border-zinc-200/90 shadow-sm flex flex-col shrink-0 overflow-hidden">
-      <div class="p-3.5 border-b border-zinc-100">
-        <button id="btnNewChat" onclick="createNewSession()" class="w-full py-2.5 px-3.5 rounded-xl bg-[#7A1C1C] hover:bg-[#5E1414] text-white font-semibold text-xs flex items-center justify-center gap-2 shadow-sm transition">
-          <span>＋</span>
-          <span>New Conversation</span>
-        </button>
-      </div>
+  <div id="appShell" class="hidden flex-1 flex h-screen overflow-hidden bg-[#FAF9F6]">
 
-      <div class="px-3.5 py-3 border-b border-zinc-100 bg-zinc-50/60">
-        <label for="selectDeptScope" class="block text-[11px] font-semibold text-zinc-500 mb-1.5">Search Scope</label>
-        <select id="selectDeptScope" onchange="setDeptScope(this.value)" class="w-full text-xs bg-white border border-zinc-200 rounded-lg px-2.5 py-2 font-medium text-zinc-800 focus:outline-none focus:border-[#7A1C1C]">
-          <option value="ALL">All University Departments</option>
-          <option value="Accounts">Accounts &amp; Fees</option>
-          <option value="Academics">Academic Regulations</option>
-          <option value="Student Affairs">Hostel &amp; Student Affairs</option>
-          <option value="CSE">CSE &amp; Data Science</option>
-          <option value="COE">Examinations (COE)</option>
-        </select>
-      </div>
-
-      <div class="px-3.5 pt-3 pb-1 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
-        Recent Conversations
-      </div>
-      <div id="chatSessionsList" class="flex-1 overflow-y-auto px-2.5 py-1.5 space-y-1 max-h-48 lg:max-h-none">
-        <!-- Populated by JS -->
-      </div>
-
-      <div class="p-3.5 border-t border-zinc-100 bg-zinc-50/50 text-[11px] text-zinc-500">
-        Answers are grounded strictly in verified NIIT University circulars and handbooks.
-      </div>
-    </aside>
-
-    <!-- Main Chat Canvas -->
-    <section class="flex-1 bg-white rounded-2xl border border-zinc-200/90 shadow-sm flex flex-col overflow-hidden min-h-[560px]">
-      <!-- Subtle Chat Header -->
-      <div class="px-5 py-3.5 border-b border-zinc-100 flex items-center justify-between gap-3">
-        <div class="flex items-center gap-2.5 min-w-0">
-          <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0"></div>
-          <h2 id="activeChatTitle" class="text-sm font-bold text-zinc-900 truncate">Fee payment deadline &amp; Hostel rules</h2>
-        </div>
-        <span class="text-[11px] font-medium text-zinc-400 shrink-0">Source-Cited Mode</span>
-      </div>
-
-      <!-- Suggested Prompts Bar -->
-      <div class="px-5 py-2.5 bg-zinc-50/70 border-b border-zinc-100 flex items-center gap-2 overflow-x-auto">
-        <span class="text-[11px] font-semibold text-zinc-400 shrink-0">Try asking:</span>
-        <button id="promptChipFee" onclick="sendPresetQuestion('When is the last date to pay the semester fee and what is the late fine?')" class="px-3 py-1 rounded-full bg-white hover:bg-red-50 border border-zinc-200 hover:border-[#7A1C1C]/40 text-xs font-medium text-zinc-700 shrink-0 transition">
-          Semester fee deadline
-        </button>
-        <button id="promptChipHostel" onclick="sendPresetQuestion('What documents are needed for hostel allotment and what is the curfew time?')" class="px-3 py-1 rounded-full bg-white hover:bg-red-50 border border-zinc-200 hover:border-[#7A1C1C]/40 text-xs font-medium text-zinc-700 shrink-0 transition">
-          Hostel allotment &amp; curfew
-        </button>
-        <button id="promptChipExam" onclick="sendPresetQuestion('When are the mid-semester exams for Deep Learning CS3041 and Big Data?')" class="px-3 py-1 rounded-full bg-white hover:bg-red-50 border border-zinc-200 hover:border-[#7A1C1C]/40 text-xs font-medium text-zinc-700 shrink-0 transition">
-          Mid-sem exam dates
-        </button>
-        <button id="promptChipAttend" onclick="sendPresetQuestion('What is the minimum attendance requirement and when is an AW grade given?')" class="px-3 py-1 rounded-full bg-white hover:bg-red-50 border border-zinc-200 hover:border-[#7A1C1C]/40 text-xs font-medium text-zinc-700 shrink-0 transition">
-          75% Attendance rule
-        </button>
-      </div>
-
-      <!-- Messages Thread -->
-      <div id="chatThreadBox" class="flex-1 p-5 sm:p-6 overflow-y-auto space-y-6">
-        <!-- Populated by JS -->
-      </div>
-
-      <!-- Composer Bar -->
-      <form id="chatComposerForm" onsubmit="handleChatSubmit(event)" class="p-4 bg-white border-t border-zinc-100 flex items-center gap-3">
-        <input
-          id="inputChatQuestion"
-          type="text"
-          placeholder="Ask anything about courses, exams, fees, or hostel policies..."
-          class="flex-1 px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 focus:bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#7A1C1C]/25 focus:border-[#7A1C1C] transition"
-        />
-        <button id="btnSendChat" type="submit" class="px-5 py-3 rounded-xl bg-[#7A1C1C] hover:bg-[#5E1414] text-white font-semibold text-sm shadow-sm transition shrink-0">
-          Send
-        </button>
-      </form>
-    </section>
-  </main>
-
-  <!-- ===================================================================== -->
-  <!-- SCREEN 3: FACULTY COURSE DOCUMENTS (Faculty Role Only)                -->
-  <!-- ===================================================================== -->
-  <main id="screenFacultyDocs" class="hidden flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-6 space-y-5">
-    <div class="bg-white p-6 rounded-2xl border border-zinc-200 shadow-sm space-y-4">
-      <div>
-        <h2 class="text-lg font-extrabold text-zinc-900">Upload Course &amp; Departmental Materials</h2>
-        <p class="text-xs text-zinc-500 mt-0.5">Upload syllabi, lab manuals, or course notices (PDF, DOCX, or TXT up to 25 MB) for students to query.</p>
-      </div>
-      <div id="facultyUploadError" class="srs-error-banner hidden text-xs font-medium"></div>
-      <div id="facultyUploadSuccess" class="hidden p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs font-medium"></div>
-
-      <form id="facultyUploadForm" onsubmit="handleDocUpload(event, 'faculty')" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <div>
-          <label for="facDocTitle" class="block text-xs font-semibold text-zinc-700 mb-1">Document Filename</label>
-          <input id="facDocTitle" type="text" required value="CS4018_GenAI_Lab_Manual.pdf" class="w-full px-3 py-2 rounded-xl border border-zinc-300 text-xs" />
-        </div>
-        <div>
-          <label for="facDocDept" class="block text-xs font-semibold text-zinc-700 mb-1">Department</label>
-          <select id="facDocDept" class="w-full px-3 py-2 rounded-xl border border-zinc-300 text-xs bg-white">
-            <option value="CSE">CSE</option>
-            <option value="Academics">Academics</option>
-          </select>
-        </div>
-        <div class="flex items-end">
-          <button id="btnFacUploadSubmit" type="submit" class="w-full py-2 px-4 rounded-xl bg-[#7A1C1C] hover:bg-[#5E1414] text-white font-semibold text-xs shadow-sm transition">
-            Upload &amp; Index
+    <!-- LEFT SIDEBAR (Stanford / Harvard / OpenWebUI Minimalist Navigation Rail) -->
+    <aside id="leftSidebar" class="w-72 bg-[#F3F1EC] border-r border-zinc-200/80 flex flex-col justify-between shrink-0 select-none">
+      <!-- Top Brand + New Chat -->
+      <div class="p-3.5 space-y-3">
+        <div class="flex items-center justify-between px-1.5 pt-1">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-lg nu-brand-gradient text-white font-black text-xs flex items-center justify-center shadow-xs">
+              NU
+            </div>
+            <div>
+              <div class="text-xs font-bold text-zinc-900 leading-none">NIIT University</div>
+              <div class="text-[10px] font-medium text-zinc-500 mt-0.5">Knowledge Assistant</div>
+            </div>
+          </div>
+          <button id="btnOpenHelp" onclick="toggleHelpModal(true)" class="w-7 h-7 rounded-lg hover:bg-zinc-200/70 text-zinc-500 hover:text-zinc-800 text-xs font-bold flex items-center justify-center transition" title="Quick Guide &amp; Help">
+            ?
           </button>
         </div>
-        <div class="sm:col-span-3">
-          <label for="facDocContent" class="block text-xs font-semibold text-zinc-700 mb-1">Document Content</label>
-          <textarea id="facDocContent" rows="3" required class="w-full p-3 rounded-xl border border-zinc-300 text-xs font-mono-code">CS4018 Generative AI Lab Schedule: Weekly labs run every Thursday 2:00 PM in AI-Lab 2. Final project demos are due November 28, 2026.</textarea>
+
+        <!-- Role Workspace Switcher (Hidden for Students! Only shown to Faculty & Admin) -->
+        <div id="roleWorkspaceSwitcher" class="hidden p-1 rounded-xl bg-zinc-200/75 grid grid-cols-2 gap-1 text-xs font-semibold">
+          <button id="wsBtnChat" onclick="switchWorkspace('CHAT')" class="py-1.5 px-2.5 rounded-lg bg-white text-zinc-900 shadow-2xs transition">
+            Assistant
+          </button>
+          <button id="wsBtnManage" onclick="switchWorkspace('MANAGE')" class="py-1.5 px-2.5 rounded-lg text-zinc-600 hover:text-zinc-900 transition">
+            <span id="wsManageLabel">Admin Console</span>
+          </button>
         </div>
-      </form>
-    </div>
 
-    <div class="bg-white rounded-2xl border border-zinc-200 shadow-sm overflow-hidden">
-      <div class="px-5 py-3.5 border-b border-zinc-100">
-        <h3 class="text-sm font-bold text-zinc-900">Your Uploaded Course Documents</h3>
-      </div>
-      <div class="overflow-x-auto">
-        <table class="w-full text-left border-collapse text-xs">
-          <thead>
-            <tr class="bg-zinc-50 text-zinc-500 border-b border-zinc-200">
-              <th class="py-3 px-4 font-semibold">Document</th>
-              <th class="py-3 px-4 font-semibold">Department</th>
-              <th class="py-3 px-4 font-semibold">Type</th>
-              <th class="py-3 px-4 font-semibold">Status</th>
-            </tr>
-          </thead>
-          <tbody id="facultyDocsTbody" class="divide-y divide-zinc-100"></tbody>
-        </table>
-      </div>
-    </div>
-  </main>
+        <!-- New Conversation Action -->
+        <button id="btnNewConversation" onclick="startFreshConversation()" class="w-full py-2.5 px-3.5 rounded-xl bg-white hover:bg-zinc-50 border border-zinc-200/90 text-zinc-800 font-semibold text-xs flex items-center justify-between shadow-2xs transition group">
+          <span class="flex items-center gap-2">
+            <svg class="w-4 h-4 text-[#7A1C1C]" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+            <span>New conversation</span>
+          </span>
+          <kbd class="text-[10px] font-mono-code text-zinc-400 group-hover:text-zinc-600">⌘K</kbd>
+        </button>
 
-  <!-- ===================================================================== -->
-  <!-- SCREEN 4: ADMIN CONSOLE (Strictly Admin Role Only)                    -->
-  <!-- ===================================================================== -->
-  <main id="screenAdmin" class="hidden flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-5 flex flex-col lg:flex-row gap-5">
-    <!-- Left Admin Menu -->
-    <aside class="w-full lg:w-60 bg-white rounded-2xl border border-zinc-200/90 shadow-sm p-3 flex flex-col gap-1 shrink-0">
-      <div class="px-3 py-2 text-[11px] font-bold uppercase tracking-wider text-zinc-400">Administration</div>
-      <button id="admTabOverview" onclick="switchAdminTab('OVERVIEW')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-semibold bg-[#7A1C1C] text-white transition">Overview</button>
-      <button id="admTabDocuments" onclick="switchAdminTab('DOCUMENTS')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-700 hover:bg-zinc-100 transition">Knowledge Base</button>
-      <button id="admTabUsers" onclick="switchAdminTab('USERS')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-700 hover:bg-zinc-100 transition">Users &amp; Roles</button>
-      <button id="admTabAnalytics" onclick="switchAdminTab('ANALYTICS')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-700 hover:bg-zinc-100 transition">Query Analytics</button>
-      <button id="admTabHealth" onclick="switchAdminTab('HEALTH')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-700 hover:bg-zinc-100 transition">System Health</button>
-      <button id="admTabDatabase" onclick="switchAdminTab('DATABASE')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-700 hover:bg-zinc-100 transition">Database Explorer</button>
+        <!-- Search Conversations -->
+        <div class="relative">
+          <input id="inputSearchHistory" type="text" oninput="renderSidebarHistory()" placeholder="Filter conversations..." class="w-full pl-8 pr-3 py-1.5 rounded-lg bg-zinc-200/50 focus:bg-white border border-transparent focus:border-zinc-300 text-xs text-zinc-800 placeholder-zinc-400 focus:outline-none transition" />
+          <svg class="w-3.5 h-3.5 text-zinc-400 absolute left-2.5 top-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        </div>
+      </div>
+
+      <!-- Conversation Thread List -->
+      <div class="flex-1 overflow-y-auto px-3 space-y-4">
+        <div>
+          <div class="px-2 pb-1.5 text-[10px] font-bold uppercase tracking-wider text-zinc-400">Recent Threads</div>
+          <div id="sidebarThreadList" class="space-y-0.5">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <!-- Verified Campus Collections Info -->
+        <div class="px-2 pt-2 border-t border-zinc-200/70">
+          <div class="pb-1.5 text-[10px] font-bold uppercase tracking-wider text-zinc-400">Active Knowledge Collections</div>
+          <div class="space-y-1 text-[11px] text-zinc-600">
+            <div class="flex items-center justify-between py-1 px-2 rounded-lg hover:bg-zinc-200/50 cursor-pointer" onclick="setCollectionFilter('Academics')">
+              <span class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-[#7A1C1C]"></span>Academic Office</span>
+              <span class="text-[10px] text-zinc-400">Handbook</span>
+            </div>
+            <div class="flex items-center justify-between py-1 px-2 rounded-lg hover:bg-zinc-200/50 cursor-pointer" onclick="setCollectionFilter('Accounts')">
+              <span class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span>Accounts &amp; Finance</span>
+              <span class="text-[10px] text-zinc-400">Circulars</span>
+            </div>
+            <div class="flex items-center justify-between py-1 px-2 rounded-lg hover:bg-zinc-200/50 cursor-pointer" onclick="setCollectionFilter('Student Affairs')">
+              <span class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>Student Affairs</span>
+              <span class="text-[10px] text-zinc-400">Hostel</span>
+            </div>
+            <div class="flex items-center justify-between py-1 px-2 rounded-lg hover:bg-zinc-200/50 cursor-pointer" onclick="setCollectionFilter('CSE')">
+              <span class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span>CSE Department</span>
+              <span class="text-[10px] text-zinc-400">Syllabi</span>
+            </div>
+            <div class="flex items-center justify-between py-1 px-2 rounded-lg hover:bg-zinc-200/50 cursor-pointer" onclick="setCollectionFilter('COE')">
+              <span class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-purple-600"></span>Examinations (COE)</span>
+              <span class="text-[10px] text-zinc-400">Schedule</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom User Profile & Quick Demo Switcher -->
+      <div class="p-3 border-t border-zinc-200/80 bg-[#EBE8E1]/60 space-y-2">
+        <div class="flex items-center justify-between gap-2 px-1">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <div id="sidebarUserAvatar" class="w-8 h-8 rounded-full nu-brand-gradient text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-2xs">
+              VR
+            </div>
+            <div class="min-w-0">
+              <div id="sidebarUserName" class="text-xs font-bold text-zinc-900 truncate">Vijay Vardhan Reddy</div>
+              <div class="flex items-center gap-1.5">
+                <span id="sidebarRoleBadge" class="text-[10px] font-semibold uppercase tracking-wider text-[#7A1C1C]">STUDENT</span>
+                <span class="text-zinc-300">•</span>
+                <span id="sidebarSessionClock" class="text-[10px] font-mono-code text-zinc-500" title="30-minute inactivity timer">30:00</span>
+              </div>
+            </div>
+          </div>
+          <button id="btnSignOut" onclick="signOut()" class="p-1.5 rounded-lg hover:bg-zinc-200 text-zinc-500 hover:text-zinc-900 text-xs transition" title="Sign out">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+          </button>
+        </div>
+      </div>
     </aside>
 
-    <!-- Right Admin Content -->
-    <section class="flex-1 space-y-5">
+    <!-- =================================================================== -->
+    <!-- MAIN WORKSPACE 1: CONVERSATIONAL AI INTERFACE                       -->
+    <!-- =================================================================== -->
+    <main id="workspaceChat" class="flex-1 flex flex-col h-full relative overflow-hidden">
 
-      <!-- TAB 1: OVERVIEW -->
-      <div id="admViewOverview" class="space-y-5">
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div class="bg-white p-5 rounded-2xl border border-zinc-200/90 shadow-sm">
-            <div class="text-xs font-medium text-zinc-500">Total Queries</div>
-            <div id="kpiQueries" class="text-2xl font-extrabold text-zinc-900 mt-1">1,284</div>
-            <div class="text-[11px] text-emerald-600 font-semibold mt-1">↑ 14.2% this month</div>
-          </div>
-          <div class="bg-white p-5 rounded-2xl border border-zinc-200/90 shadow-sm">
-            <div class="text-xs font-medium text-zinc-500">Satisfaction Rating</div>
-            <div id="kpiRating" class="text-2xl font-extrabold text-zinc-900 mt-1">4.7 / 5</div>
-            <div id="kpiRatingSub" class="text-[11px] text-zinc-500 mt-1">94% positive feedback</div>
-          </div>
-          <div class="bg-white p-5 rounded-2xl border border-zinc-200/90 shadow-sm">
-            <div class="text-xs font-medium text-zinc-500">Indexed Documents</div>
-            <div id="kpiDocs" class="text-2xl font-extrabold text-zinc-900 mt-1">5</div>
-            <div id="kpiDocsSub" class="text-[11px] text-zinc-500 mt-1">Active in vector index</div>
-          </div>
-          <div class="bg-white p-5 rounded-2xl border border-zinc-200/90 shadow-sm">
-            <div class="text-xs font-medium text-zinc-500">Avg. Response Time</div>
-            <div class="text-2xl font-extrabold text-emerald-700 mt-1">1.2 s</div>
-            <div class="text-[11px] text-zinc-500 mt-1">18 / 20 cluster pods active</div>
-          </div>
+      <!-- Minimal Top Bar -->
+      <header class="h-14 px-6 border-b border-zinc-200/70 bg-[#FAF9F6]/90 backdrop-blur-xs flex items-center justify-between shrink-0 z-10">
+        <div class="flex items-center gap-3 min-w-0">
+          <span id="chatHeaderTitle" class="text-xs sm:text-sm font-semibold text-zinc-800 truncate">New Conversation</span>
+          <span id="activeScopePill" class="px-2.5 py-0.5 rounded-full bg-zinc-200/70 text-zinc-700 text-[11px] font-medium">
+            Scope: All Campus Collections
+          </span>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <div class="bg-white p-5 rounded-2xl border border-zinc-200/90 shadow-sm">
-            <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-500 mb-3">Query Volume Over Time</h3>
-            <div class="relative h-60"><canvas id="chartVolume"></canvas></div>
+        <!-- Institutional Privacy Shield (Harvard AI Sandbox / U-M GPT pattern) -->
+        <div class="flex items-center gap-2">
+          <div class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-800 text-[11px] font-medium">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+            <span>Verified NU Sources Only</span>
           </div>
-          <div class="bg-white p-5 rounded-2xl border border-zinc-200/90 shadow-sm">
-            <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-500 mb-3">Top Query Categories</h3>
-            <div class="relative h-60"><canvas id="chartCategories"></canvas></div>
+          <button id="btnToggleEvidenceDrawer" onclick="toggleEvidenceDrawer()" class="px-2.5 py-1 rounded-lg border border-zinc-200 hover:bg-zinc-100 text-xs font-medium text-zinc-700 flex items-center gap-1.5 transition">
+            <span>📄</span>
+            <span class="hidden md:inline">Sources</span>
+            <span id="drawerCountBadge" class="px-1.5 py-0.2 rounded-full bg-zinc-200 text-zinc-800 text-[10px] font-bold">5</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Global RBAC / Alert Banner -->
+      <div id="workspaceAlertWrap" class="max-w-3xl w-full mx-auto px-6 pt-3 hidden">
+        <div class="srs-alert-banner flex items-center justify-between gap-3 text-xs font-medium">
+          <span id="workspaceAlertText"></span>
+          <button onclick="hideWorkspaceAlert()" class="px-2 py-0.5 rounded bg-red-100 text-red-900 font-bold">Dismiss</button>
+        </div>
+      </div>
+
+      <!-- Scrollable Conversation Area -->
+      <div id="chatScrollCanvas" class="flex-1 overflow-y-auto px-4 sm:px-6 py-6">
+        <div class="max-w-3xl mx-auto space-y-6">
+
+          <!-- EMPTY / WELCOME STATE (Stanford AI Playground / BearGPT Hero Style) -->
+          <div id="chatWelcomeHero" class="py-8 sm:py-12 space-y-8">
+            <div class="text-center space-y-2.5">
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-50 border border-[#7A1C1C]/15 text-[#7A1C1C] text-xs font-semibold">
+                <span>NIIT University Knowledge Assistant</span>
+              </div>
+              <h2 id="welcomeGreetingTitle" class="font-serif-editorial text-3xl sm:text-4xl text-zinc-900 tracking-tight">
+                Good evening, Vijay. What would you like to look up?
+              </h2>
+              <p class="text-xs sm:text-sm text-zinc-500 max-w-lg mx-auto">
+                Ask any question about academic rules, semester fee deadlines, hostel policies, or CSE coursework. Every answer includes verifiable citations.
+              </p>
+            </div>
+
+            <!-- 2x2 Curated University Prompt Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <button type="button" onclick="askSuggestedQuestion('When is the last date to pay the Autumn semester fee, and what is the late fine or scholarship SGPA rule?')" class="p-4 rounded-2xl bg-white hover:bg-zinc-50/80 border border-zinc-200/90 hover:border-[#7A1C1C]/40 text-left shadow-2xs transition group">
+                <div class="flex items-center justify-between mb-1.5">
+                  <span class="text-[11px] font-bold uppercase tracking-wider text-amber-700">Accounts &amp; Finance</span>
+                  <span class="text-xs text-zinc-300 group-hover:text-[#7A1C1C] transition">→</span>
+                </div>
+                <div class="text-xs sm:text-sm font-semibold text-zinc-900">Semester Fee Deadline &amp; Scholarships</div>
+                <div class="text-xs text-zinc-500 mt-1 line-clamp-1">Due dates, tuition/hostel fee breakdown, and 7.5 SGPA rule</div>
+              </button>
+
+              <button type="button" onclick="askSuggestedQuestion('What documents are required for hostel room allotment, and what are the campus gate and hostel curfew timings?')" class="p-4 rounded-2xl bg-white hover:bg-zinc-50/80 border border-zinc-200/90 hover:border-[#7A1C1C]/40 text-left shadow-2xs transition group">
+                <div class="flex items-center justify-between mb-1.5">
+                  <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-700">Student Affairs &amp; Hostel</span>
+                  <span class="text-xs text-zinc-300 group-hover:text-[#7A1C1C] transition">→</span>
+                </div>
+                <div class="text-xs sm:text-sm font-semibold text-zinc-900">Hostel Allotment &amp; Curfew Timings</div>
+                <div class="text-xs text-zinc-500 mt-1 line-clamp-1">Required affidavits, 9:30 PM gate closure, and outpass rules</div>
+              </button>
+
+              <button type="button" onclick="askSuggestedQuestion('When are the Mid-Semester and End-Semester exams for Deep Learning CS3041, Big Data CS3052, and GenAI CS4018?')" class="p-4 rounded-2xl bg-white hover:bg-zinc-50/80 border border-zinc-200/90 hover:border-[#7A1C1C]/40 text-left shadow-2xs transition group">
+                <div class="flex items-center justify-between mb-1.5">
+                  <span class="text-[11px] font-bold uppercase tracking-wider text-purple-700">Controller of Examinations</span>
+                  <span class="text-xs text-zinc-300 group-hover:text-[#7A1C1C] transition">→</span>
+                </div>
+                <div class="text-xs sm:text-sm font-semibold text-zinc-900">Autumn 2026 Exam Schedule &amp; Venues</div>
+                <div class="text-xs text-zinc-500 mt-1 line-clamp-1">Mid-sem dates, lecture hall venues, and midnight library hours</div>
+              </button>
+
+              <button type="button" onclick="askSuggestedQuestion('What is the minimum attendance requirement at NIIT University, when is an AW grade issued, and how many credits is Capstone II?')" class="p-4 rounded-2xl bg-white hover:bg-zinc-50/80 border border-zinc-200/90 hover:border-[#7A1C1C]/40 text-left shadow-2xs transition group">
+                <div class="flex items-center justify-between mb-1.5">
+                  <span class="text-[11px] font-bold uppercase tracking-wider text-[#7A1C1C]">Academic Office</span>
+                  <span class="text-xs text-zinc-300 group-hover:text-[#7A1C1C] transition">→</span>
+                </div>
+                <div class="text-xs sm:text-sm font-semibold text-zinc-900">75% Attendance &amp; B.Tech Grading Policy</div>
+                <div class="text-xs text-zinc-500 mt-1 line-clamp-1">AW grade policy, medical leave window, and 160-credit rule</div>
+              </button>
+            </div>
+          </div>
+
+          <!-- CONVERSATION MESSAGES CONTAINER -->
+          <div id="chatMessagesStream" class="space-y-6">
+            <!-- Populated by JS -->
           </div>
         </div>
       </div>
 
-      <!-- TAB 2: KNOWLEDGE BASE DOCUMENTS -->
-      <div id="admViewDocuments" class="hidden space-y-5">
-        <div class="bg-white p-5 rounded-2xl border border-zinc-200/90 shadow-sm space-y-4">
-          <div class="flex flex-wrap items-center justify-between gap-2">
-            <div>
-              <h3 class="text-sm font-bold text-zinc-900">Upload Institutional Document</h3>
-              <p class="text-xs text-zinc-500">Supports PDF, DOCX, and TXT up to 25 MB. Documents are chunked and indexed automatically.</p>
-            </div>
-            <button id="btnAdminTestBadFile" type="button" onclick="simulateBadFileUpload()" class="px-3 py-1.5 rounded-lg bg-red-50 hover:bg-red-100 border border-red-200 text-xs font-semibold text-red-800 transition">
-              Test Unsupported File Rejection
-            </button>
-          </div>
-          <div id="adminUploadError" class="srs-error-banner hidden text-xs font-medium"></div>
-          <div id="adminUploadSuccess" class="hidden p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs font-medium"></div>
+      <!-- FLOATING COMPOSER DOCK (Stanford / Perplexity / Claude Style) -->
+      <div class="px-4 sm:px-6 pb-4 pt-2 bg-gradient-to-t from-[#FAF9F6] via-[#FAF9F6] to-transparent shrink-0">
+        <div class="max-w-3xl mx-auto">
+          <form id="chatComposer" onsubmit="handleComposerSubmit(event)" class="bg-white rounded-2xl border border-zinc-300/90 focus-within:border-[#7A1C1C] composer-shadow transition p-2.5">
+            <textarea
+              id="composerInput"
+              rows="2"
+              onkeydown="handleComposerKeydown(event)"
+              placeholder="Ask a question about NIIT University policies, courses, fees, or schedules..."
+              class="w-full px-2.5 py-1 text-sm text-zinc-900 placeholder-zinc-400 bg-transparent resize-none focus:outline-none"
+            ></textarea>
+            <div class="flex items-center justify-between pt-2 px-1 border-t border-zinc-100">
+              <!-- Inline Scope Selector Pill -->
+              <div class="flex items-center gap-2">
+                <select id="composerScopeSelect" onchange="setCollectionFilter(this.value)" aria-label="Knowledge Scope" class="text-xs font-medium bg-zinc-100 hover:bg-zinc-200/70 text-zinc-700 rounded-lg px-2.5 py-1.5 focus:outline-none cursor-pointer transition">
+                  <option value="ALL">All Campus Collections (5 Docs)</option>
+                  <option value="Accounts">Accounts &amp; Finance</option>
+                  <option value="Academics">Academic Handbook</option>
+                  <option value="Student Affairs">Hostel &amp; Student Affairs</option>
+                  <option value="CSE">CSE &amp; Data Science</option>
+                  <option value="COE">Examinations (COE)</option>
+                </select>
+                <span class="hidden sm:inline text-[11px] text-zinc-400">5-turn context active</span>
+              </div>
 
-          <form id="adminUploadForm" onsubmit="handleDocUpload(event, 'admin')" class="grid grid-cols-1 md:grid-cols-4 gap-3">
-            <div>
-              <label for="admDocTitle" class="block text-xs font-semibold text-zinc-700 mb-1">Filename (.pdf/.docx/.txt)</label>
-              <input id="admDocTitle" type="text" required value="Placement_Policy_2026.pdf" class="w-full px-3 py-2 rounded-xl border border-zinc-300 text-xs" />
-            </div>
-            <div>
-              <label for="admDocDept" class="block text-xs font-semibold text-zinc-700 mb-1">Department</label>
-              <select id="admDocDept" class="w-full px-3 py-2 rounded-xl border border-zinc-300 text-xs bg-white">
-                <option value="CIC / Placements">CIC / Placements</option>
-                <option value="Academics">Academics</option>
-                <option value="Accounts">Accounts</option>
-                <option value="Student Affairs">Student Affairs</option>
-                <option value="CSE">CSE</option>
-                <option value="COE">COE</option>
-              </select>
-            </div>
-            <div>
-              <label for="admDocCat" class="block text-xs font-semibold text-zinc-700 mb-1">Category</label>
-              <select id="admDocCat" class="w-full px-3 py-2 rounded-xl border border-zinc-300 text-xs bg-white">
-                <option value="Placements">Placements</option>
-                <option value="Academics">Academics</option>
-                <option value="Fees">Fees</option>
-                <option value="Hostel">Hostel</option>
-                <option value="Courses">Courses</option>
-                <option value="Exams">Exams</option>
-              </select>
-            </div>
-            <div class="flex items-end">
-              <button id="btnAdminUploadSubmit" type="submit" class="w-full py-2 px-4 rounded-xl bg-[#7A1C1C] hover:bg-[#5E1414] text-white font-semibold text-xs shadow-sm transition">
-                + Upload &amp; Index
+              <!-- Submit Button -->
+              <button id="btnComposerSend" type="submit" class="px-4 py-1.5 rounded-xl bg-[#7A1C1C] hover:bg-[#5E1414] text-white font-semibold text-xs flex items-center gap-1.5 shadow-xs transition">
+                <span>Ask Assistant</span>
+                <span>↑</span>
               </button>
-            </div>
-            <div class="md:col-span-4">
-              <textarea id="admDocContent" rows="2" required class="w-full p-3 rounded-xl border border-zinc-300 text-xs font-mono-code">NIIT UNIVERSITY PLACEMENT POLICY 2026: Campus placement registration for B.Tech CSE 7th Semester opens November 20, 2026. Minimum CGPA eligibility for Tier-1 product companies is 7.0 with zero active backlogs.</textarea>
             </div>
           </form>
         </div>
+      </div>
+    </main>
 
-        <div class="bg-white rounded-2xl border border-zinc-200/90 shadow-sm overflow-hidden">
-          <div class="px-5 py-3.5 border-b border-zinc-100 flex items-center justify-between">
-            <h3 class="text-sm font-bold text-zinc-900">Indexed Knowledge Base</h3>
-          </div>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse text-xs">
-              <thead>
-                <tr class="bg-zinc-50 text-zinc-500 border-b border-zinc-200">
-                  <th class="py-3 px-4 font-semibold">Title</th>
-                  <th class="py-3 px-4 font-semibold">Department</th>
-                  <th class="py-3 px-4 font-semibold">Format</th>
-                  <th class="py-3 px-4 font-semibold">Status</th>
-                  <th class="py-3 px-4 font-semibold">Actions</th>
-                </tr>
-              </thead>
-              <tbody id="adminDocsTbody" class="divide-y divide-zinc-100"></tbody>
-            </table>
-          </div>
+    <!-- =================================================================== -->
+    <!-- RIGHT SLIDE-OVER SOURCE EVIDENCE DRAWER (TritonGPT / Perplexity)    -->
+    <!-- =================================================================== -->
+    <aside id="evidenceDrawer" class="hidden w-80 lg:w-96 bg-white border-l border-zinc-200/90 flex flex-col h-full shrink-0 shadow-xl z-20">
+      <div class="h-14 px-5 border-b border-zinc-200/80 flex items-center justify-between">
+        <div>
+          <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-900">Verified Source Evidence</h3>
+          <p class="text-[11px] text-zinc-500">Institutional Knowledge Base</p>
         </div>
+        <button onclick="toggleEvidenceDrawer(false)" class="w-7 h-7 rounded-lg hover:bg-zinc-100 text-zinc-500 font-bold text-xs">✕</button>
       </div>
 
-      <!-- TAB 3: USERS & ROLES -->
-      <div id="admViewUsers" class="hidden bg-white rounded-2xl border border-zinc-200/90 shadow-sm overflow-hidden">
-        <div class="px-5 py-4 border-b border-zinc-100 flex flex-wrap items-center justify-between gap-2">
-          <div>
-            <h3 class="text-sm font-bold text-zinc-900">User Directory &amp; Role Governance</h3>
-            <p class="text-xs text-zinc-500">Manage institutional roles for students, faculty, and administrators.</p>
-          </div>
-          <input id="inputUserSearch" type="text" oninput="renderAdminUsers()" placeholder="Filter users..." class="px-3 py-1.5 rounded-xl border border-zinc-300 text-xs w-56" />
+      <div id="evidenceDrawerContent" class="flex-1 overflow-y-auto p-5 space-y-4">
+        <!-- Populated dynamically when a citation is clicked or shows active corpus -->
+      </div>
+    </aside>
+
+    <!-- =================================================================== -->
+    <!-- MAIN WORKSPACE 2: MANAGEMENT & GOVERNANCE CONSOLE (Faculty / Admin) -->
+    <!-- =================================================================== -->
+    <main id="workspaceManage" class="hidden flex-1 flex flex-col h-full overflow-hidden bg-[#FAF9F6]">
+      <!-- Top Console Header & Sub-Navigation -->
+      <header class="px-6 pt-5 pb-3 bg-white border-b border-zinc-200/80 flex flex-wrap items-center justify-between gap-4 shrink-0">
+        <div>
+          <h2 id="manageHeaderTitle" class="text-lg font-extrabold text-zinc-900 tracking-tight">Executive Knowledge &amp; Analytics Console</h2>
+          <p id="manageHeaderSub" class="text-xs text-zinc-500">Curate approved NIIT University documents, monitor query quality, and manage role permissions.</p>
         </div>
-        <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse text-xs">
-            <thead>
-              <tr class="bg-zinc-50 text-zinc-500 border-b border-zinc-200">
-                <th class="py-3 px-4 font-semibold">Name</th>
-                <th class="py-3 px-4 font-semibold">Email</th>
-                <th class="py-3 px-4 font-semibold">Auth Provider</th>
-                <th class="py-3 px-4 font-semibold">Department</th>
-                <th class="py-3 px-4 font-semibold">Role</th>
-              </tr>
-            </thead>
-            <tbody id="adminUsersTbody" class="divide-y divide-zinc-100"></tbody>
-          </table>
+
+        <!-- Sub-navigation pills (Admin sees all 5; Faculty sees only Knowledge Base) -->
+        <div id="manageSubNav" class="flex items-center gap-1 bg-zinc-100 p-1 rounded-xl border border-zinc-200/80 text-xs font-semibold">
+          <button id="mTabOverview" onclick="switchManageTab('OVERVIEW')" class="px-3 py-1.5 rounded-lg bg-white text-zinc-900 shadow-2xs transition">Overview</button>
+          <button id="mTabKnowledge" onclick="switchManageTab('KNOWLEDGE')" class="px-3 py-1.5 rounded-lg text-zinc-600 hover:text-zinc-900 transition">Knowledge Base</button>
+          <button id="mTabUsers" onclick="switchManageTab('USERS')" class="px-3 py-1.5 rounded-lg text-zinc-600 hover:text-zinc-900 transition">Users &amp; Roles</button>
+          <button id="mTabFeedback" onclick="switchManageTab('FEEDBACK')" class="px-3 py-1.5 rounded-lg text-zinc-600 hover:text-zinc-900 transition">Quality Audit</button>
+          <button id="mTabPlatform" onclick="switchManageTab('PLATFORM')" class="px-3 py-1.5 rounded-lg text-zinc-600 hover:text-zinc-900 transition">Cluster &amp; DB</button>
+        </div>
+      </header>
+
+      <!-- Scrollable Console Content -->
+      <div class="flex-1 overflow-y-auto p-6">
+        <div class="max-w-6xl mx-auto space-y-6">
+
+          <!-- 1. OVERVIEW TAB -->
+          <div id="mViewOverview" class="space-y-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div class="bg-white p-5 rounded-2xl border border-zinc-200/90 shadow-2xs">
+                <div class="text-xs font-medium text-zinc-500">Total Campus Queries</div>
+                <div id="statTotalQueries" class="text-2xl font-extrabold text-zinc-900 mt-1.5">1,284</div>
+                <div class="text-[11px] text-emerald-700 font-semibold mt-1">↑ +14.2% vs last 30 days</div>
+              </div>
+              <div class="bg-white p-5 rounded-2xl border border-zinc-200/90 shadow-2xs">
+                <div class="text-xs font-medium text-zinc-500">Answer Satisfaction</div>
+                <div id="statSatisfaction" class="text-2xl font-extrabold text-zinc-900 mt-1.5">4.7 / 5.0</div>
+                <div id="statSatisfactionSub" class="text-[11px] text-zinc-500 mt-1">94% helpful ratings</div>
+              </div>
+              <div class="bg-white p-5 rounded-2xl border border-zinc-200/90 shadow-2xs">
+                <div class="text-xs font-medium text-zinc-500">Verified Documents</div>
+                <div id="statDocsCount" class="text-2xl font-extrabold text-zinc-900 mt-1.5">5</div>
+                <div id="statChunksCount" class="text-[11px] text-zinc-500 mt-1">7 semantic chunks indexed</div>
+              </div>
+              <div class="bg-white p-5 rounded-2xl border border-zinc-200/90 shadow-2xs">
+                <div class="text-xs font-medium text-zinc-500">Median Response Latency</div>
+                <div class="text-2xl font-extrabold text-emerald-700 mt-1.5">0.91 s</div>
+                <div class="text-[11px] text-zinc-500 mt-1">SLA Target &lt; 5.0 s (18/20 Pods)</div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+              <div class="bg-white p-5 rounded-2xl border border-zinc-200/90 shadow-2xs">
+                <div class="flex items-center justify-between mb-4">
+                  <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-600">Daily Query Volume</h3>
+                  <span class="text-[11px] text-zinc-400">Autumn Semester 2026</span>
+                </div>
+                <div class="relative h-64"><canvas id="adminVolumeChart"></canvas></div>
+              </div>
+              <div class="bg-white p-5 rounded-2xl border border-zinc-200/90 shadow-2xs">
+                <div class="flex items-center justify-between mb-4">
+                  <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-600">Queries by Department Collection</h3>
+                  <span class="text-[11px] text-zinc-400">Automated Intent Classification</span>
+                </div>
+                <div class="relative h-64"><canvas id="adminCategoryChart"></canvas></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. KNOWLEDGE BASE STUDIO (Faculty & Admin) -->
+          <div id="mViewKnowledge" class="hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl border border-zinc-200/90 shadow-2xs space-y-4">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div>
+                  <h3 class="text-base font-bold text-zinc-900">Publish Official Document to RAG Index</h3>
+                  <p class="text-xs text-zinc-500">Supported formats: PDF, DOCX, TXT (maximum 25 MB). Documents are automatically chunked and embedded.</p>
+                </div>
+                <button type="button" onclick="triggerFormatValidationDemo()" class="px-3 py-1.5 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-zinc-700 text-xs font-semibold transition">
+                  Test Invalid Format Guardrail (.exe)
+                </button>
+              </div>
+
+              <div id="kbUploadAlert" class="srs-alert-banner hidden text-xs font-medium"></div>
+              <div id="kbUploadSuccess" class="hidden p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs font-medium"></div>
+
+              <form id="formKbUpload" onsubmit="handleKbUpload(event)" class="grid grid-cols-1 md:grid-cols-4 gap-3.5">
+                <div>
+                  <label for="kbDocTitle" class="block text-xs font-semibold text-zinc-700 mb-1">Filename (.pdf, .docx, .txt)</label>
+                  <input id="kbDocTitle" type="text" required value="Placement_Guidelines_2026.pdf" class="w-full px-3 py-2 rounded-xl border border-zinc-300 text-xs focus:outline-none focus:border-[#7A1C1C]" />
+                </div>
+                <div>
+                  <label for="kbDocDept" class="block text-xs font-semibold text-zinc-700 mb-1">Department Collection</label>
+                  <select id="kbDocDept" class="w-full px-3 py-2 rounded-xl border border-zinc-300 text-xs bg-white">
+                    <option value="CIC / Placements">CIC / Placements</option>
+                    <option value="Academics">Academics</option>
+                    <option value="Accounts">Accounts</option>
+                    <option value="Student Affairs">Student Affairs</option>
+                    <option value="CSE">CSE</option>
+                    <option value="COE">COE</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="kbDocCat" class="block text-xs font-semibold text-zinc-700 mb-1">Topic Tag</label>
+                  <select id="kbDocCat" class="w-full px-3 py-2 rounded-xl border border-zinc-300 text-xs bg-white">
+                    <option value="Placements">Placements</option>
+                    <option value="Academics">Academics</option>
+                    <option value="Fees">Fees</option>
+                    <option value="Hostel">Hostel</option>
+                    <option value="Courses">Courses</option>
+                    <option value="Exams">Exams</option>
+                  </select>
+                </div>
+                <div class="flex items-end">
+                  <button id="btnKbPublish" type="submit" class="w-full py-2 px-4 rounded-xl bg-[#7A1C1C] hover:bg-[#5E1414] text-white font-semibold text-xs shadow-xs transition">
+                    + Chunk &amp; Index Document
+                  </button>
+                </div>
+                <div class="md:col-span-4">
+                  <label for="kbDocBody" class="block text-xs font-semibold text-zinc-700 mb-1">Document Content Excerpt (or attach local file)</label>
+                  <textarea id="kbDocBody" rows="3" required class="w-full p-3 rounded-xl border border-zinc-300 text-xs font-mono-code focus:outline-none focus:border-[#7A1C1C]">NIIT UNIVERSITY - CENTER FOR INDUSTRY COLLABORATION (CIC) PLACEMENT POLICY 2026: Campus placement registration for B.Tech CSE 7th Semester opens on November 20, 2026. Students require a minimum CGPA of 7.0 with zero active backlogs to appear for Tier-1 product companies. Industry Practice (IP) stipends range from INR 25,000 to INR 85,000 per month.</textarea>
+                  <div class="mt-2 flex items-center gap-2">
+                    <input id="kbLocalFilePicker" type="file" onchange="handleKbFilePick(event)" class="text-xs text-zinc-500" />
+                  </div>
+                </div>
+              </form>
+            </div>
+
+            <div class="bg-white rounded-2xl border border-zinc-200/90 shadow-2xs overflow-hidden">
+              <div class="px-5 py-4 border-b border-zinc-100 flex items-center justify-between">
+                <h3 class="text-sm font-bold text-zinc-900">Institutional Document Repository</h3>
+                <span class="text-xs text-zinc-500">Only <strong class="text-emerald-700">INDEXED</strong> documents are used in answers</span>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-xs">
+                  <thead>
+                    <tr class="bg-zinc-50 text-zinc-500 border-b border-zinc-200">
+                      <th class="py-3 px-4 font-semibold">Document Title</th>
+                      <th class="py-3 px-4 font-semibold">Department</th>
+                      <th class="py-3 px-4 font-semibold">Category</th>
+                      <th class="py-3 px-4 font-semibold">Format / Ver</th>
+                      <th class="py-3 px-4 font-semibold">Status</th>
+                      <th class="py-3 px-4 font-semibold text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="kbTableBody" class="divide-y divide-zinc-100"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. USERS & ROLES (Admin Only) -->
+          <div id="mViewUsers" class="hidden bg-white rounded-2xl border border-zinc-200/90 shadow-2xs overflow-hidden">
+            <div class="px-5 py-4 border-b border-zinc-100 flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <h3 class="text-sm font-bold text-zinc-900">University Identity &amp; Role Directory</h3>
+                <p class="text-xs text-zinc-500">Assign Student, Faculty, or Admin Staff privileges.</p>
+              </div>
+              <input id="userDirFilter" type="text" oninput="renderUsersDirectory()" placeholder="Search name or email..." class="px-3.5 py-1.5 rounded-xl border border-zinc-300 text-xs w-64" />
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr class="bg-zinc-50 text-zinc-500 border-b border-zinc-200">
+                    <th class="py-3 px-4 font-semibold">Full Name</th>
+                    <th class="py-3 px-4 font-semibold">University Email</th>
+                    <th class="py-3 px-4 font-semibold">Sign-In Method</th>
+                    <th class="py-3 px-4 font-semibold">Department</th>
+                    <th class="py-3 px-4 font-semibold">Role Permission</th>
+                  </tr>
+                </thead>
+                <tbody id="usersDirBody" class="divide-y divide-zinc-100"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- 4. QUALITY & FEEDBACK AUDIT (Admin Only) -->
+          <div id="mViewFeedback" class="hidden space-y-4">
+            <div class="bg-white p-4 rounded-2xl border border-zinc-200/90 shadow-2xs flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <h3 class="text-sm font-bold text-zinc-900">Query Log &amp; Answer Quality Audit</h3>
+                <p class="text-xs text-zinc-500">Review student and faculty ratings, latency, and privacy compliance.</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <select id="auditDateFilter" onchange="renderFeedbackAudit()" class="px-3 py-1.5 rounded-xl border border-zinc-300 text-xs bg-white font-medium">
+                  <option value="30D">Last 30 Days</option>
+                  <option value="7D">Last 7 Days</option>
+                  <option value="EMPTY">Empty Window Check</option>
+                </select>
+                <button type="button" onclick="runPrivacyScrubber()" class="px-3.5 py-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-semibold transition">
+                  Scrub PII in Logs
+                </button>
+              </div>
+            </div>
+
+            <div id="auditEmptyNotice" class="hidden bg-white p-10 rounded-2xl border border-zinc-200 text-center text-xs text-zinc-500">
+              No query records exist for the selected date range.
+            </div>
+
+            <div id="auditTableCard" class="bg-white rounded-2xl border border-zinc-200/90 shadow-2xs overflow-hidden">
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-xs">
+                  <thead>
+                    <tr class="bg-zinc-50 text-zinc-500 border-b border-zinc-200">
+                      <th class="py-3 px-4 font-semibold">Submitted Question</th>
+                      <th class="py-3 px-4 font-semibold">Collection</th>
+                      <th class="py-3 px-4 font-semibold">Resolution</th>
+                      <th class="py-3 px-4 font-semibold">User Rating</th>
+                      <th class="py-3 px-4 font-semibold">Comment</th>
+                    </tr>
+                  </thead>
+                  <tbody id="auditTableBody" class="divide-y divide-zinc-100"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5. CLUSTER & DATABASE TELEMETRY (Admin Only) -->
+          <div id="mViewPlatform" class="hidden space-y-6">
+            <div class="bg-white p-5 rounded-2xl border border-zinc-200/90 shadow-2xs space-y-4">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div>
+                  <h3 class="text-sm font-bold text-zinc-900">Kubernetes Microservices &amp; Autoscaling</h3>
+                  <p class="text-xs text-zinc-500">4 isolated namespaces (<code class="font-mono-code">frontend</code>, <code class="font-mono-code">backend</code>, <code class="font-mono-code">ml-inference</code>, <code class="font-mono-code">data</code>)</p>
+                </div>
+                <button type="button" onclick="simulateClusterScale()" class="px-3.5 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold transition">
+                  Simulate 200-User Load Spike (HPA)
+                </button>
+              </div>
+              <div id="clusterEventToast" class="hidden p-3 rounded-xl bg-blue-50 border border-blue-200 text-blue-900 text-xs font-mono-code"></div>
+              <div id="clusterGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5"></div>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl border border-zinc-200/90 shadow-2xs space-y-4">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div>
+                  <h3 class="text-sm font-bold text-zinc-900">Relational Schema Inspector (8 Tables)</h3>
+                  <p class="text-xs text-zinc-500">Inspect live foreign-key linked records in PostgreSQL / SQLite.</p>
+                </div>
+                <div class="flex flex-wrap gap-1.5">
+                  <button onclick="switchDbInspector('Users')" class="px-2.5 py-1 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-xs font-semibold">Users</button>
+                  <button onclick="switchDbInspector('Sessions')" class="px-2.5 py-1 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-xs font-semibold">Sessions</button>
+                  <button onclick="switchDbInspector('Queries')" class="px-2.5 py-1 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-xs font-semibold">Queries</button>
+                  <button onclick="switchDbInspector('Responses')" class="px-2.5 py-1 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-xs font-semibold">Responses</button>
+                  <button onclick="switchDbInspector('ResponseCitations')" class="px-2.5 py-1 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-xs font-semibold">ResponseCitations</button>
+                  <button onclick="switchDbInspector('Feedback')" class="px-2.5 py-1 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-xs font-semibold">Feedback</button>
+                  <button onclick="switchDbInspector('Documents')" class="px-2.5 py-1 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-xs font-semibold">Documents</button>
+                  <button onclick="switchDbInspector('DocumentChunks')" class="px-2.5 py-1 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-xs font-semibold">DocumentChunks</button>
+                </div>
+              </div>
+              <div id="dbInspectorContainer" class="overflow-x-auto border border-zinc-200 rounded-xl"></div>
+            </div>
+          </div>
+
         </div>
       </div>
+    </main>
+  </div>
 
-      <!-- TAB 4: QUERY ANALYTICS -->
-      <div id="admViewAnalytics" class="hidden space-y-4">
-        <div class="bg-white p-4 rounded-2xl border border-zinc-200/90 shadow-sm flex flex-wrap items-center justify-between gap-3">
-          <h3 class="text-sm font-bold text-zinc-900">Query Audit &amp; User Feedback</h3>
-          <div class="flex items-center gap-2">
-            <select id="selectAnalyticsPeriod" onchange="renderAdminAnalytics()" class="px-3 py-1.5 rounded-xl border border-zinc-300 text-xs bg-white font-medium">
-              <option value="30D">Last 30 Days</option>
-              <option value="7D">Last 7 Days</option>
-              <option value="EMPTY">Empty Date Range Test</option>
-            </select>
-            <button id="btnAnonymizeLogs" onclick="anonymizePiiLogs()" class="px-3 py-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-semibold transition">
-              Anonymize PII Logs
-            </button>
-          </div>
-        </div>
-        <div id="analyticsEmptyCard" class="hidden bg-white p-10 rounded-2xl border border-zinc-200 text-center text-xs text-zinc-500">
-          No query analytics found for the selected time range.
-        </div>
-        <div id="analyticsTableCard" class="bg-white rounded-2xl border border-zinc-200/90 shadow-sm overflow-hidden">
-          <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse text-xs">
-              <thead>
-                <tr class="bg-zinc-50 text-zinc-500 border-b border-zinc-200">
-                  <th class="py-3 px-4 font-semibold">Question</th>
-                  <th class="py-3 px-4 font-semibold">Category</th>
-                  <th class="py-3 px-4 font-semibold">Status</th>
-                  <th class="py-3 px-4 font-semibold">Rating</th>
-                  <th class="py-3 px-4 font-semibold">Feedback Comment</th>
-                </tr>
-              </thead>
-              <tbody id="adminAnalyticsTbody" class="divide-y divide-zinc-100"></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- TAB 5: SYSTEM HEALTH -->
-      <div id="admViewHealth" class="hidden space-y-4">
-        <div class="bg-white p-4 rounded-2xl border border-zinc-200/90 shadow-sm flex flex-wrap items-center justify-between gap-2">
-          <div>
-            <h3 class="text-sm font-bold text-zinc-900">Kubernetes Cluster &amp; Microservices Health</h3>
-            <p class="text-xs text-zinc-500">Live replica status, liveness/readiness probes, and Horizontal Pod Autoscaler.</p>
-          </div>
-          <button id="btnTriggerHpa" onclick="triggerHpaScale()" class="px-3.5 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold transition">
-            Simulate Load Spike (HPA)
-          </button>
-        </div>
-        <div id="k8sNoticeBox" class="hidden p-3 rounded-xl bg-blue-50 border border-blue-200 text-blue-900 text-xs font-mono-code"></div>
-        <div id="k8sCardsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-      </div>
-
-      <!-- TAB 6: DATABASE EXPLORER (Admin Only!) -->
-      <div id="admViewDatabase" class="hidden bg-white p-5 rounded-2xl border border-zinc-200/90 shadow-sm space-y-4">
-        <div class="flex flex-wrap items-center justify-between gap-2">
-          <div>
-            <h3 class="text-sm font-bold text-zinc-900">Relational Database Inspector (8 Tables)</h3>
-            <p class="text-xs text-zinc-500">Restricted to Admin Staff — inspect live relational records across the system.</p>
-          </div>
-          <div class="flex flex-wrap gap-1.5">
-            <button onclick="selectDbTab('Users')" class="px-2.5 py-1 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-xs font-semibold">Users</button>
-            <button onclick="selectDbTab('Sessions')" class="px-2.5 py-1 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-xs font-semibold">Sessions</button>
-            <button onclick="selectDbTab('Queries')" class="px-2.5 py-1 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-xs font-semibold">Queries</button>
-            <button onclick="selectDbTab('Responses')" class="px-2.5 py-1 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-xs font-semibold">Responses</button>
-            <button onclick="selectDbTab('ResponseCitations')" class="px-2.5 py-1 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-xs font-semibold">ResponseCitations</button>
-            <button onclick="selectDbTab('Feedback')" class="px-2.5 py-1 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-xs font-semibold">Feedback</button>
-            <button onclick="selectDbTab('Documents')" class="px-2.5 py-1 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-xs font-semibold">Documents</button>
-            <button onclick="selectDbTab('DocumentChunks')" class="px-2.5 py-1 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-xs font-semibold">DocumentChunks</button>
-          </div>
-        </div>
-        <div id="dbTableOutput" class="overflow-x-auto border border-zinc-200 rounded-xl"></div>
-      </div>
-
-    </section>
-  </main>
-
-  <!-- GOOGLE ACCOUNT PICKER MODAL (Realistic Google Sign-In Flow) -->
-  <div id="googlePickerModal" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-zinc-200 space-y-4">
+  <!-- ===================================================================== -->
+  <!-- MODAL 1: GOOGLE WORKSPACE ACCOUNT CHOOSER                             -->
+  <!-- ===================================================================== -->
+  <div id="modalGoogleAuth" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-zinc-200 space-y-4">
       <div class="flex items-center justify-between">
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2.5">
           <svg class="w-5 h-5" viewBox="0 0 24 24" aria-hidden="true">
             <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
             <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.14C3.26 21.3 7.31 24 12 24z"/>
             <path fill="#FBBC05" d="M5.28 14.24c-.24-.72-.38-1.49-.38-2.24s.14-1.52.38-2.24V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.14z"/>
             <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.14c.95-2.85 3.6-4.96 6.72-4.96z"/>
           </svg>
-          <span class="text-sm font-bold text-zinc-900">Choose a Google Account</span>
+          <span class="text-sm font-bold text-zinc-900">Sign in with Google</span>
         </div>
-        <button id="btnCloseGoogleModal" onclick="closeGooglePickerModal()" class="text-xs font-bold text-zinc-400 hover:text-zinc-700">✕</button>
+        <button onclick="closeGoogleAccountModal()" class="text-xs font-bold text-zinc-400 hover:text-zinc-700">✕</button>
       </div>
-      <p class="text-xs text-zinc-500">Select your NIIT University Google Workspace account to continue:</p>
+      <!-- REAL GOOGLE SIGN-IN VIA GOOGLE IDENTITY SERVICES -->
+      <div class="p-3.5 bg-gradient-to-br from-red-50/70 to-zinc-50 rounded-2xl border border-red-100/80 space-y-2.5">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span class="text-xs font-bold text-zinc-800">Live Google Identity Services</span>
+          </div>
+          <span id="gsiStatusBadge" class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold">OIDC Active</span>
+        </div>
+        <div id="googleBtnContainer" class="flex justify-center my-1.5">
+          <!-- Live Google GIS Sign-In Button rendered here -->
+        </div>
+        <div class="text-[11px] text-zinc-500 pt-1 border-t border-zinc-200/60">
+          <details class="cursor-pointer">
+            <summary class="font-medium text-[#7A1C1C] hover:underline flex items-center justify-between">
+              <span>Google OAuth Client ID Settings</span>
+              <span class="text-[10px] text-zinc-400">Configure</span>
+            </summary>
+            <div class="mt-2 space-y-1.5 bg-white p-2.5 rounded-xl border border-zinc-200">
+              <input id="inputCustomGoogleClientId" type="text" placeholder="e.g. 123456789-xyz.apps.googleusercontent.com" class="w-full px-2.5 py-1.5 rounded-lg border border-zinc-300 text-xs focus:outline-none focus:border-[#7A1C1C]" />
+              <button type="button" onclick="configureGoogleClientId()" class="w-full py-1.5 rounded-lg bg-[#7A1C1C] hover:bg-[#5E1414] text-white text-xs font-semibold transition">Initialize Custom Client ID</button>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <div class="relative flex py-1 items-center">
+        <div class="flex-grow border-t border-zinc-200"></div>
+        <span class="flex-shrink mx-2 text-[10px] uppercase font-bold text-zinc-400 tracking-wider">or 1-click university accounts</span>
+        <div class="flex-grow border-t border-zinc-200"></div>
+      </div>
+
       <div class="space-y-2">
-        <button id="gAccStudent" type="button" onclick="selectGoogleAccount('vijay.reddy23@st.niituniversity.in')" class="w-full p-3 rounded-xl border border-zinc-200 hover:bg-zinc-50 flex items-center gap-3 text-left transition">
-          <div class="w-9 h-9 rounded-full bg-[#7A1C1C] text-white font-bold text-xs flex items-center justify-center shrink-0">VR</div>
+        <button type="button" onclick="completeGoogleLogin('vijay.reddy23@st.niituniversity.in')" class="w-full p-3 rounded-2xl border border-zinc-200 hover:border-[#7A1C1C] hover:bg-red-50/30 flex items-center gap-3 text-left transition">
+          <div class="w-9 h-9 rounded-full nu-brand-gradient text-white font-bold text-xs flex items-center justify-center shrink-0">VR</div>
           <div class="min-w-0">
             <div class="text-xs font-bold text-zinc-900 truncate">Yammanuru Vijay Vardhan Reddy</div>
             <div class="text-[11px] text-zinc-500 truncate">vijay.reddy23@st.niituniversity.in • Student</div>
           </div>
         </button>
-        <button id="gAccFaculty" type="button" onclick="selectGoogleAccount('manish.hurkat@niituniversity.in')" class="w-full p-3 rounded-xl border border-zinc-200 hover:bg-zinc-50 flex items-center gap-3 text-left transition">
+        <button type="button" onclick="completeGoogleLogin('manish.hurkat@niituniversity.in')" class="w-full p-3 rounded-2xl border border-zinc-200 hover:border-[#7A1C1C] hover:bg-red-50/30 flex items-center gap-3 text-left transition">
           <div class="w-9 h-9 rounded-full bg-amber-700 text-white font-bold text-xs flex items-center justify-center shrink-0">MH</div>
           <div class="min-w-0">
             <div class="text-xs font-bold text-zinc-900 truncate">Prof. Manish Hurkat</div>
             <div class="text-[11px] text-zinc-500 truncate">manish.hurkat@niituniversity.in • Faculty</div>
           </div>
         </button>
-        <button id="gAccAdmin" type="button" onclick="selectGoogleAccount('admin@niituniversity.in')" class="w-full p-3 rounded-xl border border-zinc-200 hover:bg-zinc-50 flex items-center gap-3 text-left transition">
+        <button type="button" onclick="completeGoogleLogin('admin@niituniversity.in')" class="w-full p-3 rounded-2xl border border-zinc-200 hover:border-[#7A1C1C] hover:bg-red-50/30 flex items-center gap-3 text-left transition">
           <div class="w-9 h-9 rounded-full bg-emerald-700 text-white font-bold text-xs flex items-center justify-center shrink-0">AD</div>
           <div class="min-w-0">
             <div class="text-xs font-bold text-zinc-900 truncate">NU Knowledge Admin</div>
@@ -648,69 +798,78 @@
     </div>
   </div>
 
-  <!-- CITATION INSPECTOR MODAL -->
-  <div id="citationModal" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-zinc-200 space-y-3">
-      <div class="flex items-center justify-between border-b border-zinc-100 pb-3">
-        <h3 id="citModalTitle" class="text-sm font-bold text-zinc-900">Source Excerpt</h3>
-        <button id="btnCloseCitModal" onclick="closeCitationModal()" class="text-xs font-bold text-zinc-500 hover:text-zinc-900">✕</button>
-      </div>
-      <div id="citModalMeta" class="text-[11px] font-medium text-zinc-500"></div>
-      <div id="citModalText" class="p-4 rounded-xl bg-zinc-50 border border-zinc-200 text-xs text-zinc-800 leading-relaxed whitespace-pre-wrap"></div>
-    </div>
-  </div>
-
-  <!-- DELETE CONFIRMATION MODAL -->
-  <div id="deleteModal" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-zinc-200 space-y-4">
-      <div class="srs-error-banner">
-        <div class="font-bold text-xs sm:text-sm mb-1">Confirm Permanent Document Removal</div>
-        <p id="deleteModalMsg" class="text-xs"></p>
+  <!-- ===================================================================== -->
+  <!-- MODAL 2: SAFE DOCUMENT DELETION WARNING (UC-03)                       -->
+  <!-- ===================================================================== -->
+  <div id="modalDeleteConfirm" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-zinc-200 space-y-4">
+      <div class="srs-alert-banner">
+        <div class="font-bold text-xs sm:text-sm mb-1">Active Query Citation Warning</div>
+        <p id="deleteWarningBody" class="text-xs leading-relaxed"></p>
       </div>
       <div class="flex justify-end gap-2">
-        <button id="btnCancelDel" onclick="closeDeleteModal()" class="px-3.5 py-2 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-xs font-semibold text-zinc-700">Cancel</button>
-        <button id="btnConfirmDel" onclick="confirmDeleteDoc()" class="px-3.5 py-2 rounded-xl bg-red-700 hover:bg-red-800 text-white text-xs font-bold">Delete Permanently</button>
+        <button onclick="closeDeleteConfirmModal()" class="px-4 py-2 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-xs font-semibold text-zinc-700">Cancel</button>
+        <button onclick="executePermanentDelete()" class="px-4 py-2 rounded-xl bg-red-700 hover:bg-red-800 text-white text-xs font-bold">Delete Document &amp; Vectors</button>
       </div>
     </div>
   </div>
 
-  <!-- HELP MODAL -->
-  <div id="helpModal" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-zinc-200 space-y-4">
+  <!-- ===================================================================== -->
+  <!-- MODAL 3: HELP & INSTITUTIONAL AI GUIDE                                -->
+  <!-- ===================================================================== -->
+  <div id="modalHelp" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-zinc-200 space-y-4">
       <div class="flex items-center justify-between border-b border-zinc-100 pb-3">
-        <h3 class="text-sm font-extrabold text-zinc-900">How to Use the Assistant</h3>
-        <button id="btnCloseHelp" onclick="toggleHelpModal(false)" class="text-xs font-bold text-zinc-500 hover:text-zinc-900">✕</button>
+        <div>
+          <h3 class="text-sm font-extrabold text-zinc-900">About NIIT University Knowledge Assistant</h3>
+          <p class="text-[11px] text-zinc-500">Institutional RAG Platform • Capstone Project II (Team-20)</p>
+        </div>
+        <button onclick="toggleHelpModal(false)" class="text-xs font-bold text-zinc-400 hover:text-zinc-800">✕</button>
       </div>
-      <div class="space-y-2.5 text-xs text-zinc-600 leading-relaxed">
-        <p><strong class="text-zinc-900">1. Ask Anything:</strong> Query academic rules, semester fee deadlines, hostel timings, or exam timetables in plain English.</p>
-        <p><strong class="text-zinc-900">2. Verify Sources:</strong> Click any source pill below an answer to read the exact excerpt from the official NIIT University document.</p>
-        <p><strong class="text-zinc-900">3. Role Access:</strong> Students use the Chat interface; Faculty can upload course materials; Admin Staff manage the knowledge base, user roles, and analytics.</p>
+      <div class="space-y-3 text-xs text-zinc-600 leading-relaxed">
+        <div class="p-3.5 rounded-2xl bg-zinc-50 border border-zinc-200/80">
+          <div class="font-bold text-zinc-900 mb-1">How Grounded Citations Work</div>
+          <p>Every question is matched against official NIIT University handbooks, circulars, and syllabi. Click any numbered citation badge (<span class="font-bold text-[#7A1C1C]">[1]</span>) or source card to inspect the exact source paragraph in the right-hand Evidence Drawer.</p>
+        </div>
+        <div class="p-3.5 rounded-2xl bg-zinc-50 border border-zinc-200/80">
+          <div class="font-bold text-zinc-900 mb-1">Role-Based Workspace Separation</div>
+          <p>• <strong>Students:</strong> Full conversational assistant with 5-turn follow-up context and source verification.<br/>
+             • <strong>Faculty:</strong> Conversational assistant + Course Knowledge Studio to upload PDF, DOCX, and TXT course files.<br/>
+             • <strong>Admin Staff:</strong> Full Executive Console covering Analytics, Knowledge Base Curation, Role Governance, and Cluster Health.</p>
+        </div>
       </div>
     </div>
   </div>
 
+  <!-- ===================================================================== -->
+  <!-- APPLICATION STATE & INTERACTIVE LOGIC                                 -->
+  <!-- ===================================================================== -->
   <script>
-    const state = {
+    const app = {
       currentUser: null,
-      activeSurface: 'LOGIN',
-      activeAdminTab: 'OVERVIEW',
+      workspace: 'CHAT', // 'CHAT' or 'MANAGE'
+      manageTab: 'OVERVIEW',
       activeSessionId: 101,
-      deptScope: 'ALL',
-      selectedDbTable: 'Users',
-      pendingDeleteDocId: null,
-      sessionSeconds: 1800,
+      collectionFilter: 'ALL',
+      activeDbTable: 'Users',
+      pendingDeleteId: null,
+      inactivitySec: 1800,
+
       Users: [
-        { user_id: 1, email: 'vijay.reddy23@st.niituniversity.in', full_name: 'Yammanuru Vijay Vardhan Reddy', initials: 'VR', role: 'STUDENT', auth_source: 'GOOGLE', department: 'CSE (Data Science)' },
-        { user_id: 2, email: 'bharadwaj.bandi23@st.niituniversity.in', full_name: 'Bandi Ananthagari Bharadwaj', initials: 'BB', role: 'STUDENT', auth_source: 'SSO', department: 'CSE' },
-        { user_id: 3, email: 'jithendar.gottam23@st.niituniversity.in', full_name: 'Gottam Jithendar Reddy', initials: 'JR', role: 'STUDENT', auth_source: 'SSO', department: 'CSE' },
-        { user_id: 4, email: 'saideep.eedara23@st.niituniversity.in', full_name: 'Eedara Sai Deep', initials: 'SD', role: 'STUDENT', auth_source: 'SSO', department: 'CSE' },
-        { user_id: 5, email: 'manish.hurkat@niituniversity.in', full_name: 'Prof. Manish Hurkat', initials: 'MH', role: 'FACULTY', auth_source: 'GOOGLE', department: 'CSE' },
-        { user_id: 6, email: 'admin@niituniversity.in', full_name: 'NU Knowledge Admin', initials: 'AD', role: 'ADMIN', auth_source: 'LOCAL', department: 'Administration' }
+        { user_id: 1, email: 'vijay.reddy23@st.niituniversity.in', full_name: 'Yammanuru Vijay Vardhan Reddy', first_name: 'Vijay', initials: 'VR', role: 'STUDENT', auth_source: 'GOOGLE', department: 'CSE (Data Science)' },
+        { user_id: 2, email: 'bharadwaj.bandi23@st.niituniversity.in', full_name: 'Bandi Ananthagari Bharadwaj', first_name: 'Bharadwaj', initials: 'BB', role: 'STUDENT', auth_source: 'SSO', department: 'CSE' },
+        { user_id: 3, email: 'jithendar.gottam23@st.niituniversity.in', full_name: 'Gottam Jithendar Reddy', first_name: 'Jithendar', initials: 'JR', role: 'STUDENT', auth_source: 'SSO', department: 'CSE' },
+        { user_id: 4, email: 'saideep.eedara23@st.niituniversity.in', full_name: 'Eedara Sai Deep', first_name: 'Sai Deep', initials: 'SD', role: 'STUDENT', auth_source: 'SSO', department: 'CSE' },
+        { user_id: 5, email: 'manish.hurkat@niituniversity.in', full_name: 'Prof. Manish Hurkat', first_name: 'Prof. Hurkat', initials: 'MH', role: 'FACULTY', auth_source: 'GOOGLE', department: 'CSE' },
+        { user_id: 6, email: 'admin@niituniversity.in', full_name: 'NU Knowledge Admin', first_name: 'Admin', initials: 'AD', role: 'ADMIN', auth_source: 'LOCAL', department: 'Administration' }
       ],
+
       Sessions: [
-        { session_id: 101, user_id: 1, title: 'Fee deadline & Hostel rules', status: 'ACTIVE' },
-        { session_id: 102, user_id: 1, title: 'Mid-semester exam dates', status: 'ACTIVE' }
+        { session_id: 101, user_id: 1, title: 'New Conversation', status: 'ACTIVE' },
+        { session_id: 102, user_id: 1, title: 'Autumn Fee Circular & Scholarships', status: 'ACTIVE' },
+        { session_id: 103, user_id: 1, title: 'Mid-Sem Exam Schedule (CS3041)', status: 'ACTIVE' }
       ],
+
       Documents: [
         { document_id: 1, uploaded_by: 6, title: 'Academic_Handbook_2026.pdf', department: 'Academics', category: 'Academics', file_type: 'PDF', status: 'INDEXED', version: 1 },
         { document_id: 2, uploaded_by: 6, title: 'Fee_Circular_2026.pdf', department: 'Accounts', category: 'Fees', file_type: 'PDF', status: 'INDEXED', version: 1 },
@@ -718,338 +877,633 @@
         { document_id: 4, uploaded_by: 5, title: 'CSE_Data_Science_Syllabus.txt', department: 'CSE', category: 'Courses', file_type: 'TXT', status: 'INDEXED', version: 1 },
         { document_id: 5, uploaded_by: 5, title: 'Exam_Datesheet_Sem6.txt', department: 'COE', category: 'Exams', file_type: 'TXT', status: 'INDEXED', version: 1 }
       ],
+
       DocumentChunks: [
-        { chunk_id: 1, document_id: 1, chunk_index: 0, token_count: 118, chunk_text: 'All B.Tech students at NIIT University (Neemrana Campus) must maintain a minimum of 75% attendance in every registered course. Falling below 75% without approved medical leave results in an AW (Attendance Withheld) grade, barring End-Semester Exam appearance.' },
-        { chunk_id: 2, document_id: 1, chunk_index: 1, token_count: 112, chunk_text: 'NIIT University uses a 10-point grading scale (O=10, A+=9, A=8, B+=7, B=6, C=5, P=4). Graduation requires 160 credits and minimum CGPA 5.0. Capstone Project II (CS4092) carries 8 credits in Semester 7.' },
-        { chunk_id: 3, document_id: 2, chunk_index: 0, token_count: 124, chunk_text: 'The last date to pay Autumn Semester 2026-27 tuition (INR 1,45,000), hostel (INR 42,000), and mess (INR 24,500) fees without penalty is September 30, 2026 via the NU ERP Portal.' },
-        { chunk_id: 4, document_id: 2, chunk_index: 1, token_count: 96, chunk_text: 'Payments after September 30, 2026 incur a late fine of INR 200 per day until October 15, 2026. Merit Scholarship continuation requires a minimum SGPA of 7.5 with zero backlogs.' },
-        { chunk_id: 5, document_id: 3, chunk_index: 0, token_count: 115, chunk_text: 'For hostel room allotment, bring: (1) Current Fee Receipt, (2) Signed Anti-Ragging Affidavit, (3) Medical Fitness Certificate, and (4) Two photos + University ID. Main gate closes at 9:30 PM; hostel curfew is 10:30 PM weekdays and 11:00 PM weekends.' },
-        { chunk_id: 6, document_id: 4, chunk_index: 0, token_count: 120, chunk_text: 'CSE Data Science core courses: Deep Learning (CS3041, 4 Credits), Big Data Analytics (CS3052, 4 Credits), and Generative AI & LLMs (CS4018, 4 Credits). Evaluation: Quiz 1 (10%), Mid-Sem (25%), Quiz 2/Project (25%), End-Sem (40%).' },
-        { chunk_id: 7, document_id: 5, chunk_index: 0, token_count: 110, chunk_text: 'Mid-Semester Exams run October 6–12, 2026: Oct 6 Deep Learning CS3041 (LH-101), Oct 7 Big Data CS3052 (LH-103), Oct 8 GenAI CS4018 (CR-204), Oct 12 Capstone II Mid-Term Review. End-Sem exams run Dec 7–18, 2026.' }
+        { chunk_id: 1, document_id: 1, chunk_index: 0, token_count: 118, chunk_text: 'ATTENDANCE REQUIREMENT & AW GRADE POLICY: All B.Tech students at NIIT University (Neemrana Campus) must maintain at least 75% attendance in every registered course (lectures, tutorials, and laboratories). Falling below 75% without approved medical or institutional leave results in an AW (Attendance Withheld) grade, barring the student from the End-Semester Examination. Medical certificates must be submitted within 5 working days of recovery.' },
+        { chunk_id: 2, document_id: 1, chunk_index: 1, token_count: 112, chunk_text: 'GRADING SYSTEM & CAPSTONE CREDITS: NIIT University follows a 10-point grading scale (O=10, A+=9, A=8, B+=7, B=6, C=5, P=4, F=0). B.Tech graduation requires 160 total credits with a minimum CGPA of 5.0. Capstone Project II (CS4092) carries 8 credits in Semester 7, and Industry Practice (IP) carries 18 credits in Semester 8.' },
+        { chunk_id: 3, document_id: 2, chunk_index: 0, token_count: 124, chunk_text: 'AUTUMN 2026 FEE PAYMENT DEADLINE & BREAKDOWN: The deadline to pay Autumn Semester 2026-27 fees without late penalty is September 30, 2026 via the NIIT University ERP Portal. Per-semester B.Tech CSE breakdown: Tuition Fee INR 1,45,000, Hostel Accommodation & Utility Fee INR 42,000, Mess & Dining Advance INR 24,500, and Examination/Library Fee INR 3,500.' },
+        { chunk_id: 4, document_id: 2, chunk_index: 1, token_count: 96, chunk_text: 'LATE FEE PENALTY & MERIT SCHOLARSHIP CONTINUATION: Payments made after September 30, 2026 incur a late fine of INR 200 per day up to October 15, 2026, after which course registration is placed on hold. Continuation of Merit Scholarship (MS1/MS2/MS3) requires maintaining a minimum SGPA of 7.5 with zero backlogs and no disciplinary infractions.' },
+        { chunk_id: 5, document_id: 3, chunk_index: 0, token_count: 115, chunk_text: 'HOSTEL ALLOTMENT DOCUMENTS & CURFEW TIMINGS: For room allotment at Neemrana campus, students must present: (1) Current Semester Fee Receipt, (2) Signed Anti-Ragging Affidavit, (3) Medical Fitness Certificate, and (4) Two passport photos + University ID Card. Main campus gate entry closes at 9:30 PM; hostel block curfew is 10:30 PM on weekdays and 11:00 PM on weekends (biometric attendance 10:30 PM – 11:15 PM).' },
+        { chunk_id: 6, document_id: 3, chunk_index: 1, token_count: 88, chunk_text: 'OUTPASS & PROHIBITED APPLIANCES: Overnight or outstation leave requires an online Outpass submitted 24 hours in advance with parent email/SMS consent and Warden approval. High-wattage electrical appliances (heaters, induction cooktops, immersion rods, electric irons) are strictly prohibited and carry an INR 2,500 confiscation fine.' },
+        { chunk_id: 7, document_id: 4, chunk_index: 0, token_count: 120, chunk_text: 'CSE DATA SCIENCE SYLLABUS & EVALUATION WEIGHTAGE: Core courses include Deep Learning & Neural Networks (CS3041, 4 Credits: CNNs, RNNs, Transformers, PyTorch), Big Data Analytics (CS3052, 4 Credits: Apache Spark, HDFS, Kafka), and Generative AI & LLMs (CS4018, 4 Credits: RAG, ChromaDB, LangChain, Kubernetes). Evaluation weightage: Quiz 1 (10%), Mid-Semester Exam (25%), Quiz 2 / Project (25%), End-Semester Exam (40%).' },
+        { chunk_id: 8, document_id: 5, chunk_index: 0, token_count: 110, chunk_text: 'AUTUMN 2026 EXAMINATION TIMETABLE (COE): Mid-Semester Examinations run October 6–12, 2026: Oct 6 (09:30 AM) Deep Learning CS3041 in LH-101/102; Oct 7 (09:30 AM) Big Data Analytics CS3052 in LH-103; Oct 8 (02:00 PM) Generative AI & LLMs CS4018 in CR-204; Oct 12 Capstone Project II Mid-Term Review. End-Semester Examinations run December 7–18, 2026. Library hours extend until 12:00 Midnight during exam weeks.' }
       ],
+
       Queries: [
-        { query_id: 501, session_id: 101, query_text: 'When is the last date to pay the semester fee?', category: 'Fees', submitted_at: '2026-11-15 10:32:10', anonymized_at: null },
-        { query_id: 502, session_id: 102, query_text: 'When are the mid-semester exams for Deep Learning CS3041?', category: 'Exams', submitted_at: '2026-11-14 16:16:05', anonymized_at: null }
+        { query_id: 501, session_id: 102, query_text: 'When is the last date to pay the Autumn semester fee, and what is the late fine?', category: 'Fees', submitted_at: '2026-11-15 10:32:10', anonymized_at: null },
+        { query_id: 502, session_id: 103, query_text: 'When are the Mid-Semester exams for Deep Learning CS3041 and Big Data CS3052?', category: 'Exams', submitted_at: '2026-11-14 16:16:05', anonymized_at: null }
       ],
+
       Responses: [
-        { response_id: 801, query_id: 501, answer_text: 'The last date to pay the Autumn Semester 2026-27 tuition, hostel, and mess fees without a late penalty is September 30, 2026 via the NU ERP Portal [1]. Late payments after September 30 attract a fine of INR 200 per day up to October 15, 2026 [2].', status: 'ANSWERED', latency_ms: 920 },
-        { response_id: 802, query_id: 502, answer_text: 'The Mid-Semester exam for Deep Learning (CS3041) is scheduled for October 6, 2026 in LH-101, followed by Big Data Analytics (CS3052) on October 7 in LH-103 [1].', status: 'ANSWERED', latency_ms: 880 }
+        {
+          response_id: 801,
+          query_id: 501,
+          answer_text: 'The deadline to pay the Autumn Semester 2026–27 tuition, hostel, and mess fees without a penalty is September 30, 2026 via the NIIT University ERP Portal [1].\n\n• Per-Semester Fee Breakdown: Tuition INR 1,45,000, Hostel INR 42,000, Mess Advance INR 24,500, and Exam/Library Fee INR 3,500 [1].\n• Late Payment Fine: Payments after September 30 incur a fine of INR 200 per day until October 15, 2026 [2].\n• Merit Scholarship Rule: Requires maintaining a minimum SGPA of 7.5 with zero backlogs [2].',
+          status: 'ANSWERED',
+          latency_ms: 890
+        },
+        {
+          response_id: 802,
+          query_id: 502,
+          answer_text: 'According to the Controller of Examinations (COE) schedule, the Mid-Semester Examinations run from October 6 to October 12, 2026 [1]:\n\n• October 6, 2026 (09:30 AM): Deep Learning & Neural Networks (CS3041) — Venue: LH-101/102 [1]\n• October 7, 2026 (09:30 AM): Big Data Analytics (CS3052) — Venue: LH-103 [1]\n• October 8, 2026 (02:00 PM): Generative AI & LLMs (CS4018) — Venue: CR-204 [1]\n• End-Semester Window: December 7 to December 18, 2026 (Library open until Midnight) [1].',
+          status: 'ANSWERED',
+          latency_ms: 840
+        }
       ],
+
       ResponseCitations: [
-        { citation_id: 901, response_id: 801, chunk_id: 3, similarity_score: 0.92, rank: 1 },
-        { citation_id: 902, response_id: 801, chunk_id: 4, similarity_score: 0.79, rank: 2 },
-        { citation_id: 903, response_id: 802, chunk_id: 7, similarity_score: 0.93, rank: 1 }
+        { citation_id: 901, response_id: 801, chunk_id: 3, similarity_score: 0.94, rank: 1 },
+        { citation_id: 902, response_id: 801, chunk_id: 4, similarity_score: 0.86, rank: 2 },
+        { citation_id: 903, response_id: 802, chunk_id: 8, similarity_score: 0.95, rank: 1 }
       ],
+
       Feedback: [
-        { feedback_id: 301, response_id: 801, user_id: 1, rating: 'UP', comment: 'Clear and exact circular date.' }
+        { feedback_id: 301, response_id: 801, user_id: 1, rating: 'UP', comment: 'Exact fee circular dates and breakdown.' },
+        { feedback_id: 302, response_id: 802, user_id: 1, rating: 'UP', comment: 'Helpful exam hall schedule.' }
       ],
+
       k8sWorkloads: [
-        { namespace: 'frontend', service: 'web-frontend (React SPA)', replicas: '2 / 2', status: 'Healthy' },
-        { namespace: 'backend', service: 'api-gateway + auth-svc', replicas: '2 / 2', status: 'Healthy' },
-        { namespace: 'backend', service: 'chat-orchestrator + rag-svc', replicas: '3 / 3 (HPA)', status: 'Healthy' },
-        { namespace: 'ml-inference', service: 'llm-inference + embedding-svc', replicas: '2 / 2 (HPA)', status: 'Healthy' },
-        { namespace: 'data', service: 'postgres-db + vector-db (StatefulSet)', replicas: '2 / 2 (PVC)', status: 'Healthy' }
+        { namespace: 'frontend', service: 'web-frontend (React SPA)', replicas: '2 / 2 Pods', status: 'Healthy' },
+        { namespace: 'backend', service: 'api-gateway + auth-svc', replicas: '2 / 2 Pods', status: 'Healthy' },
+        { namespace: 'backend', service: 'chat-orchestrator + rag-svc', replicas: '3 / 3 Pods (HPA)', status: 'Healthy' },
+        { namespace: 'backend', service: 'ingestion-svc + analytics-svc', replicas: '2 / 2 Pods', status: 'Healthy' },
+        { namespace: 'ml-inference', service: 'llm-inference + embedding-svc', replicas: '2 / 2 Pods (HPA)', status: 'Healthy' },
+        { namespace: 'data', service: 'postgres-db + vector-db (StatefulSet)', replicas: '2 / 2 PVCs Bound', status: 'Healthy' }
       ]
     };
 
-    let volChart = null;
-    let catChart = null;
-    let timerHandle = null;
+    let volChartObj = null;
+    let catChartObj = null;
+    let clockInterval = null;
 
-    // --- AUTHENTICATION ---
-    function openGooglePickerModal() {
-      const m = document.getElementById('googlePickerModal');
+    // --- 0. PUBLIC CONFIG & GOOGLE OAUTH 2.0 INITIALIZATION ---
+    app.jwtToken = localStorage.getItem('nu_jwt_token') || null;
+
+    async function loadPublicConfig() {
+      try {
+        const resp = await fetch('/api/config');
+        if (resp.ok) {
+          const cfg = await resp.json();
+          app.serverConfig = cfg;
+          if (cfg.google_client_id) {
+            initGoogleIdentity(cfg.google_client_id);
+          }
+        }
+      } catch (e) {
+        console.warn("Server config fetch error:", e);
+      }
+    }
+
+    function configureGoogleClientId() {
+      const val = document.getElementById('inputCustomGoogleClientId')?.value.trim();
+      if (!val) {
+        alert("Please enter a valid Google OAuth Client ID.");
+        return;
+      }
+      initGoogleIdentity(val);
+      alert("Google Identity Services initialized with custom Client ID!");
+    }
+
+    function initGoogleIdentity(clientId) {
+      if (typeof google === 'undefined' || !google.accounts || !google.accounts.id) {
+        setTimeout(() => initGoogleIdentity(clientId), 500);
+        return;
+      }
+      try {
+        google.accounts.id.initialize({
+          client_id: clientId,
+          callback: handleGoogleCredentialResponse,
+          auto_select: false,
+          cancel_on_tap_outside: true
+        });
+        const container = document.getElementById('googleBtnContainer');
+        if (container) {
+          container.innerHTML = '';
+          google.accounts.id.renderButton(container, {
+            theme: 'outline',
+            size: 'large',
+            text: 'continue_with',
+            shape: 'pill',
+            width: 280
+          });
+        }
+        document.getElementById('gsiStatusBadge').textContent = 'Live Client Loaded';
+      } catch (err) {
+        console.error("GIS init error:", err);
+      }
+    }
+
+    async function handleGoogleCredentialResponse(response) {
+      try {
+        const res = await fetch('/api/auth/google', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ credential: response.credential })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          app.jwtToken = data.token;
+          app.currentUser = data.user;
+          localStorage.setItem('nu_jwt_token', data.token);
+          closeGoogleAccountModal();
+          setupUserSession(data.user, 'GOOGLE');
+        } else {
+          const err = await res.json();
+          alert("Google Sign-in failed: " + (err.detail || "Verification error"));
+        }
+      } catch (e) {
+        alert("Network error connecting to auth service: " + e.message);
+      }
+    }
+
+    // --- 1. AUTHENTICATION & ROLE INITIALIZATION ---
+    function openGoogleAccountModal() {
+      const m = document.getElementById('modalGoogleAuth');
       m.classList.remove('hidden');
       m.classList.add('flex');
     }
-    function closeGooglePickerModal() {
-      const m = document.getElementById('googlePickerModal');
+    function closeGoogleAccountModal() {
+      const m = document.getElementById('modalGoogleAuth');
       m.classList.add('hidden');
       m.classList.remove('flex');
     }
-    function selectGoogleAccount(email) {
-      closeGooglePickerModal();
-      loginWithAccount(email, 'GOOGLE');
+    function completeGoogleLogin(email) {
+      closeGoogleAccountModal();
+      signInWithEmail(email, 'GOOGLE');
     }
-    function quickDemoLogin(role) {
-      const user = state.Users.find(u => u.role === role) || state.Users[0];
-      loginWithAccount(user.email, user.auth_source);
+    function quickRoleLogin(role) {
+      const target = app.Users.find(u => u.role === role) || app.Users[0];
+      signInWithEmail(target.email, target.auth_source);
     }
-    function handleEmailLogin(e) {
+    function handleStandardLogin(e) {
       e.preventDefault();
-      const email = document.getElementById('inputLoginEmail').value.trim();
-      loginWithAccount(email, 'LOCAL');
+      const email = document.getElementById('loginEmail').value.trim();
+      signInWithEmail(email, 'LOCAL');
     }
-    function loginWithAccount(email, provider) {
-      const user = state.Users.find(u => u.email.toLowerCase() === email.toLowerCase());
+
+    function setupUserSession(user, method) {
+      app.currentUser = { ...user, auth_source: method };
+      app.inactivitySec = 1800;
+      document.getElementById('loginAlertBox').classList.add('hidden');
+      document.getElementById('screenLogin').classList.add('hidden');
+      document.getElementById('appShell').classList.remove('hidden');
+
+      // Populate Sidebar Profile
+      const initials = (user.full_name || 'User').split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+      const firstName = (user.full_name || 'Student').split(' ')[0];
+      document.getElementById('sidebarUserAvatar').textContent = user.initials || initials;
+      document.getElementById('sidebarUserName').textContent = user.full_name;
+      document.getElementById('sidebarRoleBadge').textContent = user.role;
+      document.getElementById('welcomeGreetingTitle').textContent = `Good evening, ${firstName}. What would you like to look up?`;
+
+      // STRICT ROLE-GATED UI SEPARATION
+      const switcher = document.getElementById('roleWorkspaceSwitcher');
+      const manageLabel = document.getElementById('wsManageLabel');
+      if (user.role === 'STUDENT') {
+        switcher.classList.add('hidden');
+      } else {
+        switcher.classList.remove('hidden');
+        manageLabel.textContent = user.role === 'FACULTY' ? 'Course Studio' : 'Admin Console';
+      }
+
+      startInactivityClock();
+      switchWorkspace('CHAT');
+      renderEvidenceDrawerDefault();
+    }
+
+    async function signInWithEmail(email, method) {
+      // 1. Try real FastAPI backend authentication
+      try {
+        const resp = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: email,
+            password: 'student123',
+            is_sso: (method === 'SSO' || method === 'GOOGLE')
+          })
+        });
+        if (resp.ok) {
+          const data = await resp.json();
+          app.jwtToken = data.token;
+          localStorage.setItem('nu_jwt_token', data.token);
+          setupUserSession(data.user, method);
+          return;
+        }
+      } catch (err) {
+        console.warn("Backend auth fetch error, using local fallback:", err);
+      }
+
+      // 2. Fallback in-memory user matching
+      const user = app.Users.find(u => u.email.toLowerCase() === email.toLowerCase());
       if (!user) {
-        const box = document.getElementById('loginErrorBox');
-        document.getElementById('loginErrorMsg').textContent = 'Invalid NIIT University credentials. Please use a valid @niituniversity.in account.';
-        box.classList.remove('hidden');
+        const alertBox = document.getElementById('loginAlertBox');
+        document.getElementById('loginAlertText').textContent = 'Account not recognized. Please sign in with a valid @st.niituniversity.in or @niituniversity.in account.';
+        alertBox.classList.remove('hidden');
         return;
       }
-      state.currentUser = { ...user, auth_source: provider };
-      state.sessionSeconds = 1800;
-      document.getElementById('loginErrorBox').classList.add('hidden');
-      document.getElementById('screenLogin').classList.add('hidden');
-      document.getElementById('appHeader').classList.remove('hidden');
-
-      // Update Header Identity
-      document.getElementById('headerAvatar').textContent = user.initials;
-      document.getElementById('headerUserName').textContent = user.full_name;
-      document.getElementById('headerUserRole').textContent = user.role;
-
-      // STRICT ROLE-BASED UI VISIBILITY (Students NEVER see Admin or DB Tabs!)
-      document.getElementById('navFacultyDocsBtn').classList.toggle('hidden', user.role !== 'FACULTY');
-      document.getElementById('navAdminBtn').classList.toggle('hidden', user.role !== 'ADMIN');
-
-      startTimer();
-      hideGlobalAlert();
-      switchSurface('CHAT');
+      setupUserSession(user, method);
     }
-    function logoutUser() {
-      state.currentUser = null;
-      if (timerHandle) clearInterval(timerHandle);
-      document.getElementById('appHeader').classList.add('hidden');
-      document.getElementById('screenChat').classList.add('hidden');
-      document.getElementById('screenFacultyDocs').classList.add('hidden');
-      document.getElementById('screenAdmin').classList.add('hidden');
+
+    function signOut() {
+      app.currentUser = null;
+      if (clockInterval) clearInterval(clockInterval);
+      document.getElementById('appShell').classList.add('hidden');
       document.getElementById('screenLogin').classList.remove('hidden');
     }
-    function startTimer() {
-      if (timerHandle) clearInterval(timerHandle);
-      timerHandle = setInterval(() => {
-        if (!state.currentUser) return;
-        state.sessionSeconds = Math.max(0, state.sessionSeconds - 1);
-        const m = String(Math.floor(state.sessionSeconds / 60)).padStart(2, '0');
-        const s = String(state.sessionSeconds % 60).padStart(2, '0');
-        document.getElementById('sessionTimerText').textContent = `${m}:${s}`;
-        if (state.sessionSeconds === 0) logoutUser();
+
+    function startInactivityClock() {
+      if (clockInterval) clearInterval(clockInterval);
+      clockInterval = setInterval(() => {
+        if (!app.currentUser) return;
+        app.inactivitySec = Math.max(0, app.inactivitySec - 1);
+        const m = String(Math.floor(app.inactivitySec / 60)).padStart(2, '0');
+        const s = String(app.inactivitySec % 60).padStart(2, '0');
+        const el = document.getElementById('sidebarSessionClock');
+        if (el) el.textContent = `${m}:${s}`;
+        if (app.inactivitySec === 0) signOut();
       }, 1000);
     }
 
-    // --- NAVIGATION & RBAC ---
-    function switchSurface(surface) {
-      if (!state.currentUser) return;
-      state.sessionSeconds = 1800;
+    // --- 2. WORKSPACE SWITCHING (CHAT VS MANAGE) ---
+    function switchWorkspace(target) {
+      if (!app.currentUser) return;
+      app.inactivitySec = 1800;
 
-      if (surface === 'ADMIN' && state.currentUser.role !== 'ADMIN') {
-        showGlobalAlert('Access Denied: Administrative privileges required.');
-        return;
-      }
-      if (surface === 'FACULTY_DOCS' && state.currentUser.role === 'STUDENT') {
-        showGlobalAlert('Access Denied: Only Faculty and Admin Staff may upload documents.');
+      if (target === 'MANAGE' && app.currentUser.role === 'STUDENT') {
+        showWorkspaceAlert('Access Denied: Student accounts do not have permission to open administrative consoles.');
         return;
       }
 
-      state.activeSurface = surface;
-      document.getElementById('screenChat').classList.toggle('hidden', surface !== 'CHAT');
-      document.getElementById('screenFacultyDocs').classList.toggle('hidden', surface !== 'FACULTY_DOCS');
-      document.getElementById('screenAdmin').classList.toggle('hidden', surface !== 'ADMIN');
+      app.workspace = target;
+      document.getElementById('workspaceChat').classList.toggle('hidden', target !== 'CHAT');
+      document.getElementById('workspaceManage').classList.toggle('hidden', target !== 'MANAGE');
 
-      const btns = ['navChatBtn', 'navFacultyDocsBtn', 'navAdminBtn'];
-      btns.forEach(id => {
-        const el = document.getElementById(id);
-        el.classList.remove('bg-white', 'text-[#7A1C1C]', 'shadow-sm');
-        el.classList.add('text-white/90');
-      });
-      const activeId = surface === 'CHAT' ? 'navChatBtn' : surface === 'FACULTY_DOCS' ? 'navFacultyDocsBtn' : 'navAdminBtn';
-      const activeEl = document.getElementById(activeId);
-      activeEl.classList.add('bg-white', 'text-[#7A1C1C]', 'shadow-sm');
-      activeEl.classList.remove('text-white/90');
+      const btnChat = document.getElementById('wsBtnChat');
+      const btnManage = document.getElementById('wsBtnManage');
+      if (target === 'CHAT') {
+        btnChat.className = 'py-1.5 px-2.5 rounded-lg bg-white text-zinc-900 shadow-2xs transition';
+        btnManage.className = 'py-1.5 px-2.5 rounded-lg text-zinc-600 hover:text-zinc-900 transition';
+        renderSidebarHistory();
+        renderChatStream();
+      } else {
+        btnManage.className = 'py-1.5 px-2.5 rounded-lg bg-white text-zinc-900 shadow-2xs transition';
+        btnChat.className = 'py-1.5 px-2.5 rounded-lg text-zinc-600 hover:text-zinc-900 transition';
 
-      if (surface === 'CHAT') renderChat();
-      if (surface === 'FACULTY_DOCS') renderFacultyDocs();
-      if (surface === 'ADMIN') renderAdmin();
+        // Configure sub-tabs for Faculty vs Admin
+        const isFaculty = app.currentUser.role === 'FACULTY';
+        document.getElementById('mTabOverview').classList.toggle('hidden', isFaculty);
+        document.getElementById('mTabUsers').classList.toggle('hidden', isFaculty);
+        document.getElementById('mTabFeedback').classList.toggle('hidden', isFaculty);
+        document.getElementById('mTabPlatform').classList.toggle('hidden', isFaculty);
+
+        if (isFaculty) {
+          document.getElementById('manageHeaderTitle').textContent = 'Faculty Course Knowledge Studio';
+          document.getElementById('manageHeaderSub').textContent = 'Upload and manage course syllabi, lab manuals, and reading lists for student RAG queries.';
+          switchManageTab('KNOWLEDGE');
+        } else {
+          document.getElementById('manageHeaderTitle').textContent = 'Executive Knowledge & Analytics Console';
+          document.getElementById('manageHeaderSub').textContent = 'Curate approved NIIT University documents, monitor query quality, and manage role permissions.';
+          switchManageTab(app.manageTab || 'OVERVIEW');
+        }
+      }
     }
 
-    function showGlobalAlert(msg) {
-      document.getElementById('globalAlertMsg').textContent = msg;
-      document.getElementById('globalAlertWrap').classList.remove('hidden');
+    function showWorkspaceAlert(msg) {
+      document.getElementById('workspaceAlertText').textContent = msg;
+      document.getElementById('workspaceAlertWrap').classList.remove('hidden');
     }
-    function hideGlobalAlert() {
-      document.getElementById('globalAlertWrap').classList.add('hidden');
+    function hideWorkspaceAlert() {
+      document.getElementById('workspaceAlertWrap').classList.add('hidden');
     }
 
-    // --- RAG CHAT ENGINE ---
-    const SYNONYMS = {
-      fee: ['fees', 'tuition', 'payment', 'deadline', 'fine', 'september', 'october', 'scholarship', 'inr'],
-      fees: ['fee', 'tuition', 'payment', 'deadline', 'fine', 'september', 'october', 'inr'],
-      hostel: ['room', 'allotment', 'curfew', 'gate', 'warden', 'affidavit'],
-      curfew: ['hostel', 'gate', '9:30', '10:30', '11:00'],
-      exam: ['exams', 'mid-semester', 'end-semester', 'october', 'december', 'cs3041', 'cs3052', 'cs4018'],
-      exams: ['exam', 'mid-semester', 'end-semester', 'october', 'december', 'cs3041', 'cs3052'],
-      attendance: ['75%', 'minimum', 'aw', 'withheld', 'medical'],
-      syllabus: ['course', 'credits', 'cs3041', 'cs3052', 'cs4018', 'evaluation']
+    // --- 3. CONVERSATIONAL RAG ENGINE & CITATION DRAWER ---
+    const SYNONYM_DICT = {
+      fee: ['fees', 'tuition', 'payment', 'deadline', 'fine', 'penalty', 'september', 'october', 'scholarship', 'sgpa', 'mess', 'inr'],
+      fees: ['fee', 'tuition', 'payment', 'deadline', 'fine', 'penalty', 'september', 'october', 'scholarship', 'inr'],
+      hostel: ['room', 'allotment', 'curfew', 'gate', 'warden', 'affidavit', 'outpass', 'appliances', 'biometric'],
+      curfew: ['hostel', 'gate', '9:30', '10:30', '11:00', 'biometric', 'outpass'],
+      exam: ['exams', 'mid-semester', 'end-semester', 'datesheet', 'october', 'december', 'cs3041', 'cs3052', 'cs4018', 'venue', 'coe'],
+      exams: ['exam', 'mid-semester', 'end-semester', 'datesheet', 'october', 'december', 'cs3041', 'cs3052', 'cs4018'],
+      attendance: ['75%', 'minimum', 'aw', 'withheld', 'medical', 'leave', 'grading', 'cgpa', 'capstone', 'credits'],
+      syllabus: ['course', 'credits', 'cs3041', 'cs3052', 'cs4018', 'evaluation', 'quiz', 'weightage']
     };
 
-    function tokenize(text, expand) {
-      const raw = (text || '').toLowerCase().replace(/[^a-z0-9%+]/g, ' ').split(/\s+/).filter(w => w.length > 1);
+    function tokenizeQuery(str, expand) {
+      const raw = (str || '').toLowerCase().replace(/[^a-z0-9%+]/g, ' ').split(/\s+/).filter(w => w.length > 1);
       const out = [...raw];
-      if (expand) raw.forEach(w => { if (SYNONYMS[w]) out.push(...SYNONYMS[w]); });
+      if (expand) {
+        raw.forEach(w => { if (SYNONYM_DICT[w]) out.push(...SYNONYM_DICT[w]); });
+      }
       return out;
     }
 
-    function searchChunks(queryText) {
-      const qExp = new Set(tokenize(queryText, true));
-      const qRaw = new Set(tokenize(queryText, false));
-      const hits = [];
+    function retrieveTopChunks(queryText) {
+      const qExp = new Set(tokenizeQuery(queryText, true));
+      const qRaw = new Set(tokenizeQuery(queryText, false));
+      const scored = [];
 
-      state.DocumentChunks.forEach(chunk => {
-        const doc = state.Documents.find(d => d.document_id === chunk.document_id);
+      app.DocumentChunks.forEach(chunk => {
+        const doc = app.Documents.find(d => d.document_id === chunk.document_id);
         if (!doc || doc.status !== 'INDEXED') return;
-        if (state.deptScope !== 'ALL' && doc.department !== state.deptScope) return;
+        if (app.collectionFilter !== 'ALL' && doc.department !== app.collectionFilter) return;
 
-        const cTok = new Set(tokenize(chunk.chunk_text + ' ' + doc.title + ' ' + doc.category, false));
+        const cTok = new Set(tokenizeQuery(chunk.chunk_text + ' ' + doc.title + ' ' + doc.category, false));
         let rawMatches = 0; qRaw.forEach(t => { if (cTok.has(t)) rawMatches++; });
         let expMatches = 0; qExp.forEach(t => { if (cTok.has(t)) expMatches++; });
+
         const score = Number(Math.min(0.98, (rawMatches / Math.max(1, qRaw.size)) * 0.65 + (expMatches / Math.max(1, qExp.size)) * 0.55).toFixed(2));
         if (score >= 0.18 && expMatches >= 1) {
-          hits.push({ ...chunk, title: doc.title, department: doc.department, score });
+          scored.push({
+            chunk_id: chunk.chunk_id,
+            document_id: doc.document_id,
+            title: doc.title,
+            department: doc.department,
+            category: doc.category,
+            chunk_text: chunk.chunk_text,
+            similarity_score: score
+          });
         }
       });
-      hits.sort((a, b) => b.score - a.score);
-      return hits.slice(0, 3).map((h, i) => ({ ...h, rank: i + 1 }));
+
+      scored.sort((a, b) => b.similarity_score - a.similarity_score);
+      return scored.slice(0, 3).map((item, idx) => ({ ...item, rank: idx + 1 }));
     }
 
-    function sendPresetQuestion(text) {
-      document.getElementById('inputChatQuestion').value = text;
-      processQuestion(text);
+    function startFreshConversation() {
+      if (app.workspace !== 'CHAT') switchWorkspace('CHAT');
+      const existingEmpty = app.Sessions.find(s => {
+        const count = app.Queries.filter(q => q.session_id === s.session_id).length;
+        return count === 0;
+      });
+      if (existingEmpty) {
+        app.activeSessionId = existingEmpty.session_id;
+      } else {
+        const nextId = app.Sessions.reduce((m, s) => Math.max(m, s.session_id), 100) + 1;
+        app.Sessions.unshift({ session_id: nextId, user_id: app.currentUser.user_id, title: 'New Conversation', status: 'ACTIVE' });
+        app.activeSessionId = nextId;
+      }
+      renderSidebarHistory();
+      renderChatStream();
     }
 
-    function handleChatSubmit(e) {
+    function selectConversation(sessionId) {
+      if (app.workspace !== 'CHAT') switchWorkspace('CHAT');
+      app.activeSessionId = sessionId;
+      renderSidebarHistory();
+      renderChatStream();
+    }
+
+    function setCollectionFilter(scope) {
+      app.collectionFilter = scope;
+      document.getElementById('composerScopeSelect').value = scope;
+      document.getElementById('activeScopePill').textContent = scope === 'ALL' ? 'Scope: All Campus Collections' : `Scope: ${scope}`;
+    }
+
+    function askSuggestedQuestion(qText) {
+      submitUserQuestion(qText);
+    }
+
+    function handleComposerKeydown(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        handleComposerSubmit(e);
+      }
+    }
+
+    function handleComposerSubmit(e) {
       e.preventDefault();
-      const input = document.getElementById('inputChatQuestion');
+      const input = document.getElementById('composerInput');
       const q = input.value.trim();
       if (!q) return;
       input.value = '';
-      processQuestion(q);
+      submitUserQuestion(q);
     }
 
-    function processQuestion(rawQuery) {
-      state.sessionSeconds = 1800;
-      const sessQueries = state.Queries.filter(q => q.session_id === state.activeSessionId);
-      let standalone = rawQuery;
-      if (sessQueries.length > 0 && (rawQuery.split(/\s+/).length <= 6 || /\b(it|that|after|penalty|what about)\b/i.test(rawQuery))) {
-        standalone = `${sessQueries[sessQueries.length - 1].query_text} ${rawQuery}`;
+    async function submitUserQuestion(rawQuery) {
+      app.inactivitySec = 1800;
+      const history = app.Queries.filter(q => q.session_id === app.activeSessionId);
+      let standaloneQuery = rawQuery;
+      if (history.length > 0 && (rawQuery.split(/\s+/).length <= 6 || /\b(it|that|after|penalty|what about)\b/i.test(rawQuery))) {
+        standaloneQuery = `${history[history.length - 1].query_text} ${rawQuery}`;
       }
 
-      const qId = state.Queries.reduce((m, q) => Math.max(m, q.query_id), 500) + 1;
-      const rId = state.Responses.reduce((m, r) => Math.max(m, r.response_id), 800) + 1;
-      const cat = /fee|tuition|fine/i.test(standalone) ? 'Fees' : /hostel|curfew/i.test(standalone) ? 'Hostel' : /exam|october/i.test(standalone) ? 'Exams' : 'Academics';
+      const nextQId = app.Queries.reduce((m, q) => Math.max(m, q.query_id), 500) + 1;
+      const nextRId = app.Responses.reduce((m, r) => Math.max(m, r.response_id), 800) + 1;
+      const cat = /fee|tuition|fine|scholarship/i.test(standaloneQuery)
+        ? 'Fees'
+        : /hostel|curfew|gate|outpass/i.test(standaloneQuery)
+        ? 'Hostel'
+        : /exam|october|december|cs3041/i.test(standaloneQuery)
+        ? 'Exams'
+        : 'Academics';
 
-      state.Queries.push({
-        query_id: qId,
-        session_id: state.activeSessionId,
+      app.Queries.push({
+        query_id: nextQId,
+        session_id: app.activeSessionId,
         query_text: rawQuery,
         category: cat,
         submitted_at: new Date().toISOString().slice(0, 19).replace('T', ' '),
         anonymized_at: null
       });
 
-      const sess = state.Sessions.find(s => s.session_id === state.activeSessionId);
-      if (sess && sess.title === 'New Conversation') sess.title = rawQuery.slice(0, 38);
-
-      const hits = searchChunks(standalone);
-      if (hits.length === 0) {
-        state.Responses.push({
-          response_id: rId,
-          query_id: qId,
-          answer_text: "I don't have information on that in the official NIIT University knowledge base. Please check with the Academic Office or rephrase your question.",
-          status: 'FALLBACK',
-          latency_ms: 45
-        });
-      } else {
-        const answer = hits.slice(0, 2).map(h => `${h.chunk_text} [${h.rank}]`).join('\n\n');
-        state.Responses.push({
-          response_id: rId,
-          query_id: qId,
-          answer_text: answer,
-          status: 'ANSWERED',
-          latency_ms: 890
-        });
-        let cId = state.ResponseCitations.reduce((m, c) => Math.max(m, c.citation_id), 900) + 1;
-        hits.slice(0, 2).forEach(h => {
-          state.ResponseCitations.push({ citation_id: cId++, response_id: rId, chunk_id: h.chunk_id, similarity_score: h.score, rank: h.rank });
-        });
+      const sess = app.Sessions.find(s => s.session_id === app.activeSessionId);
+      if (sess && (sess.title === 'New Conversation' || sess.title.length < 5)) {
+        sess.title = rawQuery.slice(0, 38);
       }
-      renderChat();
+
+      // Add temporary response placeholder
+      app.Responses.push({
+        response_id: nextRId,
+        query_id: nextQId,
+        answer_text: "Searching official documents & synthesizing answer...",
+        status: 'PENDING',
+        latency_ms: 0
+      });
+
+      renderSidebarHistory();
+      renderChatStream();
+
+      let backendSucceeded = false;
+      try {
+        const headers = { 'Content-Type': 'application/json' };
+        if (app.jwtToken) {
+          headers['Authorization'] = `Bearer ${app.jwtToken}`;
+        }
+        const resp = await fetch('/api/chat/query', {
+          method: 'POST',
+          headers: headers,
+          body: JSON.stringify({
+            query_text: rawQuery,
+            session_id: app.activeSessionId,
+            department_filter: app.collectionFilter === 'ALL' ? null : app.collectionFilter
+          })
+        });
+
+        if (resp.ok) {
+          const data = await resp.json();
+          const rIdx = app.Responses.findIndex(r => r.response_id === nextRId);
+          if (rIdx !== -1) {
+            app.Responses[rIdx] = {
+              response_id: data.response_id || nextRId,
+              query_id: nextQId,
+              answer_text: data.answer_text,
+              status: data.status,
+              latency_ms: data.latency_ms,
+              model_name: data.model_name
+            };
+          }
+          if (data.citations && data.citations.length > 0) {
+            data.citations.forEach(c => {
+              app.ResponseCitations.push({
+                citation_id: app.ResponseCitations.length + 1000,
+                response_id: data.response_id || nextRId,
+                chunk_id: c.chunk_id,
+                similarity_score: c.similarity_score,
+                rank: c.rank
+              });
+            });
+          }
+          backendSucceeded = true;
+        }
+      } catch (err) {
+        console.warn("Backend /api/chat/query unreachable, falling back to local simulation:", err);
+      }
+
+      if (!backendSucceeded) {
+        const hits = retrieveTopChunks(standaloneQuery);
+        const rIdx = app.Responses.findIndex(r => r.response_id === nextRId);
+        if (hits.length === 0) {
+          app.Responses[rIdx] = {
+            response_id: nextRId,
+            query_id: nextQId,
+            answer_text: "I don't have information on that in the official NIIT University knowledge base. Please check your selected department filter or contact the relevant campus office.",
+            status: 'FALLBACK',
+            latency_ms: 42
+          };
+        } else {
+          const formatted = hits.slice(0, 2).map(h => `${h.chunk_text} [${h.rank}]`).join('\n\n');
+          app.Responses[rIdx] = {
+            response_id: nextRId,
+            query_id: nextQId,
+            answer_text: formatted,
+            status: 'ANSWERED',
+            latency_ms: 220
+          };
+          let nextCitId = app.ResponseCitations.reduce((m, c) => Math.max(m, c.citation_id), 900) + 1;
+          hits.slice(0, 2).forEach(h => {
+            app.ResponseCitations.push({
+              citation_id: nextCitId++,
+              response_id: nextRId,
+              chunk_id: h.chunk_id,
+              similarity_score: h.similarity_score,
+              rank: h.rank
+            });
+          });
+        }
+      }
+
+      renderSidebarHistory();
+      renderChatStream();
     }
 
-    function createNewSession() {
-      const id = state.Sessions.reduce((m, s) => Math.max(m, s.session_id), 100) + 1;
-      state.Sessions.unshift({ session_id: id, user_id: state.currentUser.user_id, title: 'New Conversation', status: 'ACTIVE' });
-      state.activeSessionId = id;
-      renderChat();
-    }
-    function selectSession(id) {
-      state.activeSessionId = id;
-      renderChat();
-    }
-    function setDeptScope(val) {
-      state.deptScope = val;
-    }
+    function renderSidebarHistory() {
+      const filter = (document.getElementById('inputSearchHistory')?.value || '').toLowerCase();
+      const listEl = document.getElementById('sidebarThreadList');
+      const filtered = app.Sessions.filter(s => s.title.toLowerCase().includes(filter));
 
-    function renderChat() {
-      const list = document.getElementById('chatSessionsList');
-      list.innerHTML = state.Sessions.map(s => {
-        const active = s.session_id === state.activeSessionId;
+      listEl.innerHTML = filtered.map(s => {
+        const active = s.session_id === app.activeSessionId && app.workspace === 'CHAT';
         return `
-          <button onclick="selectSession(${s.session_id})" class="w-full text-left px-3 py-2 rounded-xl text-xs truncate transition ${active ? 'bg-red-50 text-[#7A1C1C] font-bold border border-[#7A1C1C]/25' : 'text-zinc-700 hover:bg-zinc-100 font-medium'}">
-            ${esc(s.title)}
+          <button onclick="selectConversation(${s.session_id})" class="w-full text-left px-2.5 py-2 rounded-xl text-xs truncate flex items-center gap-2 transition ${active ? 'bg-white text-zinc-900 font-semibold shadow-2xs border border-zinc-200/80' : 'text-zinc-600 hover:bg-zinc-200/60 hover:text-zinc-900'}">
+            <span class="w-1.5 h-1.5 rounded-full ${active ? 'bg-[#7A1C1C]' : 'bg-zinc-300'} shrink-0"></span>
+            <span class="truncate">${escapeHtml(s.title)}</span>
           </button>
         `;
       }).join('');
+    }
 
-      const activeSess = state.Sessions.find(s => s.session_id === state.activeSessionId) || state.Sessions[0];
-      document.getElementById('activeChatTitle').textContent = activeSess.title;
+    function formatAnswerWithInteractiveBadges(text, citations) {
+      let safe = escapeHtml(text);
+      citations.forEach(c => {
+        const badgeHtml = `<button type="button" onclick="inspectCitationInDrawer(${c.citation_id})" class="inline-flex items-center justify-center px-1.5 py-0.2 mx-0.5 text-[11px] font-bold rounded bg-red-50 text-[#7A1C1C] border border-[#7A1C1C]/25 hover:bg-[#7A1C1C] hover:text-white transition" title="Inspect verified source">[${c.rank}]</button>`;
+        safe = safe.replace(new RegExp(`\\[${c.rank}\\]`, 'g'), badgeHtml);
+      });
+      return safe;
+    }
 
-      const box = document.getElementById('chatThreadBox');
-      const queries = state.Queries.filter(q => q.session_id === state.activeSessionId);
+    function renderChatStream() {
+      const sess = app.Sessions.find(s => s.session_id === app.activeSessionId) || app.Sessions[0];
+      document.getElementById('chatHeaderTitle').textContent = sess.title;
+
+      const queries = app.Queries.filter(q => q.session_id === app.activeSessionId);
+      const hero = document.getElementById('chatWelcomeHero');
+      const stream = document.getElementById('chatMessagesStream');
 
       if (queries.length === 0) {
-        box.innerHTML = `
-          <div class="h-full flex flex-col items-center justify-center text-center py-12 px-4 space-y-3">
-            <div class="w-12 h-12 rounded-2xl nu-gradient text-white font-black text-base flex items-center justify-center shadow-md">NU</div>
-            <h3 class="text-base font-bold text-zinc-900">How can I help you today?</h3>
-            <p class="text-xs text-zinc-500 max-w-md">Ask about semester fee deadlines, hostel rules, attendance requirements, or exam datesheets. Every answer links directly to official documents.</p>
-          </div>
-        `;
+        hero.classList.remove('hidden');
+        stream.innerHTML = '';
         return;
       }
 
-      box.innerHTML = queries.map(q => {
-        const r = state.Responses.find(x => x.query_id === q.query_id);
+      hero.classList.add('hidden');
+      stream.innerHTML = queries.map(q => {
+        const r = app.Responses.find(x => x.query_id === q.query_id);
         if (!r) return '';
-        const cites = state.ResponseCitations.filter(c => c.response_id === r.response_id);
-        const fb = state.Feedback.find(f => f.response_id === r.response_id);
+        const cites = app.ResponseCitations.filter(c => c.response_id === r.response_id);
+        const fb = app.Feedback.find(f => f.response_id === r.response_id);
 
-        let replyHtml = '';
+        let assistantCard = '';
         if (r.status === 'FALLBACK') {
-          replyHtml = `<div class="srs-error-banner text-xs sm:text-sm leading-relaxed animate-msg">${esc(r.answer_text)}</div>`;
+          assistantCard = `
+            <div class="srs-alert-banner text-xs sm:text-sm leading-relaxed msg-enter">
+              <div class="font-bold mb-0.5">No Verified Campus Document Found</div>
+              <div>${escapeHtml(r.answer_text)}</div>
+            </div>
+          `;
         } else {
-          const pills = cites.map(c => {
-            const ch = state.DocumentChunks.find(x => x.chunk_id === c.chunk_id);
-            const doc = ch ? state.Documents.find(d => d.document_id === ch.document_id) : null;
-            const label = doc ? `[${c.rank}] ${doc.title} • ${doc.department}` : `[${c.rank}] Source Unavailable`;
-            return `<button type="button" onclick="openCitModal(${c.citation_id})" class="citation-chip px-3 py-1.5 rounded-lg text-xs font-medium inline-flex items-center gap-1.5 shadow-2xs">📄 ${esc(label)}</button>`;
+          const sourceCards = cites.map(c => {
+            const ch = app.DocumentChunks.find(x => x.chunk_id === c.chunk_id);
+            const doc = ch ? app.Documents.find(d => d.document_id === ch.document_id) : null;
+            const title = doc ? doc.title : 'Archived Document';
+            const dept = doc ? doc.department : 'University';
+            return `
+              <button type="button" onclick="inspectCitationInDrawer(${c.citation_id})" class="px-3 py-2 rounded-xl bg-zinc-50 hover:bg-red-50/50 border border-zinc-200/90 hover:border-[#7A1C1C]/40 text-left flex items-center gap-2.5 transition group">
+                <span class="w-5 h-5 rounded-md bg-white border border-zinc-200 text-[#7A1C1C] font-bold text-[11px] flex items-center justify-center shrink-0 group-hover:bg-[#7A1C1C] group-hover:text-white transition">${c.rank}</span>
+                <div class="min-w-0">
+                  <div class="text-xs font-semibold text-zinc-800 truncate">${escapeHtml(title)}</div>
+                  <div class="text-[10px] text-zinc-500">${escapeHtml(dept)} • ${Math.round(c.similarity_score * 100)}% match</div>
+                </div>
+              </button>
+            `;
           }).join('');
 
-          const upCls = fb && fb.rating === 'UP' ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white text-zinc-600 border-zinc-200 hover:bg-zinc-50';
-          const dnCls = fb && fb.rating === 'DOWN' ? 'bg-red-600 text-white border-red-600' : 'bg-white text-zinc-600 border-zinc-200 hover:bg-zinc-50';
+          const upActive = fb && fb.rating === 'UP' ? 'bg-emerald-50 text-emerald-800 border-emerald-300 font-semibold' : 'text-zinc-500 hover:text-zinc-800 hover:bg-zinc-100 border-transparent';
+          const downActive = fb && fb.rating === 'DOWN' ? 'bg-red-50 text-red-800 border-red-300 font-semibold' : 'text-zinc-500 hover:text-zinc-800 hover:bg-zinc-100 border-transparent';
 
-          replyHtml = `
-            <div class="bg-zinc-50 border border-zinc-200/80 rounded-2xl rounded-tl-sm p-4 sm:p-5 space-y-3.5 animate-msg">
-              <p class="text-xs sm:text-sm text-zinc-800 whitespace-pre-line leading-relaxed">${esc(r.answer_text)}</p>
-              <div class="flex flex-wrap gap-2 pt-1">${pills}</div>
-              <div class="pt-2.5 border-t border-zinc-200/70 flex flex-wrap items-center justify-between gap-2">
-                <div class="flex items-center gap-1.5">
-                  <button type="button" onclick="rateAnswer(${r.response_id}, 'UP')" class="px-2.5 py-1 rounded-lg border text-xs font-semibold transition ${upCls}">👍 Helpful</button>
-                  <button type="button" onclick="rateAnswer(${r.response_id}, 'DOWN')" class="px-2.5 py-1 rounded-lg border text-xs font-semibold transition ${dnCls}">👎 Not helpful</button>
+          assistantCard = `
+            <div class="bg-white rounded-2xl border border-zinc-200/90 p-5 shadow-2xs space-y-4 msg-enter">
+              <!-- Source Pills Row (Perplexity / BearGPT pattern) -->
+              <div class="space-y-1.5">
+                <div class="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Verified Sources (${cites.length})</div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">${sourceCards}</div>
+              </div>
+
+              <!-- Grounded Response Text -->
+              <div class="text-xs sm:text-sm text-zinc-800 whitespace-pre-line leading-relaxed pt-1">
+                ${formatAnswerWithInteractiveBadges(r.answer_text, cites)}
+              </div>
+
+              <!-- Subtle Action Footer -->
+              <div class="pt-3 border-t border-zinc-100 flex flex-wrap items-center justify-between gap-2 text-xs">
+                <div class="flex items-center gap-1">
+                  <button type="button" onclick="submitRating(${r.response_id}, 'UP')" class="px-2.5 py-1 rounded-lg border text-xs transition ${upActive}">👍 Helpful</button>
+                  <button type="button" onclick="submitRating(${r.response_id}, 'DOWN')" class="px-2.5 py-1 rounded-lg border text-xs transition ${downActive}">👎 Needs work</button>
+                  <button type="button" onclick="copyResponseText(${r.response_id})" id="copyBtn_${r.response_id}" class="px-2.5 py-1 rounded-lg text-zinc-500 hover:text-zinc-800 hover:bg-zinc-100 text-xs transition">Copy</button>
                 </div>
                 <div class="flex items-center gap-1.5">
-                  <input id="note_${r.response_id}" type="text" value="${fb && fb.comment ? esc(fb.comment) : ''}" placeholder="Add optional feedback..." class="px-2.5 py-1 rounded-lg border border-zinc-200 bg-white text-xs w-44 focus:outline-none focus:border-[#7A1C1C]" />
-                  <button type="button" onclick="saveNote(${r.response_id})" class="px-2.5 py-1 rounded-lg bg-zinc-900 text-white text-xs font-medium hover:bg-zinc-800">Save</button>
+                  <input id="fbNote_${r.response_id}" type="text" value="${fb && fb.comment ? escapeHtml(fb.comment) : ''}" placeholder="Add a quick note..." class="px-2.5 py-1 rounded-lg bg-zinc-50 border border-zinc-200 text-xs w-40 focus:outline-none focus:bg-white focus:border-[#7A1C1C]" />
+                  <button type="button" onclick="saveRatingNote(${r.response_id})" class="px-2.5 py-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-white text-[11px] font-medium">Save</button>
                 </div>
               </div>
             </div>
@@ -1058,155 +1512,196 @@
 
         return `
           <div class="space-y-3">
-            <div class="flex justify-end animate-msg">
-              <div class="max-w-xl nu-gradient text-white px-4 py-2.5 rounded-2xl rounded-tr-sm shadow-sm text-xs sm:text-sm font-medium">${esc(q.query_text)}</div>
+            <div class="flex justify-end msg-enter">
+              <div class="max-w-xl bg-zinc-900 text-white px-4 py-2.5 rounded-2xl rounded-tr-xs text-xs sm:text-sm font-medium shadow-2xs">
+                ${escapeHtml(q.query_text)}
+              </div>
             </div>
-            <div class="max-w-3xl">${replyHtml}</div>
+            <div class="flex items-start gap-3">
+              <div class="w-7 h-7 rounded-lg nu-brand-gradient text-white font-black text-[10px] flex items-center justify-center shrink-0 mt-1 shadow-2xs">NU</div>
+              <div class="flex-1 min-w-0">${assistantCard}</div>
+            </div>
           </div>
         `;
       }).join('');
-      box.scrollTop = box.scrollHeight;
+
+      const scrollCanvas = document.getElementById('chatScrollCanvas');
+      scrollCanvas.scrollTop = scrollCanvas.scrollHeight;
     }
 
-    function openCitModal(citId) {
-      const c = state.ResponseCitations.find(x => x.citation_id === citId);
-      if (!c) return;
-      const ch = state.DocumentChunks.find(x => x.chunk_id === c.chunk_id);
-      const doc = ch ? state.Documents.find(d => d.document_id === ch.document_id) : null;
-      document.getElementById('citModalTitle').textContent = doc ? `${doc.title} (${doc.department})` : 'Source Excerpt';
-      document.getElementById('citModalMeta').textContent = `Relevance Score: ${Math.round(c.similarity_score * 100)}%`;
-      document.getElementById('citModalText').textContent = ch ? ch.chunk_text : 'This document has been removed from the knowledge base.';
-      const m = document.getElementById('citationModal');
-      m.classList.remove('hidden'); m.classList.add('flex');
-    }
-    function closeCitationModal() {
-      const m = document.getElementById('citationModal');
-      m.classList.add('hidden'); m.classList.remove('flex');
+    function toggleEvidenceDrawer(forceState) {
+      const drawer = document.getElementById('evidenceDrawer');
+      const isHidden = drawer.classList.contains('hidden');
+      const nextShow = typeof forceState === 'boolean' ? forceState : isHidden;
+      drawer.classList.toggle('hidden', !nextShow);
+      drawer.classList.toggle('flex', nextShow);
     }
 
-    function rateAnswer(respId, rating) {
-      const note = document.getElementById(`note_${respId}`)?.value.trim() || '';
-      let fb = state.Feedback.find(f => f.response_id === respId);
-      if (fb) { fb.rating = rating; if (note) fb.comment = note; }
-      else state.Feedback.push({ feedback_id: Date.now(), response_id: respId, user_id: state.currentUser.user_id, rating, comment: note });
-      renderChat();
+    function renderEvidenceDrawerDefault() {
+      const indexed = app.Documents.filter(d => d.status === 'INDEXED');
+      document.getElementById('drawerCountBadge').textContent = String(indexed.length);
+      const box = document.getElementById('evidenceDrawerContent');
+      box.innerHTML = `
+        <div class="p-3.5 rounded-2xl bg-zinc-50 border border-zinc-200/80 text-xs text-zinc-600 leading-relaxed">
+          Click any numbered citation badge (<strong class="text-[#7A1C1C]">[1]</strong>) inside an answer to inspect the exact paragraph extracted from NIIT University's official records.
+        </div>
+        <div class="space-y-2.5">
+          <div class="text-[11px] font-bold uppercase tracking-wider text-zinc-400">Active Institutional Documents (${indexed.length})</div>
+          ${indexed.map(d => {
+            const chunks = app.DocumentChunks.filter(c => c.document_id === d.document_id);
+            return `
+              <div class="p-3.5 rounded-2xl border border-zinc-200/90 space-y-1.5 hover:border-zinc-300 transition">
+                <div class="flex items-center justify-between">
+                  <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-red-50 text-[#7A1C1C]">${escapeHtml(d.department)}</span>
+                  <span class="text-[11px] font-mono-code text-zinc-400">${d.file_type} • v${d.version}</span>
+                </div>
+                <div class="text-xs font-bold text-zinc-900">${escapeHtml(d.title)}</div>
+                <div class="text-[11px] text-zinc-500 line-clamp-2">${chunks[0] ? escapeHtml(chunks[0].chunk_text) : ''}</div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
     }
-    function saveNote(respId) {
-      const existing = state.Feedback.find(f => f.response_id === respId);
-      rateAnswer(respId, existing ? existing.rating : 'UP');
+
+    function inspectCitationInDrawer(citationId) {
+      const cit = app.ResponseCitations.find(c => c.citation_id === citationId);
+      if (!cit) return;
+      const chunk = app.DocumentChunks.find(ch => ch.chunk_id === cit.chunk_id);
+      const doc = chunk ? app.Documents.find(d => d.document_id === chunk.document_id) : null;
+
+      toggleEvidenceDrawer(true);
+      const pct = Math.round(cit.similarity_score * 100);
+      const box = document.getElementById('evidenceDrawerContent');
+      box.innerHTML = `
+        <button onclick="renderEvidenceDrawerDefault()" class="text-xs font-semibold text-[#7A1C1C] hover:underline flex items-center gap-1">
+          <span>←</span>
+          <span>Back to all indexed documents</span>
+        </button>
+        <div class="p-4 rounded-2xl bg-red-50/40 border border-[#7A1C1C]/25 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="px-2 py-0.5 rounded bg-[#7A1C1C] text-white text-[10px] font-bold">Citation [${cit.rank}]</span>
+            <span class="text-xs font-bold text-emerald-700">${pct}% Semantic Match</span>
+          </div>
+          <div>
+            <div class="text-sm font-extrabold text-zinc-900">${doc ? escapeHtml(doc.title) : 'Archived Source'}</div>
+            <div class="text-xs text-zinc-500 mt-0.5">Department: <strong>${doc ? escapeHtml(doc.department) : 'University'}</strong> • Category: ${doc ? escapeHtml(doc.category) : 'General'}</div>
+          </div>
+          <div class="w-full h-1.5 rounded-full bg-zinc-200 overflow-hidden">
+            <div class="h-full bg-[#7A1C1C]" style="width: ${pct}%"></div>
+          </div>
+          <div class="p-3.5 rounded-xl bg-white border border-zinc-200 text-xs text-zinc-800 leading-relaxed whitespace-pre-wrap">${chunk ? escapeHtml(chunk.chunk_text) : 'Chunk deleted.'}</div>
+        </div>
+      `;
     }
 
-    // --- FACULTY & ADMIN DOCUMENT UPLOAD ---
-    function simulateBadFileUpload() {
-      const err = document.getElementById('adminUploadError');
-      document.getElementById('adminUploadSuccess').classList.add('hidden');
-      err.textContent = "Upload Rejected: Unsupported file format '.exe'. Only PDF, DOCX, and TXT files up to 25 MB are allowed.";
-      err.classList.remove('hidden');
-    }
-
-    function handleDocUpload(e, mode) {
-      e.preventDefault();
-      const title = document.getElementById(mode === 'faculty' ? 'facDocTitle' : 'admDocTitle').value.trim();
-      const dept = document.getElementById(mode === 'faculty' ? 'facDocDept' : 'admDocDept').value;
-      const cat = mode === 'faculty' ? 'Courses' : document.getElementById('admDocCat').value;
-      const content = document.getElementById(mode === 'faculty' ? 'facDocContent' : 'admDocContent').value.trim();
-
-      const errEl = document.getElementById(mode === 'faculty' ? 'facultyUploadError' : 'adminUploadError');
-      const okEl = document.getElementById(mode === 'faculty' ? 'facultyUploadSuccess' : 'adminUploadSuccess');
-      errEl.classList.add('hidden'); okEl.classList.add('hidden');
-
-      const ext = title.includes('.') ? title.split('.').pop().toUpperCase() : '';
-      if (!['PDF', 'DOCX', 'TXT'].includes(ext)) {
-        errEl.textContent = `Unsupported format '.${ext.toLowerCase()}'. Please upload a PDF, DOCX, or TXT file.`;
-        errEl.classList.remove('hidden');
-        return;
+    function copyResponseText(respId) {
+      const r = app.Responses.find(x => x.response_id === respId);
+      if (!r) return;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(r.answer_text).catch(() => {});
       }
-
-      const nextDocId = state.Documents.reduce((m, d) => Math.max(m, d.document_id), 0) + 1;
-      state.Documents.unshift({ document_id: nextDocId, uploaded_by: state.currentUser.user_id, title, department: dept, category: cat, file_type: ext, status: 'INDEXED', version: 1 });
-      const nextChId = state.DocumentChunks.reduce((m, c) => Math.max(m, c.chunk_id), 0) + 1;
-      state.DocumentChunks.push({ chunk_id: nextChId, document_id: nextDocId, chunk_index: 0, token_count: content.split(/\s+/).length, chunk_text: content });
-
-      okEl.textContent = `✓ '${title}' has been indexed and is now searchable in the Chat Assistant.`;
-      okEl.classList.remove('hidden');
-      if (mode === 'faculty') renderFacultyDocs();
-      else renderAdmin();
+      const btn = document.getElementById(`copyBtn_${respId}`);
+      if (btn) {
+        btn.textContent = 'Copied ✓';
+        setTimeout(() => { btn.textContent = 'Copy'; }, 1500);
+      }
     }
 
-    function renderFacultyDocs() {
-      const tbody = document.getElementById('facultyDocsTbody');
-      const docs = state.Documents.filter(d => d.uploaded_by === state.currentUser.user_id || d.department === 'CSE');
-      tbody.innerHTML = docs.map(d => `
-        <tr class="hover:bg-zinc-50">
-          <td class="py-3 px-4 font-semibold text-zinc-900">${esc(d.title)}</td>
-          <td class="py-3 px-4 text-zinc-600">${esc(d.department)}</td>
-          <td class="py-3 px-4 font-mono-code">${d.file_type}</td>
-          <td class="py-3 px-4"><span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-semibold">${d.status}</span></td>
-        </tr>
-      `).join('');
+    function submitRating(respId, rating) {
+      const note = document.getElementById(`fbNote_${respId}`)?.value.trim() || '';
+      let existing = app.Feedback.find(f => f.response_id === respId);
+      if (existing) {
+        existing.rating = rating;
+        if (note) existing.comment = note;
+      } else {
+        app.Feedback.push({
+          feedback_id: Date.now(),
+          response_id: respId,
+          user_id: app.currentUser.user_id,
+          rating,
+          comment: note || (rating === 'UP' ? 'Accurate citation' : 'Needs clarification')
+        });
+      }
+      renderChatStream();
     }
 
-    // --- ADMIN CONSOLE ---
-    function switchAdminTab(tab) {
-      state.activeAdminTab = tab;
-      const map = { OVERVIEW: 'admTabOverview', DOCUMENTS: 'admTabDocuments', USERS: 'admTabUsers', ANALYTICS: 'admTabAnalytics', HEALTH: 'admTabHealth', DATABASE: 'admTabDatabase' };
-      const views = { OVERVIEW: 'admViewOverview', DOCUMENTS: 'admViewDocuments', USERS: 'admViewUsers', ANALYTICS: 'admViewAnalytics', HEALTH: 'admViewHealth', DATABASE: 'admViewDatabase' };
-      Object.keys(map).forEach(k => {
-        const b = document.getElementById(map[k]);
-        const v = document.getElementById(views[k]);
-        if (k === tab) {
-          b.className = 'w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-semibold bg-[#7A1C1C] text-white transition';
+    function saveRatingNote(respId) {
+      const existing = app.Feedback.find(f => f.response_id === respId);
+      submitRating(respId, existing ? existing.rating : 'UP');
+    }
+
+    // --- 4. MANAGEMENT & ADMIN CONSOLE ---
+    function switchManageTab(tab) {
+      if (app.currentUser.role === 'FACULTY' && tab !== 'KNOWLEDGE') {
+        tab = 'KNOWLEDGE';
+      }
+      app.manageTab = tab;
+      const tabs = ['OVERVIEW', 'KNOWLEDGE', 'USERS', 'FEEDBACK', 'PLATFORM'];
+      const btnMap = { OVERVIEW: 'mTabOverview', KNOWLEDGE: 'mTabKnowledge', USERS: 'mTabUsers', FEEDBACK: 'mTabFeedback', PLATFORM: 'mTabPlatform' };
+      const viewMap = { OVERVIEW: 'mViewOverview', KNOWLEDGE: 'mViewKnowledge', USERS: 'mViewUsers', FEEDBACK: 'mViewFeedback', PLATFORM: 'mViewPlatform' };
+
+      tabs.forEach(t => {
+        const b = document.getElementById(btnMap[t]);
+        const v = document.getElementById(viewMap[t]);
+        if (t === tab) {
+          b.className = 'px-3 py-1.5 rounded-lg bg-white text-zinc-900 shadow-2xs transition';
           v.classList.remove('hidden');
         } else {
-          b.className = 'w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-700 hover:bg-zinc-100 transition';
+          b.className = 'px-3 py-1.5 rounded-lg text-zinc-600 hover:text-zinc-900 transition';
           v.classList.add('hidden');
         }
       });
-      renderAdmin();
+
+      renderManagementConsole();
     }
 
-    function renderAdmin() {
-      document.getElementById('kpiQueries').textContent = (1282 + state.Queries.length).toLocaleString();
-      document.getElementById('kpiDocs').textContent = String(state.Documents.filter(d => d.status === 'INDEXED').length);
-      renderAdminCharts();
-      renderAdminDocs();
-      renderAdminUsers();
-      renderAdminAnalytics();
-      renderAdminHealth();
-      renderDbTable();
+    function renderManagementConsole() {
+      const indexedCount = app.Documents.filter(d => d.status === 'INDEXED').length;
+      document.getElementById('statTotalQueries').textContent = (1282 + app.Queries.length).toLocaleString();
+      document.getElementById('statDocsCount').textContent = String(indexedCount);
+      document.getElementById('statChunksCount').textContent = `${app.DocumentChunks.length} semantic chunks indexed`;
+
+      renderExecutiveCharts();
+      renderKnowledgeTable();
+      renderUsersDirectory();
+      renderFeedbackAudit();
+      renderPlatformTelemetry();
+      renderDbInspector();
     }
 
-    function renderAdminCharts() {
-      const c1 = document.getElementById('chartVolume');
-      const c2 = document.getElementById('chartCategories');
-      if (!c1 || !c2 || typeof Chart === 'undefined') return;
-      if (volChart) volChart.destroy();
-      if (catChart) catChart.destroy();
+    function renderExecutiveCharts() {
+      const cVol = document.getElementById('adminVolumeChart');
+      const cCat = document.getElementById('adminCategoryChart');
+      if (!cVol || !cCat || typeof Chart === 'undefined') return;
+      if (volChartObj) volChartObj.destroy();
+      if (catChartObj) catChartObj.destroy();
 
-      volChart = new Chart(c1, {
+      volChartObj = new Chart(cVol, {
         type: 'line',
         data: {
           labels: ['Nov 10', 'Nov 11', 'Nov 12', 'Nov 13', 'Nov 14', 'Today'],
           datasets: [{
             label: 'Queries',
-            data: [170, 205, 224, 218, 250, 240 + state.Queries.length],
+            data: [172, 198, 225, 214, 248, 240 + app.Queries.length],
             borderColor: '#7A1C1C',
-            backgroundColor: 'rgba(122, 28, 28, 0.1)',
+            backgroundColor: 'rgba(122, 28, 28, 0.08)',
             borderWidth: 2.5,
             fill: true,
-            tension: 0.35
+            tension: 0.35,
+            pointRadius: 3.5
           }]
         },
         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
       });
 
-      catChart = new Chart(c2, {
+      catChartObj = new Chart(cCat, {
         type: 'bar',
         data: {
-          labels: ['Fees', 'Exams', 'Hostel', 'Courses', 'Academics'],
+          labels: ['Accounts & Fees', 'Examinations', 'Hostel & Housing', 'CSE Courses', 'Academic Rules'],
           datasets: [{
             data: [425, 340, 245, 190, 110],
-            backgroundColor: ['#7A1C1C', '#D9531E', '#B45309', '#991B1B', '#52525B'],
+            backgroundColor: ['#7A1C1C', '#C84B11', '#047857', '#1D4ED8', '#52525B'],
             borderRadius: 6
           }]
         },
@@ -1214,53 +1709,126 @@
       });
     }
 
-    function renderAdminDocs() {
-      document.getElementById('adminDocsTbody').innerHTML = state.Documents.map(d => `
-        <tr class="hover:bg-zinc-50">
-          <td class="py-3 px-4 font-semibold text-zinc-900">${esc(d.title)}</td>
-          <td class="py-3 px-4 text-zinc-600">${esc(d.department)}</td>
-          <td class="py-3 px-4 font-mono-code">${d.file_type}</td>
-          <td class="py-3 px-4"><span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-semibold">${d.status}</span></td>
-          <td class="py-3 px-4">
-            <button type="button" onclick="askDeleteDoc(${d.document_id})" class="px-2.5 py-1 rounded-lg bg-red-50 hover:bg-red-100 text-red-700 font-semibold border border-red-200">Delete</button>
+    function handleKbFilePick(e) {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      document.getElementById('kbDocTitle').value = file.name;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const text = String(evt.target.result || '');
+        if (text.trim()) document.getElementById('kbDocBody').value = text.slice(0, 3500);
+      };
+      reader.readAsText(file);
+    }
+
+    function triggerFormatValidationDemo() {
+      const alertEl = document.getElementById('kbUploadAlert');
+      document.getElementById('kbUploadSuccess').classList.add('hidden');
+      alertEl.textContent = "Upload Rejected: Unsupported file format '.exe' (installer.exe, 29.8 MB). Only PDF, DOCX, and TXT documents up to 25 MB are allowed.";
+      alertEl.classList.remove('hidden');
+    }
+
+    function handleKbUpload(e) {
+      e.preventDefault();
+      const title = document.getElementById('kbDocTitle').value.trim();
+      const dept = document.getElementById('kbDocDept').value;
+      const cat = document.getElementById('kbDocCat').value;
+      const body = document.getElementById('kbDocBody').value.trim();
+
+      const alertEl = document.getElementById('kbUploadAlert');
+      const okEl = document.getElementById('kbUploadSuccess');
+      alertEl.classList.add('hidden');
+      okEl.classList.add('hidden');
+
+      const ext = title.includes('.') ? title.split('.').pop().toUpperCase() : '';
+      if (!['PDF', 'DOCX', 'TXT'].includes(ext)) {
+        alertEl.textContent = `Upload Rejected: File extension '.${ext.toLowerCase()}' is not supported. Please upload PDF, DOCX, or TXT.`;
+        alertEl.classList.remove('hidden');
+        return;
+      }
+
+      const nextDocId = app.Documents.reduce((m, d) => Math.max(m, d.document_id), 0) + 1;
+      app.Documents.unshift({
+        document_id: nextDocId,
+        uploaded_by: app.currentUser.user_id,
+        title,
+        department: dept,
+        category: cat,
+        file_type: ext,
+        status: 'INDEXED',
+        version: 1
+      });
+
+      const nextChunkId = app.DocumentChunks.reduce((m, c) => Math.max(m, c.chunk_id), 0) + 1;
+      app.DocumentChunks.push({
+        chunk_id: nextChunkId,
+        document_id: nextDocId,
+        chunk_index: 0,
+        token_count: body.split(/\s+/).length,
+        chunk_text: body
+      });
+
+      okEl.textContent = `✓ '${title}' has been chunked, embedded, and added to the active ${dept} collection.`;
+      okEl.classList.remove('hidden');
+      renderManagementConsole();
+      renderEvidenceDrawerDefault();
+    }
+
+    function renderKnowledgeTable() {
+      const isAdmin = app.currentUser && app.currentUser.role === 'ADMIN';
+      const tbody = document.getElementById('kbTableBody');
+      tbody.innerHTML = app.Documents.map(d => `
+        <tr class="hover:bg-zinc-50/80">
+          <td class="py-3 px-4 font-semibold text-zinc-900">${escapeHtml(d.title)}</td>
+          <td class="py-3 px-4 text-zinc-600">${escapeHtml(d.department)}</td>
+          <td class="py-3 px-4"><span class="px-2 py-0.5 rounded-md bg-zinc-100 text-zinc-700 font-medium">${escapeHtml(d.category)}</span></td>
+          <td class="py-3 px-4 font-mono-code text-zinc-500">${d.file_type} • v${d.version}</td>
+          <td class="py-3 px-4"><span class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 font-semibold">${d.status}</span></td>
+          <td class="py-3 px-4 text-right">
+            ${isAdmin
+              ? `<button type="button" onclick="promptDeleteDoc(${d.document_id})" class="px-2.5 py-1 rounded-lg text-red-700 hover:bg-red-50 font-semibold transition">Remove</button>`
+              : `<span class="text-zinc-400">Admin only</span>`}
           </td>
         </tr>
       `).join('');
     }
 
-    function askDeleteDoc(docId) {
-      const doc = state.Documents.find(d => d.document_id === docId);
+    function promptDeleteDoc(docId) {
+      const doc = app.Documents.find(d => d.document_id === docId);
       if (!doc) return;
-      state.pendingDeleteDocId = docId;
-      document.getElementById('deleteModalMsg').textContent = `Are you sure you want to permanently remove '${doc.title}' and all its indexed vector chunks?`;
-      const m = document.getElementById('deleteModal');
-      m.classList.remove('hidden'); m.classList.add('flex');
+      app.pendingDeleteId = docId;
+      document.getElementById('deleteWarningBody').textContent = `Removing '${doc.title}' (${doc.department}) will permanently delete the source file and purge its semantic chunks from the vector database.`;
+      const m = document.getElementById('modalDeleteConfirm');
+      m.classList.remove('hidden');
+      m.classList.add('flex');
     }
-    function closeDeleteModal() {
-      state.pendingDeleteDocId = null;
-      const m = document.getElementById('deleteModal');
-      m.classList.add('hidden'); m.classList.remove('flex');
+    function closeDeleteConfirmModal() {
+      app.pendingDeleteId = null;
+      const m = document.getElementById('modalDeleteConfirm');
+      m.classList.add('hidden');
+      m.classList.remove('flex');
     }
-    function confirmDeleteDoc() {
-      const id = state.pendingDeleteDocId;
+    function executePermanentDelete() {
+      const id = app.pendingDeleteId;
       if (!id) return;
-      state.DocumentChunks = state.DocumentChunks.filter(c => c.document_id !== id);
-      state.Documents = state.Documents.filter(d => d.document_id !== id);
-      closeDeleteModal();
-      renderAdmin();
+      app.DocumentChunks = app.DocumentChunks.filter(c => c.document_id !== id);
+      app.Documents = app.Documents.filter(d => d.document_id !== id);
+      closeDeleteConfirmModal();
+      renderManagementConsole();
+      renderEvidenceDrawerDefault();
     }
 
-    function renderAdminUsers() {
-      const q = (document.getElementById('inputUserSearch')?.value || '').toLowerCase();
-      const filtered = state.Users.filter(u => u.full_name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q));
-      document.getElementById('adminUsersTbody').innerHTML = filtered.map(u => `
-        <tr class="hover:bg-zinc-50">
-          <td class="py-3 px-4 font-semibold text-zinc-900">${esc(u.full_name)}</td>
-          <td class="py-3 px-4 font-mono-code text-zinc-600">${esc(u.email)}</td>
-          <td class="py-3 px-4 font-mono-code">${u.auth_source}</td>
-          <td class="py-3 px-4 text-zinc-600">${esc(u.department)}</td>
+    function renderUsersDirectory() {
+      const q = (document.getElementById('userDirFilter')?.value || '').toLowerCase();
+      const rows = app.Users.filter(u => u.full_name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q));
+      document.getElementById('usersDirBody').innerHTML = rows.map(u => `
+        <tr class="hover:bg-zinc-50/80">
+          <td class="py-3 px-4 font-semibold text-zinc-900">${escapeHtml(u.full_name)}</td>
+          <td class="py-3 px-4 font-mono-code text-zinc-600">${escapeHtml(u.email)}</td>
+          <td class="py-3 px-4"><span class="px-2 py-0.5 rounded bg-zinc-100 font-mono-code text-[11px]">${u.auth_source}</span></td>
+          <td class="py-3 px-4 text-zinc-600">${escapeHtml(u.department)}</td>
           <td class="py-3 px-4">
-            <select onchange="changeRole(${u.user_id}, this.value)" class="px-2.5 py-1 rounded-lg border border-zinc-300 text-xs font-semibold bg-white">
+            <select onchange="updateRoleAssignment(${u.user_id}, this.value)" class="px-2.5 py-1 rounded-lg border border-zinc-300 text-xs font-semibold bg-white">
               <option value="STUDENT" ${u.role === 'STUDENT' ? 'selected' : ''}>STUDENT</option>
               <option value="FACULTY" ${u.role === 'FACULTY' ? 'selected' : ''}>FACULTY</option>
               <option value="ADMIN" ${u.role === 'ADMIN' ? 'selected' : ''}>ADMIN</option>
@@ -1269,86 +1837,106 @@
         </tr>
       `).join('');
     }
-    function changeRole(uid, role) {
-      const u = state.Users.find(x => x.user_id === uid);
-      if (u) u.role = role;
+    function updateRoleAssignment(uid, newRole) {
+      const u = app.Users.find(x => x.user_id === uid);
+      if (u) u.role = newRole;
     }
 
-    function renderAdminAnalytics() {
-      const period = document.getElementById('selectAnalyticsPeriod').value;
-      document.getElementById('analyticsEmptyCard').classList.toggle('hidden', period !== 'EMPTY');
-      document.getElementById('analyticsTableCard').classList.toggle('hidden', period === 'EMPTY');
-      if (period === 'EMPTY') return;
+    function renderFeedbackAudit() {
+      const range = document.getElementById('auditDateFilter').value;
+      document.getElementById('auditEmptyNotice').classList.toggle('hidden', range !== 'EMPTY');
+      document.getElementById('auditTableCard').classList.toggle('hidden', range === 'EMPTY');
+      if (range === 'EMPTY') return;
 
-      document.getElementById('adminAnalyticsTbody').innerHTML = state.Queries.slice().reverse().map(q => {
-        const r = state.Responses.find(x => x.query_id === q.query_id);
-        const fb = r ? state.Feedback.find(f => f.response_id === r.response_id) : null;
+      document.getElementById('auditTableBody').innerHTML = app.Queries.slice().reverse().map(q => {
+        const r = app.Responses.find(x => x.query_id === q.query_id);
+        const fb = r ? app.Feedback.find(f => f.response_id === r.response_id) : null;
         return `
-          <tr class="hover:bg-zinc-50">
-            <td class="py-3 px-4 text-zinc-800">${esc(q.query_text)}</td>
-            <td class="py-3 px-4"><span class="px-2 py-0.5 rounded bg-zinc-100 font-medium">${esc(q.category)}</span></td>
-            <td class="py-3 px-4 font-mono-code">${r ? r.status : '—'}</td>
-            <td class="py-3 px-4">${fb ? (fb.rating === 'UP' ? '👍 UP' : '👎 DOWN') : '—'}</td>
-            <td class="py-3 px-4 text-zinc-500">${fb && fb.comment ? esc(fb.comment) : '—'}</td>
+          <tr class="hover:bg-zinc-50/80">
+            <td class="py-3 px-4 text-zinc-900 font-medium">${escapeHtml(q.query_text)}</td>
+            <td class="py-3 px-4"><span class="px-2 py-0.5 rounded bg-zinc-100 text-zinc-700">${escapeHtml(q.category)}</span></td>
+            <td class="py-3 px-4 font-mono-code text-zinc-600">${r ? `${r.status} (${r.latency_ms}ms)` : '—'}</td>
+            <td class="py-3 px-4">${fb ? (fb.rating === 'UP' ? '<span class="text-emerald-700 font-semibold">👍 Helpful</span>' : '<span class="text-red-700 font-semibold">👎 Needs work</span>') : '<span class="text-zinc-400">Unrated</span>'}</td>
+            <td class="py-3 px-4 text-zinc-500">${fb && fb.comment ? escapeHtml(fb.comment) : '—'}</td>
           </tr>
         `;
       }).join('');
     }
-    function anonymizePiiLogs() {
+
+    function runPrivacyScrubber() {
       const ts = new Date().toISOString().slice(0, 19).replace('T', ' ');
-      state.Queries.forEach(q => {
-        q.query_text = q.query_text.replace(/[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+/g, '[REDACTED]');
+      app.Queries.forEach(q => {
+        q.query_text = q.query_text.replace(/[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+/g, '[REDACTED_EMAIL]');
         q.anonymized_at = ts;
       });
-      renderAdminAnalytics();
+      renderFeedbackAudit();
     }
 
-    function renderAdminHealth() {
-      document.getElementById('k8sCardsGrid').innerHTML = state.k8sWorkloads.map(w => `
-        <div class="bg-white p-4 rounded-2xl border border-zinc-200/90 shadow-sm flex items-center justify-between">
+    function renderPlatformTelemetry() {
+      document.getElementById('clusterGrid').innerHTML = app.k8sWorkloads.map(w => `
+        <div class="p-4 rounded-2xl border border-zinc-200/90 bg-zinc-50/50 flex items-center justify-between">
           <div>
-            <div class="text-[11px] font-mono-code text-zinc-400">namespace: ${esc(w.namespace)}</div>
-            <div class="text-sm font-bold text-zinc-900 mt-0.5">${esc(w.service)}</div>
-            <div class="text-xs text-zinc-500 mt-1">Replicas: <strong class="text-zinc-800">${esc(w.replicas)}</strong></div>
+            <div class="text-[10px] font-mono-code uppercase text-zinc-400">ns: ${escapeHtml(w.namespace)}</div>
+            <div class="text-xs font-bold text-zinc-900 mt-0.5">${escapeHtml(w.service)}</div>
+            <div class="text-[11px] font-mono-code text-zinc-600 mt-1">${escapeHtml(w.replicas)}</div>
           </div>
-          <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold">${esc(w.status)}</span>
+          <span class="px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-semibold">● ${escapeHtml(w.status)}</span>
         </div>
       `).join('');
     }
-    function triggerHpaScale() {
-      state.k8sWorkloads[2].replicas = '5 / 5 (HPA Scaled)';
-      state.k8sWorkloads[3].replicas = '4 / 4 (HPA Scaled)';
-      const box = document.getElementById('k8sNoticeBox');
-      box.textContent = 'HPA scaled chat-orchestrator (3 → 5 pods) and llm-inference (2 → 4 pods) to maintain < 5s P90 response time.';
-      box.classList.remove('hidden');
-      renderAdminHealth();
+
+    function simulateClusterScale() {
+      app.k8sWorkloads[2].replicas = '5 / 5 Pods (HPA Autoscale)';
+      app.k8sWorkloads[4].replicas = '4 / 4 Pods (HPA Autoscale)';
+      const toast = document.getElementById('clusterEventToast');
+      toast.textContent = '[HPA Controller] Concurrent sessions reached 200 -> Scaled chat-orchestrator (3 -> 5 replicas) and llm-inference (2 -> 4 replicas).';
+      toast.classList.remove('hidden');
+      renderPlatformTelemetry();
     }
 
-    function selectDbTab(name) {
-      state.selectedDbTable = name;
-      renderDbTable();
+    function switchDbInspector(tbl) {
+      app.activeDbTable = tbl;
+      renderDbInspector();
     }
-    function renderDbTable() {
-      const rows = state[state.selectedDbTable] || [];
-      const el = document.getElementById('dbTableOutput');
-      if (!rows.length) { el.innerHTML = '<div class="p-4 text-xs text-zinc-500">No records.</div>'; return; }
+
+    function renderDbInspector() {
+      const rows = app[app.activeDbTable] || [];
+      const container = document.getElementById('dbInspectorContainer');
+      if (!rows.length) {
+        container.innerHTML = '<div class="p-4 text-xs text-zinc-500">Table is empty.</div>';
+        return;
+      }
       const cols = Object.keys(rows[0]);
-      el.innerHTML = `
+      container.innerHTML = `
         <table class="w-full text-left border-collapse text-xs">
-          <thead><tr class="bg-zinc-50 border-b border-zinc-200">${cols.map(c => `<th class="py-2.5 px-3 font-mono-code font-bold text-zinc-600">${esc(c)}</th>`).join('')}</tr></thead>
-          <tbody class="divide-y divide-zinc-100">${rows.map(r => `<tr>${cols.map(c => `<td class="py-2 px-3 font-mono-code text-[11px] max-w-xs truncate">${esc(String(r[c] ?? 'NULL'))}</td>`).join('')}</tr>`).join('')}</tbody>
+          <thead>
+            <tr class="bg-zinc-50 border-b border-zinc-200">
+              ${cols.map(c => `<th class="py-2.5 px-3 font-mono-code font-semibold text-zinc-600">${escapeHtml(c)}</th>`).join('')}
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-zinc-100">
+            ${rows.map(r => `
+              <tr class="hover:bg-zinc-50/70">
+                ${cols.map(c => `<td class="py-2 px-3 font-mono-code text-[11px] text-zinc-700 max-w-xs truncate">${escapeHtml(String(r[c] ?? 'NULL'))}</td>`).join('')}
+              </tr>
+            `).join('')}
+          </tbody>
         </table>
       `;
     }
 
     function toggleHelpModal(show) {
-      const m = document.getElementById('helpModal');
+      const m = document.getElementById('modalHelp');
       m.classList.toggle('hidden', !show);
       m.classList.toggle('flex', show);
     }
 
-    function esc(s) {
-      return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    function escapeHtml(s) {
+      return String(s || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     }
   </script>
 </body>
