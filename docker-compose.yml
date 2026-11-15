@@ -1,13 +1,56 @@
 # ==============================================================================
 # NIIT University - Generative AI-Based University Knowledge Assistant
-# Production Docker Compose Specification (REQ-OPS-01, SDD Section 5.5)
-# Capstone Project II - Team-20 (Supervised by Prof. Manish Hurkat)
+# Full Microservice Docker Compose Specification (Matches SDD & Presentation)
+# Includes: Frontend Web Tier, Node.js API Gateway, FastAPI RAG Backend
 # ==============================================================================
 
 version: "3.9"
 
 services:
-  # 1. Core API Gateway & Application Microservice
+  # 1. Frontend Web Presentation Tier (Nginx Web Server)
+  nu-knowledge-frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: vijayreddy080206/genai-university-frontend:latest
+    container_name: nu-knowledge-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - nu-knowledge-backend
+    networks:
+      - nu-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget --quiet --tries=1 --spider http://localhost:80/ || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+  # 2. API Gateway Microservice (Node.js + Express REST Gateway)
+  nu-knowledge-api-gateway:
+    build:
+      context: ./express-gateway
+      dockerfile: Dockerfile
+    image: vijayreddy080206/genai-university-gateway:latest
+    container_name: nu-knowledge-api-gateway
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    environment:
+      - PORT=4000
+      - PYTHON_RAG_BACKEND=http://nu-knowledge-backend:8000
+    depends_on:
+      - nu-knowledge-backend
+    networks:
+      - nu-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget --quiet --tries=1 --spider http://localhost:4000/gateway/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+  # 3. Core RAG Orchestrator & Knowledge API Microservice (Python FastAPI)
   nu-knowledge-backend:
     build:
       context: ./backend
@@ -40,8 +83,7 @@ services:
     networks:
       - nu-network
 
-  # 2. Production PostgreSQL Database (Optional / Production Profile)
-  # Activated with: docker compose --profile prod up
+  # 4. Production PostgreSQL Database (Optional / Production Profile)
   postgres-db:
     image: postgres:16-alpine
     container_name: nu-postgres-db
@@ -66,6 +108,7 @@ services:
 networks:
   nu-network:
     driver: bridge
+    name: nu-university-network
 
 volumes:
   postgres_data:
