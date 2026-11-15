@@ -1,0 +1,98 @@
+# SDD Section 5.5.1 & Appendix B.7: PostgreSQL and Vector DB StatefulSets with PersistentVolumes
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres-db
+  namespace: data
+spec:
+  serviceName: "postgres-db"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-db
+  template:
+    metadata:
+      labels:
+        app: postgres-db
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:16-alpine
+          ports:
+            - containerPort: 5432
+          livenessProbe:
+            exec:
+              command: ["pg_isready", "-U", "nu_admin"]
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command: ["pg_isready", "-U", "nu_admin"]
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          volumeMounts:
+            - name: postgres-pvc
+              mountPath: /var/lib/postgresql/data
+  volumeClaimTemplates:
+    - metadata:
+        name: postgres-pvc
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 20Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-db
+  namespace: data
+spec:
+  ports:
+    - port: 5432
+  selector:
+    app: postgres-db
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: vector-db
+  namespace: data
+spec:
+  serviceName: "vector-db"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vector-db
+  template:
+    metadata:
+      labels:
+        app: vector-db
+    spec:
+      containers:
+        - name: chromadb
+          image: chromadb/chroma:0.5.5
+          ports:
+            - containerPort: 8000
+          volumeMounts:
+            - name: vector-pvc
+              mountPath: /chroma/chroma
+  volumeClaimTemplates:
+    - metadata:
+        name: vector-pvc
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 30Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vector-db
+  namespace: data
+spec:
+  ports:
+    - port: 8000
+  selector:
+    app: vector-db

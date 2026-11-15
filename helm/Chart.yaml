@@ -1,0 +1,6 @@
+apiVersion: v2
+name: nu-genai-knowledge-assistant
+description: Helm chart for NIIT University Generative AI-Based Knowledge Assistant (Team-20 Capstone II)
+type: application
+version: 1.0.0
+appVersion: "1.0.0"

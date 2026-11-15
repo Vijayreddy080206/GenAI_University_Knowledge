@@ -1,0 +1,17 @@
+replicaCount:
+  frontend: 2
+  chatOrchestrator: 3
+  ragService: 2
+  adminService: 2
+  llmInference: 2
+
+ragConfig:
+  chunkSizeTokens: 500
+  chunkOverlapTokens: 50
+  topKChunks: 5
+  similarityThreshold: 0.18
+  conversationWindowTurns: 5
+  llmTemperature: 0.1
+  llmTimeoutSec: 20
+  maxUploadSizeMb: 25
+  sessionInactivityMin: 30

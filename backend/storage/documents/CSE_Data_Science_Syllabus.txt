@@ -1,0 +1,11 @@
+NIIT UNIVERSITY - DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING (CSE)
+Specialization: Big Data Engineering & Data Science (B.Tech Semesters 6 & 7)
+
+1. CORE SPECIALIZATION COURSES
+- Deep Learning & Neural Networks (DLC / CS3041): 4 Credits. Covers CNNs, RNNs, Transformers, Attention mechanisms, Backpropagation, and PyTorch model deployment.
+- Big Data Analytics & Distributed Systems (CS3052): 4 Credits. Covers Apache Spark, Hadoop HDFS, Kafka streaming pipelines, Parquet storage, and distributed query optimization.
+- Generative AI & Large Language Models (CS4018): 4 Credits. Covers Retrieval-Augmented Generation (RAG), Vector Databases (Chroma, FAISS, Milvus), LangChain orchestration, Prompt Engineering, and Kubernetes ML serving.
+- Information Security & Cryptanalysis (CS3085): 3 Credits. Covers Block Ciphers (S-DES, S-AES, S-SPECK), differential cryptanalysis, and network security protocols.
+
+2. EVALUATION WEIGHTAGE
+All 4-credit CSE courses follow continuous evaluation: Quiz 1 (10%), Mid-Semester Exam (25%), Quiz 2 / Lab Project (25%), and Comprehensive End-Semester Examination (40%).

@@ -1,0 +1,16 @@
+version: "3.9"
+services:
+  nu-knowledge-backend:
+    build: ./backend
+    container_name: nu-knowledge-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - CHUNK_SIZE_TOKENS=500
+      - CHUNK_OVERLAP_TOKENS=50
+      - TOP_K_CHUNKS=5
+      - SIMILARITY_THRESHOLD=0.18
+      - SESSION_INACTIVITY_TIMEOUT_MIN=30
+    volumes:
+      - ./backend/storage:/app/storage
+    restart: unless-stopped

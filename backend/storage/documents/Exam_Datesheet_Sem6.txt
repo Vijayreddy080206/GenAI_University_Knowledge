@@ -1,0 +1,13 @@
+NIIT UNIVERSITY - OFFICE OF THE CONTROLLER OF EXAMINATIONS (COE)
+Autumn Semester 2026-27 Examination Schedule & Hall Guidelines
+
+1. MID-SEMESTER EXAMINATION SCHEDULE (OCTOBER 2026)
+- October 6, 2026 (09:30 AM - 11:30 AM): Deep Learning & Neural Networks (CS3041) - Venue: LH-101/102
+- October 7, 2026 (09:30 AM - 11:30 AM): Big Data Analytics (CS3052) - Venue: LH-103
+- October 8, 2026 (02:00 PM - 04:00 PM): Generative AI & LLMs (CS4018) - Venue: CR-204
+- October 9, 2026 (09:30 AM - 11:30 AM): Software Engineering & Cloud DevOps (CS3061) - Venue: LH-101
+- October 12, 2026 (10:00 AM - 05:00 PM): Capstone Project II Mid-Term Review (Team-20 Panel: Prof. Manish Hurkat)
+
+2. END-SEMESTER EXAMINATION WINDOW
+End-Semester Examinations for Autumn 2026-27 will be conducted from December 7, 2026 to December 18, 2026.
+Library hours are extended during examination weeks from 08:00 AM to 12:00 Midnight daily.

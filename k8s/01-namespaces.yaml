@@ -1,0 +1,28 @@
+# SDD Section 5.5.1: Four Isolated Kubernetes Namespaces
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: frontend
+  labels:
+    app.kubernetes.io/part-of: nu-knowledge-assistant
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: backend
+  labels:
+    app.kubernetes.io/part-of: nu-knowledge-assistant
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ml-inference
+  labels:
+    app.kubernetes.io/part-of: nu-knowledge-assistant
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: data
+  labels:
+    app.kubernetes.io/part-of: nu-knowledge-assistant
