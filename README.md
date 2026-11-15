@@ -147,7 +147,11 @@ docker run -p 8000:8000 -v ./backend/storage:/app/storage nu-knowledge-assistant
 
 ## Jenkins CI/CD Pipeline (3 Marks)
 
-The included **`Jenkinsfile`** defines an automated 7-stage pipeline:
+The repository includes two ready-to-run Jenkins pipeline specifications:
+* **`Jenkinsfile`**: Industry-standard 7-stage declarative pipeline for cloud Linux nodes and Kubernetes clusters (`REQ-OPS-04`).
+* **`Jenkinsfile.windows`**: Tailored for local Windows Jenkins services with automatic safe directory handling and local Python path resolution.
+
+### Pipeline Stages:
 1. **Checkout SCM:** Clones branch and logs commit metadata.
 2. **Environment & Dependency Setup:** Sets up Python 3.11 virtual environment and installs dependencies.
 3. **Static Analysis & Security Linting:** Executes `flake8`, `bandit`, and `safety` scans.
