@@ -9,65 +9,236 @@
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
+    /* ==========================================================================
+       APPLE LIQUID GLASS (glisse) DESIGN SYSTEM
+       Faithful implementation of iOS & macOS Liquid Glass for the web
+       ========================================================================== */
     :root {
       --nu-crimson: #7A1C1C;
       --nu-crimson-hover: #5E1414;
+      --nu-crimson-glow: rgba(122, 28, 28, 0.35);
       --nu-gold: #C84B11;
+      --apple-canvas: #F5F5F7;
+      --glisse-blur: 32px;
+      --glisse-saturate: 190%;
+      --glisse-glass-bg: rgba(255, 255, 255, 0.68);
+      --glisse-glass-border: rgba(255, 255, 255, 0.6);
+      --glisse-rim-shine: rgba(255, 255, 255, 0.95);
+      --glisse-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.06);
+      --apple-spring: cubic-bezier(0.16, 1, 0.3, 1);
     }
+
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: #FAF9F6;
-      color: #18181B;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Plus Jakarta Sans", "Inter", sans-serif;
+      background: radial-gradient(circle at 12% 16%, rgba(122, 28, 28, 0.08) 0%, transparent 40%),
+                  radial-gradient(circle at 88% 20%, rgba(200, 75, 17, 0.07) 0%, transparent 40%),
+                  radial-gradient(circle at 50% 85%, rgba(99, 102, 241, 0.05) 0%, transparent 50%),
+                  #F5F5F7;
+      color: #1D1D1F;
       -webkit-font-smoothing: antialiased;
+      letter-spacing: -0.012em;
     }
+
     .font-serif-editorial {
       font-family: 'Instrument Serif', Georgia, serif;
     }
     .font-mono-code {
       font-family: 'JetBrains Mono', monospace;
     }
+
+    /* --- LIQUID GLASS CONTAINERS & SURFACES --- */
+    .glisse-glass {
+      background: var(--glisse-glass-bg);
+      backdrop-filter: blur(var(--glisse-blur)) saturate(var(--glisse-saturate));
+      -webkit-backdrop-filter: blur(var(--glisse-blur)) saturate(var(--glisse-saturate));
+      border: 1px solid var(--glisse-glass-border);
+      box-shadow: 
+        var(--glisse-shadow),
+        0 1px 3px rgba(0, 0, 0, 0.02),
+        inset 0 1px 1.5px 0 var(--glisse-rim-shine),
+        inset 0 -1px 1px 0 rgba(0, 0, 0, 0.03);
+    }
+
+    .glisse-glass-dock {
+      background: rgba(248, 248, 250, 0.75);
+      backdrop-filter: blur(36px) saturate(200%);
+      -webkit-backdrop-filter: blur(36px) saturate(200%);
+      border-right: 1px solid rgba(255, 255, 255, 0.5);
+      box-shadow: 4px 0 30px rgba(0, 0, 0, 0.02);
+    }
+
+    .glisse-card {
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.65);
+      box-shadow: 
+        0 10px 30px -8px rgba(0, 0, 0, 0.04),
+        inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.95);
+      border-radius: 26px;
+      transition: all 0.28s var(--apple-spring);
+    }
+    .glisse-card:hover {
+      background: rgba(255, 255, 255, 0.9);
+      border-color: rgba(255, 255, 255, 0.95);
+      transform: translateY(-2px);
+      box-shadow: 
+        0 18px 40px -10px rgba(0, 0, 0, 0.07),
+        inset 0 1px 2px 0 #FFFFFF;
+    }
+
+    .glisse-pill {
+      border-radius: 9999px;
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.65);
+      box-shadow: 
+        0 4px 14px rgba(0, 0, 0, 0.02),
+        inset 0 1px 1px rgba(255, 255, 255, 0.95);
+      transition: all 0.22s var(--apple-spring);
+    }
+    .glisse-pill:hover {
+      background: rgba(255, 255, 255, 0.96);
+      transform: scale(1.02);
+      box-shadow: 
+        0 8px 22px rgba(0, 0, 0, 0.05),
+        inset 0 1px 1.5px #FFFFFF;
+    }
+
+    .glisse-btn-action {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.02) 100%), #7A1C1C;
+      border-radius: 9999px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 
+        0 8px 24px -4px rgba(122, 28, 28, 0.42),
+        inset 0 1px 1.2px rgba(255, 255, 255, 0.5),
+        inset 0 -1px 1px rgba(0, 0, 0, 0.2);
+      transition: all 0.2s var(--apple-spring);
+    }
+    .glisse-btn-action:hover {
+      transform: scale(1.025);
+      box-shadow: 
+        0 14px 30px -4px rgba(122, 28, 28, 0.52),
+        inset 0 1px 1.8px rgba(255, 255, 255, 0.7);
+    }
+
+    .glisse-btn-secondary {
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.75);
+      box-shadow: 
+        0 4px 12px rgba(0, 0, 0, 0.03),
+        inset 0 1px 1px rgba(255, 255, 255, 0.95);
+      border-radius: 9999px;
+      transition: all 0.2s var(--apple-spring);
+    }
+    .glisse-btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.96);
+      transform: scale(1.02);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+    }
+
+    /* Floating Liquid Composer Capsule */
+    .glisse-composer {
+      background: rgba(255, 255, 255, 0.84);
+      backdrop-filter: blur(36px) saturate(200%);
+      -webkit-backdrop-filter: blur(36px) saturate(200%);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      border-radius: 32px;
+      box-shadow: 
+        0 24px 50px -12px rgba(0, 0, 0, 0.09),
+        0 2px 6px rgba(0, 0, 0, 0.02),
+        inset 0 1px 1.5px rgba(255, 255, 255, 1);
+      transition: all 0.25s var(--apple-spring);
+    }
+    .glisse-composer:focus-within {
+      background: rgba(255, 255, 255, 0.96);
+      border-color: rgba(122, 28, 28, 0.45);
+      box-shadow: 
+        0 30px 60px -12px rgba(122, 28, 28, 0.12),
+        0 0 0 4px rgba(122, 28, 28, 0.08),
+        inset 0 1px 1.5px #FFFFFF;
+    }
+
+    /* Apple iMessage / Intelligence User Bubble */
+    .glisse-user-bubble {
+      background: linear-gradient(145deg, #7A1C1C 0%, #942525 100%);
+      box-shadow: 
+        0 8px 22px -3px rgba(122, 28, 28, 0.35),
+        inset 0 1px 1px rgba(255, 255, 255, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 24px;
+      border-top-right-radius: 6px;
+    }
+
+    /* Apple Segmented Pill Switcher */
+    .glisse-segmented {
+      background: rgba(0, 0, 0, 0.04);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 9999px;
+      padding: 3px;
+    }
+
+    /* Apple Modal Dialogs */
+    .glisse-modal {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(44px) saturate(210%);
+      -webkit-backdrop-filter: blur(44px) saturate(210%);
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      box-shadow: 
+        0 35px 70px -15px rgba(0, 0, 0, 0.2),
+        inset 0 1px 1.5px rgba(255, 255, 255, 1);
+      border-radius: 34px;
+    }
+
     .nu-brand-gradient {
       background: linear-gradient(145deg, #581111 0%, #7A1C1C 50%, #932424 100%);
-    }
-    .composer-shadow {
-      box-shadow: 0 10px 30px -5px rgba(24, 24, 27, 0.07), 0 4px 12px -2px rgba(24, 24, 27, 0.04);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.3);
     }
     .srs-alert-banner {
-      border: 1.5px solid #DC2626;
-      background-color: #FEF2F2;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      background-color: rgba(254, 242, 242, 0.85);
+      backdrop-filter: blur(16px);
       color: #991B1B;
-      border-radius: 0.75rem;
-      padding: 0.875rem 1rem;
+      border-radius: 18px;
+      padding: 0.875rem 1.125rem;
     }
+
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(6px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    .msg-enter { animation: fadeUp 0.2s ease-out forwards; }
+    .msg-enter { animation: fadeUp 0.22s var(--apple-spring) forwards; }
+
     ::-webkit-scrollbar { width: 5px; height: 5px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: #D4D4D8; border-radius: 9999px; }
-    ::-webkit-scrollbar-thumb:hover { background: #A1A1AA; }
+    ::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.15); border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(0, 0, 0, 0.25); }
   </style>
 </head>
 <body class="h-screen overflow-hidden flex flex-col selection:bg-[#7A1C1C] selection:text-white">
 
   <!-- ===================================================================== -->
-  <!-- SCREEN 1: INSTITUTIONAL SIGN-IN PORTAL (Stanford / Harvard Style)     -->
+  <!-- SCREEN 1: INSTITUTIONAL SIGN-IN PORTAL (Apple Liquid Glass Edition)   -->
   <!-- ===================================================================== -->
-  <div id="screenLogin" class="flex-1 flex min-h-screen bg-[#FAF9F6] overflow-y-auto">
-    <!-- Left Editorial Showcase (Hidden on small mobile, visible on lg+) -->
+  <div id="screenLogin" class="flex-1 flex min-h-screen overflow-y-auto">
+    <!-- Left Editorial Showcase (Apple Liquid Obsidian / Crimson Frosted Panel) -->
     <div class="hidden lg:flex lg:w-5/12 xl:w-1/2 nu-brand-gradient text-white p-12 flex-col justify-between relative overflow-hidden">
-      <!-- Subtle geometric background rings -->
-      <div class="absolute -right-24 -top-24 w-96 h-96 rounded-full border border-white/10 pointer-events-none"></div>
-      <div class="absolute -left-16 -bottom-24 w-[28rem] h-[28rem] rounded-full border border-white/10 pointer-events-none"></div>
+      <!-- Apple Liquid Specular Light Rings -->
+      <div class="absolute -right-24 -top-24 w-96 h-96 rounded-full border border-white/20 blur-[1px] pointer-events-none"></div>
+      <div class="absolute -left-16 -bottom-24 w-[30rem] h-[30rem] rounded-full border border-white/15 blur-[2px] pointer-events-none"></div>
+      <div class="absolute right-1/4 bottom-1/3 w-64 h-64 rounded-full bg-white/5 blur-3xl pointer-events-none"></div>
 
-      <!-- Top University Crest -->
+      <!-- Top University Crest with macOS Window Header -->
       <div class="relative z-10 flex items-center justify-between">
         <div class="flex items-center gap-3.5">
-          <div class="w-11 h-11 rounded-xl bg-white text-[#7A1C1C] flex flex-col items-center justify-center shadow-lg">
+          <div class="w-12 h-12 rounded-2xl bg-white text-[#7A1C1C] flex flex-col items-center justify-center shadow-lg border border-white/30">
             <span class="text-[8px] font-extrabold tracking-widest text-[#C84B11] leading-none">अनादि</span>
             <span class="text-base font-black tracking-tight leading-none mt-0.5">NU</span>
           </div>
@@ -76,16 +247,16 @@
             <div class="text-[11px] text-red-100/80">Neemrana • Institutional AI Initiative</div>
           </div>
         </div>
-        <span class="px-3 py-1 rounded-full bg-white/10 border border-white/15 text-[11px] font-medium backdrop-blur-xs">
-          Verified RAG Corpus
+        <span class="px-3.5 py-1 rounded-full bg-white/15 border border-white/25 text-[11px] font-medium backdrop-blur-md shadow-sm">
+          Liquid Glass RAG Corpus
         </span>
       </div>
 
       <!-- Center Editorial Headline -->
       <div class="relative z-10 max-w-md space-y-5 my-auto py-8">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/25 border border-white/15 text-xs text-red-100">
-          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-          <span>Grounded in Official University Handbooks</span>
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/20 border border-white/15 text-xs text-red-100 backdrop-blur-md">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span>Apple Liquid Glass • Grounded Campus Intelligence</span>
         </div>
         <h1 class="font-serif-editorial text-4xl xl:text-5xl font-normal tracking-tight leading-[1.12]">
           Instant, source-cited answers across every campus department.
@@ -112,12 +283,23 @@
       </div>
     </div>
 
-    <!-- Right Sign-In Container -->
-    <div class="flex-1 flex flex-col justify-center items-center p-6 sm:p-12">
-      <div class="w-full max-w-md space-y-7">
+    <!-- Right Sign-In Container (Apple Liquid Glass Card) -->
+    <div class="flex-1 flex flex-col justify-center items-center p-6 sm:p-12 relative">
+      <div class="w-full max-w-md glisse-glass rounded-[36px] p-8 sm:p-10 space-y-6 shadow-2xl relative z-10">
+        
+        <!-- macOS Window Traffic Lights -->
+        <div class="flex items-center justify-between pb-1">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-[#FF5F56] border border-[#E0443E]/40 shadow-xs"></span>
+            <span class="w-3 h-3 rounded-full bg-[#FFBD2E] border border-[#DEA123]/40 shadow-xs"></span>
+            <span class="w-3 h-3 rounded-full bg-[#27C93F] border border-[#1AAB29]/40 shadow-xs"></span>
+          </div>
+          <span class="text-[10px] font-semibold tracking-wider uppercase text-zinc-400">iOS 26 Liquid Glass</span>
+        </div>
+
         <!-- Mobile Logo -->
         <div class="flex lg:hidden items-center gap-3">
-          <div class="w-10 h-10 rounded-xl nu-brand-gradient text-white font-black text-sm flex items-center justify-center shadow">NU</div>
+          <div class="w-10 h-10 rounded-2xl nu-brand-gradient text-white font-black text-sm flex items-center justify-center shadow">NU</div>
           <div>
             <div class="text-sm font-bold text-zinc-900">NIIT University</div>
             <div class="text-xs text-zinc-500">AI Knowledge Assistant</div>
@@ -126,7 +308,7 @@
 
         <!-- Sign-in Header -->
         <div class="space-y-1.5">
-          <h2 class="text-2xl font-extrabold tracking-tight text-zinc-900">Sign in to your account</h2>
+          <h2 class="text-2xl font-bold tracking-tight text-zinc-900">Sign in to your account</h2>
           <p class="text-xs sm:text-sm text-zinc-500">Use your official <span class="font-medium text-zinc-700">@st.niituniversity.in</span> or <span class="font-medium text-zinc-700">@niituniversity.in</span> workspace identity.</p>
         </div>
 
@@ -137,7 +319,7 @@
 
         <!-- Primary OAuth & SSO Buttons -->
         <div class="space-y-3">
-          <button id="btnGoogleLogin" type="button" onclick="openGoogleAccountModal()" class="w-full py-3 px-4 rounded-xl bg-white hover:bg-zinc-50 border border-zinc-300 text-zinc-800 font-semibold text-sm shadow-2xs flex items-center justify-center gap-3 transition">
+          <button id="btnGoogleLogin" type="button" onclick="openGoogleAccountModal()" class="w-full py-3 px-4 rounded-full glisse-btn-secondary text-zinc-800 font-semibold text-sm flex items-center justify-center gap-3 transition">
             <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
               <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
               <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.14C3.26 21.3 7.31 24 12 24z"/>
@@ -147,54 +329,54 @@
             <span>Continue with Google Workspace</span>
           </button>
 
-          <button id="btnSsoLogin" type="button" onclick="signInWithEmail('bharadwaj.bandi23@st.niituniversity.in', 'SSO')" class="w-full py-3 px-4 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-white font-semibold text-sm shadow-2xs flex items-center justify-center gap-2.5 transition">
+          <button id="btnSsoLogin" type="button" onclick="signInWithEmail('bharadwaj.bandi23@st.niituniversity.in', 'SSO')" class="w-full py-3 px-4 rounded-full bg-zinc-900/90 hover:bg-black text-white font-semibold text-sm shadow-md backdrop-blur-md flex items-center justify-center gap-2.5 transition">
             <svg class="w-4 h-4 text-zinc-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
             <span>Sign in with Campus SSO</span>
           </button>
         </div>
 
         <div class="relative flex items-center">
-          <div class="flex-grow border-t border-zinc-200"></div>
+          <div class="flex-grow border-t border-zinc-300/60"></div>
           <span class="flex-shrink mx-3 text-[11px] font-medium uppercase tracking-wider text-zinc-400">or sign in with email</span>
-          <div class="flex-grow border-t border-zinc-200"></div>
+          <div class="flex-grow border-t border-zinc-300/60"></div>
         </div>
 
         <!-- Standard Email Form -->
         <form id="formEmailLogin" onsubmit="handleStandardLogin(event)" class="space-y-3.5">
           <div>
             <label for="loginEmail" class="block text-xs font-semibold text-zinc-700 mb-1.5">University Email</label>
-            <input id="loginEmail" type="email" required value="vijay.reddy23@st.niituniversity.in" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-zinc-300 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-[#7A1C1C]/20 focus:border-[#7A1C1C] transition" />
+            <input id="loginEmail" type="email" required value="vijay.reddy23@st.niituniversity.in" class="w-full px-4 py-2.5 rounded-2xl bg-white/70 border border-zinc-300/80 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-[#7A1C1C]/20 focus:border-[#7A1C1C] transition" />
           </div>
           <div>
             <div class="flex items-center justify-between mb-1.5">
               <label for="loginPass" class="block text-xs font-semibold text-zinc-700">Password</label>
               <span class="text-[11px] text-zinc-400">30-min session protection</span>
             </div>
-            <input id="loginPass" type="password" required value="student123" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-zinc-300 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-[#7A1C1C]/20 focus:border-[#7A1C1C] transition" />
+            <input id="loginPass" type="password" required value="student123" class="w-full px-4 py-2.5 rounded-2xl bg-white/70 border border-zinc-300/80 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-[#7A1C1C]/20 focus:border-[#7A1C1C] transition" />
           </div>
-          <button id="btnSubmitEmailLogin" type="submit" class="w-full py-2.5 px-4 rounded-xl bg-[#7A1C1C] hover:bg-[#5E1414] text-white font-semibold text-sm shadow-sm transition">
+          <button id="btnSubmitEmailLogin" type="submit" class="w-full py-3 px-4 glisse-btn-action text-white font-semibold text-sm shadow-md transition">
             Sign in
           </button>
         </form>
 
         <!-- Clean Quick Role Preview Pills -->
-        <div class="pt-4 border-t border-zinc-200/80">
+        <div class="pt-4 border-t border-zinc-200/70">
           <div class="flex items-center justify-between mb-2">
             <span class="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider">Instant Role Preview</span>
             <span class="text-[11px] text-zinc-400">1-Click Switch</span>
           </div>
           <div class="grid grid-cols-3 gap-2">
-            <button id="btnRoleStudent" type="button" onclick="quickRoleLogin('STUDENT')" class="p-2.5 rounded-xl bg-white hover:bg-red-50/50 border border-zinc-200 hover:border-[#7A1C1C]/50 text-left transition">
+            <button id="btnRoleStudent" type="button" onclick="quickRoleLogin('STUDENT')" class="p-2.5 rounded-2xl glisse-pill text-left transition">
               <div class="text-xs font-bold text-zinc-900">Student</div>
               <div class="text-[10px] text-zinc-500 truncate mt-0.5">Vijay Reddy</div>
             </button>
-            <button id="btnRoleFaculty" type="button" onclick="quickRoleLogin('FACULTY')" class="p-2.5 rounded-xl bg-white hover:bg-red-50/50 border border-zinc-200 hover:border-[#7A1C1C]/50 text-left transition">
+            <button id="btnRoleFaculty" type="button" onclick="quickRoleLogin('FACULTY')" class="p-2.5 rounded-2xl glisse-pill text-left transition">
               <div class="text-xs font-bold text-zinc-900">Faculty</div>
               <div class="text-[10px] text-zinc-500 truncate mt-0.5">Prof. M. Hurkat</div>
             </button>
-            <button id="btnRoleAdmin" type="button" onclick="quickRoleLogin('ADMIN')" class="p-2.5 rounded-xl bg-white hover:bg-red-50/50 border border-zinc-200 hover:border-[#7A1C1C]/50 text-left transition">
-              <div class="text-xs font-bold text-zinc-900">Admin Staff</div>
-              <div class="text-[10px] text-zinc-500 truncate mt-0.5">System Console</div>
+            <button id="btnRoleAdmin" type="button" onclick="quickRoleLogin('ADMIN')" class="p-2.5 rounded-2xl glisse-pill text-left transition">
+              <div class="text-xs font-bold text-zinc-900">Admin</div>
+              <div class="text-[10px] text-zinc-500 truncate mt-0.5">Console</div>
             </button>
           </div>
         </div>
@@ -203,85 +385,93 @@
   </div>
 
   <!-- ===================================================================== -->
-  <!-- AUTHENTICATED APPLICATION SHELL (Sidebar + Main Workspace + Drawer)   -->
+  <!-- AUTHENTICATED APPLICATION SHELL (Apple Liquid Glass Edition)          -->
   <!-- ===================================================================== -->
-  <div id="appShell" class="hidden flex-1 flex h-screen overflow-hidden bg-[#FAF9F6]">
+  <div id="appShell" class="hidden flex-1 flex h-screen overflow-hidden">
 
-    <!-- LEFT SIDEBAR (Stanford / Harvard / OpenWebUI Minimalist Navigation Rail) -->
-    <aside id="leftSidebar" class="w-72 bg-[#F3F1EC] border-r border-zinc-200/80 flex flex-col justify-between shrink-0 select-none">
+    <!-- LEFT SIDEBAR (Apple Liquid Glass Dock) -->
+    <aside id="leftSidebar" class="w-72 glisse-glass-dock flex flex-col justify-between shrink-0 select-none z-20">
       <!-- Top Brand + New Chat -->
-      <div class="p-3.5 space-y-3">
-        <div class="flex items-center justify-between px-1.5 pt-1">
-          <div class="flex items-center gap-2.5">
-            <div class="w-8 h-8 rounded-lg nu-brand-gradient text-white font-black text-xs flex items-center justify-center shadow-xs">
-              NU
-            </div>
-            <div>
-              <div class="text-xs font-bold text-zinc-900 leading-none">NIIT University</div>
-              <div class="text-[10px] font-medium text-zinc-500 mt-0.5">Knowledge Assistant</div>
-            </div>
+      <div class="p-4 space-y-3.5">
+        
+        <!-- macOS Traffic Lights Header -->
+        <div class="flex items-center justify-between px-1 pt-1 pb-1">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-[#FF5F56] border border-[#E0443E]/40 shadow-xs"></span>
+            <span class="w-3 h-3 rounded-full bg-[#FFBD2E] border border-[#DEA123]/40 shadow-xs"></span>
+            <span class="w-3 h-3 rounded-full bg-[#27C93F] border border-[#1AAB29]/40 shadow-xs"></span>
           </div>
-          <button id="btnOpenHelp" onclick="toggleHelpModal(true)" class="w-7 h-7 rounded-lg hover:bg-zinc-200/70 text-zinc-500 hover:text-zinc-800 text-xs font-bold flex items-center justify-center transition" title="Quick Guide &amp; Help">
+          <button id="btnOpenHelp" onclick="toggleHelpModal(true)" class="w-6 h-6 rounded-full glisse-pill text-zinc-500 hover:text-zinc-900 text-xs font-bold flex items-center justify-center transition" title="Quick Guide &amp; Help">
             ?
           </button>
         </div>
 
-        <!-- Role Workspace Switcher (Hidden for Students! Only shown to Faculty & Admin) -->
-        <div id="roleWorkspaceSwitcher" class="hidden p-1 rounded-xl bg-zinc-200/75 grid grid-cols-2 gap-1 text-xs font-semibold">
-          <button id="wsBtnChat" onclick="switchWorkspace('CHAT')" class="py-1.5 px-2.5 rounded-lg bg-white text-zinc-900 shadow-2xs transition">
+        <div class="flex items-center gap-3 px-1">
+          <div class="w-9 h-9 rounded-2xl nu-brand-gradient text-white font-black text-xs flex items-center justify-center shadow-xs">
+            NU
+          </div>
+          <div>
+            <div class="text-xs font-bold text-zinc-900 leading-none">NIIT University</div>
+            <div class="text-[10px] font-medium text-zinc-500 mt-0.5">Liquid Knowledge Assistant</div>
+          </div>
+        </div>
+
+        <!-- Role Workspace Switcher (Segmented Apple Pill) -->
+        <div id="roleWorkspaceSwitcher" class="hidden glisse-segmented grid grid-cols-2 gap-1 text-xs font-semibold">
+          <button id="wsBtnChat" onclick="switchWorkspace('CHAT')" class="py-1.5 px-3 rounded-full bg-white text-zinc-900 shadow-sm transition">
             Assistant
           </button>
-          <button id="wsBtnManage" onclick="switchWorkspace('MANAGE')" class="py-1.5 px-2.5 rounded-lg text-zinc-600 hover:text-zinc-900 transition">
+          <button id="wsBtnManage" onclick="switchWorkspace('MANAGE')" class="py-1.5 px-3 rounded-full text-zinc-600 hover:text-zinc-900 transition">
             <span id="wsManageLabel">Admin Console</span>
           </button>
         </div>
 
-        <!-- New Conversation Action -->
-        <button id="btnNewConversation" onclick="startFreshConversation()" class="w-full py-2.5 px-3.5 rounded-xl bg-white hover:bg-zinc-50 border border-zinc-200/90 text-zinc-800 font-semibold text-xs flex items-center justify-between shadow-2xs transition group">
+        <!-- New Conversation Action (Liquid Pill) -->
+        <button id="btnNewConversation" onclick="startFreshConversation()" class="w-full py-2.5 px-4 rounded-full glisse-btn-secondary text-zinc-800 font-semibold text-xs flex items-center justify-between transition group">
           <span class="flex items-center gap-2">
             <svg class="w-4 h-4 text-[#7A1C1C]" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
             <span>New conversation</span>
           </span>
-          <kbd class="text-[10px] font-mono-code text-zinc-400 group-hover:text-zinc-600">⌘K</kbd>
+          <kbd class="text-[10px] font-mono-code text-zinc-400 group-hover:text-zinc-700">⌘K</kbd>
         </button>
 
-        <!-- Search Conversations -->
+        <!-- Search Conversations (Frosted Capsule) -->
         <div class="relative">
-          <input id="inputSearchHistory" type="text" oninput="renderSidebarHistory()" placeholder="Filter conversations..." class="w-full pl-8 pr-3 py-1.5 rounded-lg bg-zinc-200/50 focus:bg-white border border-transparent focus:border-zinc-300 text-xs text-zinc-800 placeholder-zinc-400 focus:outline-none transition" />
-          <svg class="w-3.5 h-3.5 text-zinc-400 absolute left-2.5 top-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <input id="inputSearchHistory" type="text" oninput="renderSidebarHistory()" placeholder="Filter conversations..." class="w-full pl-8 pr-3 py-1.5 rounded-full bg-white/50 focus:bg-white border border-white/60 focus:border-zinc-300 text-xs text-zinc-800 placeholder-zinc-400 focus:outline-none transition shadow-2xs" />
+          <svg class="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
         </div>
       </div>
 
       <!-- Conversation Thread List -->
       <div class="flex-1 overflow-y-auto px-3 space-y-4">
         <div>
-          <div class="px-2 pb-1.5 text-[10px] font-bold uppercase tracking-wider text-zinc-400">Recent Threads</div>
-          <div id="sidebarThreadList" class="space-y-0.5">
+          <div class="px-3 pb-1.5 text-[10px] font-bold uppercase tracking-wider text-zinc-400">Recent Threads</div>
+          <div id="sidebarThreadList" class="space-y-1">
             <!-- Populated by JS -->
           </div>
         </div>
 
         <!-- Verified Campus Collections Info -->
-        <div class="px-2 pt-2 border-t border-zinc-200/70">
-          <div class="pb-1.5 text-[10px] font-bold uppercase tracking-wider text-zinc-400">Active Knowledge Collections</div>
+        <div class="px-2 pt-2 border-t border-zinc-200/50">
+          <div class="pb-1.5 px-1 text-[10px] font-bold uppercase tracking-wider text-zinc-400">Knowledge Collections</div>
           <div class="space-y-1 text-[11px] text-zinc-600">
-            <div class="flex items-center justify-between py-1 px-2 rounded-lg hover:bg-zinc-200/50 cursor-pointer" onclick="setCollectionFilter('Academics')">
+            <div class="flex items-center justify-between py-1.5 px-2.5 rounded-xl hover:bg-white/60 cursor-pointer transition" onclick="setCollectionFilter('Academics')">
               <span class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-[#7A1C1C]"></span>Academic Office</span>
               <span class="text-[10px] text-zinc-400">Handbook</span>
             </div>
-            <div class="flex items-center justify-between py-1 px-2 rounded-lg hover:bg-zinc-200/50 cursor-pointer" onclick="setCollectionFilter('Accounts')">
+            <div class="flex items-center justify-between py-1.5 px-2.5 rounded-xl hover:bg-white/60 cursor-pointer transition" onclick="setCollectionFilter('Accounts')">
               <span class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span>Accounts &amp; Finance</span>
               <span class="text-[10px] text-zinc-400">Circulars</span>
             </div>
-            <div class="flex items-center justify-between py-1 px-2 rounded-lg hover:bg-zinc-200/50 cursor-pointer" onclick="setCollectionFilter('Student Affairs')">
+            <div class="flex items-center justify-between py-1.5 px-2.5 rounded-xl hover:bg-white/60 cursor-pointer transition" onclick="setCollectionFilter('Student Affairs')">
               <span class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>Student Affairs</span>
               <span class="text-[10px] text-zinc-400">Hostel</span>
             </div>
-            <div class="flex items-center justify-between py-1 px-2 rounded-lg hover:bg-zinc-200/50 cursor-pointer" onclick="setCollectionFilter('CSE')">
+            <div class="flex items-center justify-between py-1.5 px-2.5 rounded-xl hover:bg-white/60 cursor-pointer transition" onclick="setCollectionFilter('CSE')">
               <span class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span>CSE Department</span>
               <span class="text-[10px] text-zinc-400">Syllabi</span>
             </div>
-            <div class="flex items-center justify-between py-1 px-2 rounded-lg hover:bg-zinc-200/50 cursor-pointer" onclick="setCollectionFilter('COE')">
+            <div class="flex items-center justify-between py-1.5 px-2.5 rounded-xl hover:bg-white/60 cursor-pointer transition" onclick="setCollectionFilter('COE')">
               <span class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-purple-600"></span>Examinations (COE)</span>
               <span class="text-[10px] text-zinc-400">Schedule</span>
             </div>
@@ -289,11 +479,11 @@
         </div>
       </div>
 
-      <!-- Bottom User Profile & Quick Demo Switcher -->
-      <div class="p-3 border-t border-zinc-200/80 bg-[#EBE8E1]/60 space-y-2">
+      <!-- Bottom User Profile Card -->
+      <div class="p-3.5 border-t border-zinc-200/50 bg-white/40 backdrop-blur-md space-y-2">
         <div class="flex items-center justify-between gap-2 px-1">
           <div class="flex items-center gap-2.5 min-w-0">
-            <div id="sidebarUserAvatar" class="w-8 h-8 rounded-full nu-brand-gradient text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-2xs">
+            <div id="sidebarUserAvatar" class="w-8 h-8 rounded-full nu-brand-gradient text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-sm">
               VR
             </div>
             <div class="min-w-0">
@@ -305,7 +495,7 @@
               </div>
             </div>
           </div>
-          <button id="btnSignOut" onclick="signOut()" class="p-1.5 rounded-lg hover:bg-zinc-200 text-zinc-500 hover:text-zinc-900 text-xs transition" title="Sign out">
+          <button id="btnSignOut" onclick="signOut()" class="p-1.5 rounded-full glisse-pill text-zinc-500 hover:text-zinc-900 text-xs transition" title="Sign out">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
           </button>
         </div>
@@ -317,25 +507,25 @@
     <!-- =================================================================== -->
     <main id="workspaceChat" class="flex-1 flex flex-col h-full relative overflow-hidden">
 
-      <!-- Minimal Top Bar -->
-      <header class="h-14 px-6 border-b border-zinc-200/70 bg-[#FAF9F6]/90 backdrop-blur-xs flex items-center justify-between shrink-0 z-10">
+      <!-- Apple Liquid Glass Top Bar -->
+      <header class="h-14 px-6 glisse-glass flex items-center justify-between shrink-0 z-10 border-b border-white/50">
         <div class="flex items-center gap-3 min-w-0">
           <span id="chatHeaderTitle" class="text-xs sm:text-sm font-semibold text-zinc-800 truncate">New Conversation</span>
-          <span id="activeScopePill" class="px-2.5 py-0.5 rounded-full bg-zinc-200/70 text-zinc-700 text-[11px] font-medium">
+          <span id="activeScopePill" class="px-3 py-1 rounded-full glisse-pill text-zinc-700 text-[11px] font-medium shadow-2xs">
             Scope: All Campus Collections
           </span>
         </div>
 
-        <!-- Institutional Privacy Shield (Harvard AI Sandbox / U-M GPT pattern) -->
+        <!-- Institutional Privacy Shield -->
         <div class="flex items-center gap-2">
-          <div class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-800 text-[11px] font-medium">
+          <div class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-800 text-[11px] font-medium backdrop-blur-md">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
             <span>Verified NU Sources Only</span>
           </div>
-          <button id="btnToggleEvidenceDrawer" onclick="toggleEvidenceDrawer()" class="px-2.5 py-1 rounded-lg border border-zinc-200 hover:bg-zinc-100 text-xs font-medium text-zinc-700 flex items-center gap-1.5 transition">
+          <button id="btnToggleEvidenceDrawer" onclick="toggleEvidenceDrawer()" class="px-3 py-1 rounded-full glisse-btn-secondary text-xs font-medium text-zinc-700 flex items-center gap-1.5 transition">
             <span>📄</span>
             <span class="hidden md:inline">Sources</span>
-            <span id="drawerCountBadge" class="px-1.5 py-0.2 rounded-full bg-zinc-200 text-zinc-800 text-[10px] font-bold">5</span>
+            <span id="drawerCountBadge" class="px-1.5 py-0.2 rounded-full bg-zinc-200/80 text-zinc-800 text-[10px] font-bold">5</span>
           </button>
         </div>
       </header>
@@ -344,7 +534,7 @@
       <div id="workspaceAlertWrap" class="max-w-3xl w-full mx-auto px-6 pt-3 hidden">
         <div class="srs-alert-banner flex items-center justify-between gap-3 text-xs font-medium">
           <span id="workspaceAlertText"></span>
-          <button onclick="hideWorkspaceAlert()" class="px-2 py-0.5 rounded bg-red-100 text-red-900 font-bold">Dismiss</button>
+          <button onclick="hideWorkspaceAlert()" class="px-2 py-0.5 rounded-full bg-red-100 text-red-900 font-bold">Dismiss</button>
         </div>
       </div>
 
@@ -352,53 +542,53 @@
       <div id="chatScrollCanvas" class="flex-1 overflow-y-auto px-4 sm:px-6 py-6">
         <div class="max-w-3xl mx-auto space-y-6">
 
-          <!-- EMPTY / WELCOME STATE (Stanford AI Playground / BearGPT Hero Style) -->
+          <!-- EMPTY / WELCOME STATE (Apple Liquid Hero) -->
           <div id="chatWelcomeHero" class="py-8 sm:py-12 space-y-8">
-            <div class="text-center space-y-2.5">
-              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-50 border border-[#7A1C1C]/15 text-[#7A1C1C] text-xs font-semibold">
+            <div class="text-center space-y-3">
+              <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-red-50/80 border border-[#7A1C1C]/20 text-[#7A1C1C] text-xs font-semibold backdrop-blur-md">
                 <span>NIIT University Knowledge Assistant</span>
               </div>
               <h2 id="welcomeGreetingTitle" class="font-serif-editorial text-3xl sm:text-4xl text-zinc-900 tracking-tight">
                 Good evening, Vijay. What would you like to look up?
               </h2>
-              <p class="text-xs sm:text-sm text-zinc-500 max-w-lg mx-auto">
+              <p class="text-xs sm:text-sm text-zinc-500 max-w-lg mx-auto leading-relaxed">
                 Ask any question about academic rules, semester fee deadlines, hostel policies, or CSE coursework. Every answer includes verifiable citations.
               </p>
             </div>
 
-            <!-- 2x2 Curated University Prompt Cards -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <button type="button" onclick="askSuggestedQuestion('When is the last date to pay the Autumn semester fee, and what is the late fine or scholarship SGPA rule?')" class="p-4 rounded-2xl bg-white hover:bg-zinc-50/80 border border-zinc-200/90 hover:border-[#7A1C1C]/40 text-left shadow-2xs transition group">
-                <div class="flex items-center justify-between mb-1.5">
+            <!-- 2x2 Apple Liquid Glass Prompt Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              <button type="button" onclick="askSuggestedQuestion('When is the last date to pay the Autumn semester fee, and what is the late fine or scholarship SGPA rule?')" class="p-4 sm:p-5 glisse-card text-left transition group">
+                <div class="flex items-center justify-between mb-2">
                   <span class="text-[11px] font-bold uppercase tracking-wider text-amber-700">Accounts &amp; Finance</span>
-                  <span class="text-xs text-zinc-300 group-hover:text-[#7A1C1C] transition">→</span>
+                  <span class="text-xs text-zinc-400 group-hover:text-[#7A1C1C] group-hover:translate-x-0.5 transition">→</span>
                 </div>
                 <div class="text-xs sm:text-sm font-semibold text-zinc-900">Semester Fee Deadline &amp; Scholarships</div>
                 <div class="text-xs text-zinc-500 mt-1 line-clamp-1">Due dates, tuition/hostel fee breakdown, and 7.5 SGPA rule</div>
               </button>
 
-              <button type="button" onclick="askSuggestedQuestion('What documents are required for hostel room allotment, and what are the campus gate and hostel curfew timings?')" class="p-4 rounded-2xl bg-white hover:bg-zinc-50/80 border border-zinc-200/90 hover:border-[#7A1C1C]/40 text-left shadow-2xs transition group">
-                <div class="flex items-center justify-between mb-1.5">
+              <button type="button" onclick="askSuggestedQuestion('What documents are required for hostel room allotment, and what are the campus gate and hostel curfew timings?')" class="p-4 sm:p-5 glisse-card text-left transition group">
+                <div class="flex items-center justify-between mb-2">
                   <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-700">Student Affairs &amp; Hostel</span>
-                  <span class="text-xs text-zinc-300 group-hover:text-[#7A1C1C] transition">→</span>
+                  <span class="text-xs text-zinc-400 group-hover:text-[#7A1C1C] group-hover:translate-x-0.5 transition">→</span>
                 </div>
                 <div class="text-xs sm:text-sm font-semibold text-zinc-900">Hostel Allotment &amp; Curfew Timings</div>
                 <div class="text-xs text-zinc-500 mt-1 line-clamp-1">Required affidavits, 9:30 PM gate closure, and outpass rules</div>
               </button>
 
-              <button type="button" onclick="askSuggestedQuestion('When are the Mid-Semester and End-Semester exams for Deep Learning CS3041, Big Data CS3052, and GenAI CS4018?')" class="p-4 rounded-2xl bg-white hover:bg-zinc-50/80 border border-zinc-200/90 hover:border-[#7A1C1C]/40 text-left shadow-2xs transition group">
-                <div class="flex items-center justify-between mb-1.5">
+              <button type="button" onclick="askSuggestedQuestion('When are the Mid-Semester and End-Semester exams for Deep Learning CS3041, Big Data CS3052, and GenAI CS4018?')" class="p-4 sm:p-5 glisse-card text-left transition group">
+                <div class="flex items-center justify-between mb-2">
                   <span class="text-[11px] font-bold uppercase tracking-wider text-purple-700">Controller of Examinations</span>
-                  <span class="text-xs text-zinc-300 group-hover:text-[#7A1C1C] transition">→</span>
+                  <span class="text-xs text-zinc-400 group-hover:text-[#7A1C1C] group-hover:translate-x-0.5 transition">→</span>
                 </div>
                 <div class="text-xs sm:text-sm font-semibold text-zinc-900">Autumn 2026 Exam Schedule &amp; Venues</div>
                 <div class="text-xs text-zinc-500 mt-1 line-clamp-1">Mid-sem dates, lecture hall venues, and midnight library hours</div>
               </button>
 
-              <button type="button" onclick="askSuggestedQuestion('What is the minimum attendance requirement at NIIT University, when is an AW grade issued, and how many credits is Capstone II?')" class="p-4 rounded-2xl bg-white hover:bg-zinc-50/80 border border-zinc-200/90 hover:border-[#7A1C1C]/40 text-left shadow-2xs transition group">
-                <div class="flex items-center justify-between mb-1.5">
+              <button type="button" onclick="askSuggestedQuestion('What is the minimum attendance requirement at NIIT University, when is an AW grade issued, and how many credits is Capstone II?')" class="p-4 sm:p-5 glisse-card text-left transition group">
+                <div class="flex items-center justify-between mb-2">
                   <span class="text-[11px] font-bold uppercase tracking-wider text-[#7A1C1C]">Academic Office</span>
-                  <span class="text-xs text-zinc-300 group-hover:text-[#7A1C1C] transition">→</span>
+                  <span class="text-xs text-zinc-400 group-hover:text-[#7A1C1C] group-hover:translate-x-0.5 transition">→</span>
                 </div>
                 <div class="text-xs sm:text-sm font-semibold text-zinc-900">75% Attendance &amp; B.Tech Grading Policy</div>
                 <div class="text-xs text-zinc-500 mt-1 line-clamp-1">AW grade policy, medical leave window, and 160-credit rule</div>
@@ -413,21 +603,21 @@
         </div>
       </div>
 
-      <!-- FLOATING COMPOSER DOCK (Stanford / Perplexity / Claude Style) -->
-      <div class="px-4 sm:px-6 pb-4 pt-2 bg-gradient-to-t from-[#FAF9F6] via-[#FAF9F6] to-transparent shrink-0">
+      <!-- FLOATING COMPOSER DOCK (Apple Liquid Glass Capsule) -->
+      <div class="px-4 sm:px-6 pb-5 pt-2 bg-gradient-to-t from-[#F5F5F7] via-[#F5F5F7]/80 to-transparent shrink-0">
         <div class="max-w-3xl mx-auto">
-          <form id="chatComposer" onsubmit="handleComposerSubmit(event)" class="bg-white rounded-2xl border border-zinc-300/90 focus-within:border-[#7A1C1C] composer-shadow transition p-2.5">
+          <form id="chatComposer" onsubmit="handleComposerSubmit(event)" class="glisse-composer p-2.5 sm:p-3">
             <textarea
               id="composerInput"
               rows="2"
               onkeydown="handleComposerKeydown(event)"
               placeholder="Ask a question about NIIT University policies, courses, fees, or schedules..."
-              class="w-full px-2.5 py-1 text-sm text-zinc-900 placeholder-zinc-400 bg-transparent resize-none focus:outline-none"
+              class="w-full px-3 py-1.5 text-sm text-zinc-900 placeholder-zinc-400 bg-transparent resize-none focus:outline-none"
             ></textarea>
-            <div class="flex items-center justify-between pt-2 px-1 border-t border-zinc-100">
+            <div class="flex items-center justify-between pt-2 px-1 border-t border-white/60">
               <!-- Inline Scope Selector Pill -->
               <div class="flex items-center gap-2">
-                <select id="composerScopeSelect" onchange="setCollectionFilter(this.value)" aria-label="Knowledge Scope" class="text-xs font-medium bg-zinc-100 hover:bg-zinc-200/70 text-zinc-700 rounded-lg px-2.5 py-1.5 focus:outline-none cursor-pointer transition">
+                <select id="composerScopeSelect" onchange="setCollectionFilter(this.value)" aria-label="Knowledge Scope" class="text-xs font-medium glisse-pill px-3 py-1.5 text-zinc-700 focus:outline-none cursor-pointer transition">
                   <option value="ALL">All Campus Collections (5 Docs)</option>
                   <option value="Accounts">Accounts &amp; Finance</option>
                   <option value="Academics">Academic Handbook</option>
@@ -438,10 +628,10 @@
                 <span class="hidden sm:inline text-[11px] text-zinc-400">5-turn context active</span>
               </div>
 
-              <!-- Submit Button -->
-              <button id="btnComposerSend" type="submit" class="px-4 py-1.5 rounded-xl bg-[#7A1C1C] hover:bg-[#5E1414] text-white font-semibold text-xs flex items-center gap-1.5 shadow-xs transition">
+              <!-- Submit Button (Apple Circular Capsule) -->
+              <button id="btnComposerSend" type="submit" class="px-4 py-2 glisse-btn-action text-white font-semibold text-xs flex items-center gap-2 transition">
                 <span>Ask Assistant</span>
-                <span>↑</span>
+                <span class="text-sm font-bold">↑</span>
               </button>
             </div>
           </form>
@@ -450,40 +640,40 @@
     </main>
 
     <!-- =================================================================== -->
-    <!-- RIGHT SLIDE-OVER SOURCE EVIDENCE DRAWER (TritonGPT / Perplexity)    -->
+    <!-- RIGHT SLIDE-OVER SOURCE EVIDENCE DRAWER                            -->
     <!-- =================================================================== -->
-    <aside id="evidenceDrawer" class="hidden w-80 lg:w-96 bg-white border-l border-zinc-200/90 flex flex-col h-full shrink-0 shadow-xl z-20">
-      <div class="h-14 px-5 border-b border-zinc-200/80 flex items-center justify-between">
+    <aside id="evidenceDrawer" class="hidden w-80 lg:w-96 glisse-glass flex flex-col h-full shrink-0 shadow-2xl z-20 border-l border-white/60">
+      <div class="h-14 px-5 border-b border-white/50 flex items-center justify-between">
         <div>
           <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-900">Verified Source Evidence</h3>
           <p class="text-[11px] text-zinc-500">Institutional Knowledge Base</p>
         </div>
-        <button onclick="toggleEvidenceDrawer(false)" class="w-7 h-7 rounded-lg hover:bg-zinc-100 text-zinc-500 font-bold text-xs">✕</button>
+        <button onclick="toggleEvidenceDrawer(false)" class="w-7 h-7 rounded-full glisse-pill flex items-center justify-center text-zinc-500 font-bold text-xs">✕</button>
       </div>
 
       <div id="evidenceDrawerContent" class="flex-1 overflow-y-auto p-5 space-y-4">
-        <!-- Populated dynamically when a citation is clicked or shows active corpus -->
+        <!-- Populated dynamically -->
       </div>
     </aside>
 
     <!-- =================================================================== -->
-    <!-- MAIN WORKSPACE 2: MANAGEMENT & GOVERNANCE CONSOLE (Faculty / Admin) -->
+    <!-- MAIN WORKSPACE 2: MANAGEMENT & GOVERNANCE CONSOLE                   -->
     <!-- =================================================================== -->
-    <main id="workspaceManage" class="hidden flex-1 flex flex-col h-full overflow-hidden bg-[#FAF9F6]">
+    <main id="workspaceManage" class="hidden flex-1 flex flex-col h-full overflow-hidden">
       <!-- Top Console Header & Sub-Navigation -->
-      <header class="px-6 pt-5 pb-3 bg-white border-b border-zinc-200/80 flex flex-wrap items-center justify-between gap-4 shrink-0">
+      <header class="px-6 pt-5 pb-3 glisse-glass border-b border-white/50 flex flex-wrap items-center justify-between gap-4 shrink-0">
         <div>
-          <h2 id="manageHeaderTitle" class="text-lg font-extrabold text-zinc-900 tracking-tight">Executive Knowledge &amp; Analytics Console</h2>
+          <h2 id="manageHeaderTitle" class="text-lg font-bold text-zinc-900 tracking-tight">Executive Knowledge &amp; Analytics Console</h2>
           <p id="manageHeaderSub" class="text-xs text-zinc-500">Curate approved NIIT University documents, monitor query quality, and manage role permissions.</p>
         </div>
 
-        <!-- Sub-navigation pills (Admin sees all 5; Faculty sees only Knowledge Base) -->
-        <div id="manageSubNav" class="flex items-center gap-1 bg-zinc-100 p-1 rounded-xl border border-zinc-200/80 text-xs font-semibold">
-          <button id="mTabOverview" onclick="switchManageTab('OVERVIEW')" class="px-3 py-1.5 rounded-lg bg-white text-zinc-900 shadow-2xs transition">Overview</button>
-          <button id="mTabKnowledge" onclick="switchManageTab('KNOWLEDGE')" class="px-3 py-1.5 rounded-lg text-zinc-600 hover:text-zinc-900 transition">Knowledge Base</button>
-          <button id="mTabUsers" onclick="switchManageTab('USERS')" class="px-3 py-1.5 rounded-lg text-zinc-600 hover:text-zinc-900 transition">Users &amp; Roles</button>
-          <button id="mTabFeedback" onclick="switchManageTab('FEEDBACK')" class="px-3 py-1.5 rounded-lg text-zinc-600 hover:text-zinc-900 transition">Quality Audit</button>
-          <button id="mTabPlatform" onclick="switchManageTab('PLATFORM')" class="px-3 py-1.5 rounded-lg text-zinc-600 hover:text-zinc-900 transition">Cluster &amp; DB</button>
+        <!-- Sub-navigation pills (Apple Segmented Capsule) -->
+        <div id="manageSubNav" class="flex items-center gap-1 glisse-segmented text-xs font-semibold">
+          <button id="mTabOverview" onclick="switchManageTab('OVERVIEW')" class="px-3.5 py-1.5 rounded-full bg-white text-zinc-900 shadow-sm transition">Overview</button>
+          <button id="mTabKnowledge" onclick="switchManageTab('KNOWLEDGE')" class="px-3.5 py-1.5 rounded-full text-zinc-600 hover:text-zinc-900 transition">Knowledge Base</button>
+          <button id="mTabUsers" onclick="switchManageTab('USERS')" class="px-3.5 py-1.5 rounded-full text-zinc-600 hover:text-zinc-900 transition">Users &amp; Roles</button>
+          <button id="mTabFeedback" onclick="switchManageTab('FEEDBACK')" class="px-3.5 py-1.5 rounded-full text-zinc-600 hover:text-zinc-900 transition">Quality Audit</button>
+          <button id="mTabPlatform" onclick="switchManageTab('PLATFORM')" class="px-3.5 py-1.5 rounded-full text-zinc-600 hover:text-zinc-900 transition">Cluster &amp; DB</button>
         </div>
       </header>
 
@@ -494,22 +684,22 @@
           <!-- 1. OVERVIEW TAB -->
           <div id="mViewOverview" class="space-y-6">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div class="bg-white p-5 rounded-2xl border border-zinc-200/90 shadow-2xs">
+              <div class="glisse-card p-5">
                 <div class="text-xs font-medium text-zinc-500">Total Campus Queries</div>
                 <div id="statTotalQueries" class="text-2xl font-extrabold text-zinc-900 mt-1.5">1,284</div>
                 <div class="text-[11px] text-emerald-700 font-semibold mt-1">↑ +14.2% vs last 30 days</div>
               </div>
-              <div class="bg-white p-5 rounded-2xl border border-zinc-200/90 shadow-2xs">
+              <div class="glisse-card p-5">
                 <div class="text-xs font-medium text-zinc-500">Answer Satisfaction</div>
                 <div id="statSatisfaction" class="text-2xl font-extrabold text-zinc-900 mt-1.5">4.7 / 5.0</div>
                 <div id="statSatisfactionSub" class="text-[11px] text-zinc-500 mt-1">94% helpful ratings</div>
               </div>
-              <div class="bg-white p-5 rounded-2xl border border-zinc-200/90 shadow-2xs">
+              <div class="glisse-card p-5">
                 <div class="text-xs font-medium text-zinc-500">Verified Documents</div>
                 <div id="statDocsCount" class="text-2xl font-extrabold text-zinc-900 mt-1.5">5</div>
                 <div id="statChunksCount" class="text-[11px] text-zinc-500 mt-1">7 semantic chunks indexed</div>
               </div>
-              <div class="bg-white p-5 rounded-2xl border border-zinc-200/90 shadow-2xs">
+              <div class="glisse-card p-5">
                 <div class="text-xs font-medium text-zinc-500">Median Response Latency</div>
                 <div class="text-2xl font-extrabold text-emerald-700 mt-1.5">0.91 s</div>
                 <div class="text-[11px] text-zinc-500 mt-1">SLA Target &lt; 5.0 s (18/20 Pods)</div>
@@ -517,14 +707,14 @@
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
-              <div class="bg-white p-5 rounded-2xl border border-zinc-200/90 shadow-2xs">
+              <div class="glisse-card p-5">
                 <div class="flex items-center justify-between mb-4">
                   <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-600">Daily Query Volume</h3>
                   <span class="text-[11px] text-zinc-400">Autumn Semester 2026</span>
                 </div>
                 <div class="relative h-64"><canvas id="adminVolumeChart"></canvas></div>
               </div>
-              <div class="bg-white p-5 rounded-2xl border border-zinc-200/90 shadow-2xs">
+              <div class="glisse-card p-5">
                 <div class="flex items-center justify-between mb-4">
                   <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-600">Queries by Department Collection</h3>
                   <span class="text-[11px] text-zinc-400">Automated Intent Classification</span>
@@ -536,28 +726,28 @@
 
           <!-- 2. KNOWLEDGE BASE STUDIO (Faculty & Admin) -->
           <div id="mViewKnowledge" class="hidden space-y-6">
-            <div class="bg-white p-6 rounded-2xl border border-zinc-200/90 shadow-2xs space-y-4">
+            <div class="glisse-card p-6 space-y-4">
               <div class="flex flex-wrap items-center justify-between gap-2">
                 <div>
                   <h3 class="text-base font-bold text-zinc-900">Publish Official Document to RAG Index</h3>
                   <p class="text-xs text-zinc-500">Supported formats: PDF, DOCX, TXT (maximum 25 MB). Documents are automatically chunked and embedded.</p>
                 </div>
-                <button type="button" onclick="triggerFormatValidationDemo()" class="px-3 py-1.5 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-zinc-700 text-xs font-semibold transition">
+                <button type="button" onclick="triggerFormatValidationDemo()" class="px-3.5 py-1.5 rounded-full glisse-btn-secondary text-zinc-700 text-xs font-semibold transition">
                   Test Invalid Format Guardrail (.exe)
                 </button>
               </div>
 
               <div id="kbUploadAlert" class="srs-alert-banner hidden text-xs font-medium"></div>
-              <div id="kbUploadSuccess" class="hidden p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs font-medium"></div>
+              <div id="kbUploadSuccess" class="hidden p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-900 text-xs font-medium"></div>
 
               <form id="formKbUpload" onsubmit="handleKbUpload(event)" class="grid grid-cols-1 md:grid-cols-4 gap-3.5">
                 <div>
                   <label for="kbDocTitle" class="block text-xs font-semibold text-zinc-700 mb-1">Filename (.pdf, .docx, .txt)</label>
-                  <input id="kbDocTitle" type="text" required value="Placement_Guidelines_2026.pdf" class="w-full px-3 py-2 rounded-xl border border-zinc-300 text-xs focus:outline-none focus:border-[#7A1C1C]" />
+                  <input id="kbDocTitle" type="text" required value="Placement_Guidelines_2026.pdf" class="w-full px-3.5 py-2 rounded-2xl bg-white/70 border border-zinc-300 text-xs focus:outline-none focus:border-[#7A1C1C]" />
                 </div>
                 <div>
                   <label for="kbDocDept" class="block text-xs font-semibold text-zinc-700 mb-1">Department Collection</label>
-                  <select id="kbDocDept" class="w-full px-3 py-2 rounded-xl border border-zinc-300 text-xs bg-white">
+                  <select id="kbDocDept" class="w-full px-3.5 py-2 rounded-2xl bg-white/70 border border-zinc-300 text-xs">
                     <option value="CIC / Placements">CIC / Placements</option>
                     <option value="Academics">Academics</option>
                     <option value="Accounts">Accounts</option>
@@ -568,7 +758,7 @@
                 </div>
                 <div>
                   <label for="kbDocCat" class="block text-xs font-semibold text-zinc-700 mb-1">Topic Tag</label>
-                  <select id="kbDocCat" class="w-full px-3 py-2 rounded-xl border border-zinc-300 text-xs bg-white">
+                  <select id="kbDocCat" class="w-full px-3.5 py-2 rounded-2xl bg-white/70 border border-zinc-300 text-xs">
                     <option value="Placements">Placements</option>
                     <option value="Academics">Academics</option>
                     <option value="Fees">Fees</option>
@@ -578,13 +768,13 @@
                   </select>
                 </div>
                 <div class="flex items-end">
-                  <button id="btnKbPublish" type="submit" class="w-full py-2 px-4 rounded-xl bg-[#7A1C1C] hover:bg-[#5E1414] text-white font-semibold text-xs shadow-xs transition">
+                  <button id="btnKbPublish" type="submit" class="w-full py-2.5 px-4 glisse-btn-action text-white font-semibold text-xs transition">
                     + Chunk &amp; Index Document
                   </button>
                 </div>
                 <div class="md:col-span-4">
                   <label for="kbDocBody" class="block text-xs font-semibold text-zinc-700 mb-1">Document Content Excerpt (or attach local file)</label>
-                  <textarea id="kbDocBody" rows="3" required class="w-full p-3 rounded-xl border border-zinc-300 text-xs font-mono-code focus:outline-none focus:border-[#7A1C1C]">NIIT UNIVERSITY - CENTER FOR INDUSTRY COLLABORATION (CIC) PLACEMENT POLICY 2026: Campus placement registration for B.Tech CSE 7th Semester opens on November 20, 2026. Students require a minimum CGPA of 7.0 with zero active backlogs to appear for Tier-1 product companies. Industry Practice (IP) stipends range from INR 25,000 to INR 85,000 per month.</textarea>
+                  <textarea id="kbDocBody" rows="3" required class="w-full p-3.5 rounded-2xl bg-white/70 border border-zinc-300 text-xs font-mono-code focus:outline-none focus:border-[#7A1C1C]">NIIT UNIVERSITY - CENTER FOR INDUSTRY COLLABORATION (CIC) PLACEMENT POLICY 2026: Campus placement registration for B.Tech CSE 7th Semester opens on November 20, 2026. Students require a minimum CGPA of 7.0 with zero active backlogs to appear for Tier-1 product companies. Industry Practice (IP) stipends range from INR 25,000 to INR 85,000 per month.</textarea>
                   <div class="mt-2 flex items-center gap-2">
                     <input id="kbLocalFilePicker" type="file" onchange="handleKbFilePick(event)" class="text-xs text-zinc-500" />
                   </div>
@@ -592,144 +782,143 @@
               </form>
             </div>
 
-            <div class="bg-white rounded-2xl border border-zinc-200/90 shadow-2xs overflow-hidden">
-              <div class="px-5 py-4 border-b border-zinc-100 flex items-center justify-between">
+            <div class="glisse-card overflow-hidden">
+              <div class="px-6 py-4 border-b border-white/60 flex items-center justify-between">
                 <h3 class="text-sm font-bold text-zinc-900">Institutional Document Repository</h3>
                 <span class="text-xs text-zinc-500">Only <strong class="text-emerald-700">INDEXED</strong> documents are used in answers</span>
               </div>
               <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse text-xs">
-                  <thead>
-                    <tr class="bg-zinc-50 text-zinc-500 border-b border-zinc-200">
-                      <th class="py-3 px-4 font-semibold">Document Title</th>
-                      <th class="py-3 px-4 font-semibold">Department</th>
-                      <th class="py-3 px-4 font-semibold">Category</th>
-                      <th class="py-3 px-4 font-semibold">Format / Ver</th>
-                      <th class="py-3 px-4 font-semibold">Status</th>
-                      <th class="py-3 px-4 font-semibold text-right">Actions</th>
+                <table class="w-full text-xs text-left">
+                  <thead class="bg-white/40 text-zinc-500 uppercase tracking-wider font-semibold border-b border-white/50">
+                    <tr>
+                      <th class="py-3 px-5">ID</th>
+                      <th class="py-3 px-5">Title</th>
+                      <th class="py-3 px-5">Department</th>
+                      <th class="py-3 px-5">Tag</th>
+                      <th class="py-3 px-5">Status</th>
+                      <th class="py-3 px-5 text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody id="kbTableBody" class="divide-y divide-zinc-100"></tbody>
+                  <tbody id="kbTableBody" class="divide-y divide-white/40">
+                    <!-- Populated by JS -->
+                  </tbody>
                 </table>
               </div>
             </div>
           </div>
 
-          <!-- 3. USERS & ROLES (Admin Only) -->
-          <div id="mViewUsers" class="hidden bg-white rounded-2xl border border-zinc-200/90 shadow-2xs overflow-hidden">
-            <div class="px-5 py-4 border-b border-zinc-100 flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <h3 class="text-sm font-bold text-zinc-900">University Identity &amp; Role Directory</h3>
-                <p class="text-xs text-zinc-500">Assign Student, Faculty, or Admin Staff privileges.</p>
-              </div>
-              <input id="userDirFilter" type="text" oninput="renderUsersDirectory()" placeholder="Search name or email..." class="px-3.5 py-1.5 rounded-xl border border-zinc-300 text-xs w-64" />
-            </div>
-            <div class="overflow-x-auto">
-              <table class="w-full text-left border-collapse text-xs">
-                <thead>
-                  <tr class="bg-zinc-50 text-zinc-500 border-b border-zinc-200">
-                    <th class="py-3 px-4 font-semibold">Full Name</th>
-                    <th class="py-3 px-4 font-semibold">University Email</th>
-                    <th class="py-3 px-4 font-semibold">Sign-In Method</th>
-                    <th class="py-3 px-4 font-semibold">Department</th>
-                    <th class="py-3 px-4 font-semibold">Role Permission</th>
-                  </tr>
-                </thead>
-                <tbody id="usersDirBody" class="divide-y divide-zinc-100"></tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- 4. QUALITY & FEEDBACK AUDIT (Admin Only) -->
-          <div id="mViewFeedback" class="hidden space-y-4">
-            <div class="bg-white p-4 rounded-2xl border border-zinc-200/90 shadow-2xs flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <h3 class="text-sm font-bold text-zinc-900">Query Log &amp; Answer Quality Audit</h3>
-                <p class="text-xs text-zinc-500">Review student and faculty ratings, latency, and privacy compliance.</p>
-              </div>
-              <div class="flex items-center gap-2">
-                <select id="auditDateFilter" onchange="renderFeedbackAudit()" class="px-3 py-1.5 rounded-xl border border-zinc-300 text-xs bg-white font-medium">
-                  <option value="30D">Last 30 Days</option>
-                  <option value="7D">Last 7 Days</option>
-                  <option value="EMPTY">Empty Window Check</option>
-                </select>
-                <button type="button" onclick="runPrivacyScrubber()" class="px-3.5 py-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-semibold transition">
-                  Scrub PII in Logs
-                </button>
-              </div>
-            </div>
-
-            <div id="auditEmptyNotice" class="hidden bg-white p-10 rounded-2xl border border-zinc-200 text-center text-xs text-zinc-500">
-              No query records exist for the selected date range.
-            </div>
-
-            <div id="auditTableCard" class="bg-white rounded-2xl border border-zinc-200/90 shadow-2xs overflow-hidden">
-              <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse text-xs">
-                  <thead>
-                    <tr class="bg-zinc-50 text-zinc-500 border-b border-zinc-200">
-                      <th class="py-3 px-4 font-semibold">Submitted Question</th>
-                      <th class="py-3 px-4 font-semibold">Collection</th>
-                      <th class="py-3 px-4 font-semibold">Resolution</th>
-                      <th class="py-3 px-4 font-semibold">User Rating</th>
-                      <th class="py-3 px-4 font-semibold">Comment</th>
-                    </tr>
-                  </thead>
-                  <tbody id="auditTableBody" class="divide-y divide-zinc-100"></tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-
-          <!-- 5. CLUSTER & DATABASE TELEMETRY (Admin Only) -->
-          <div id="mViewPlatform" class="hidden space-y-6">
-            <div class="bg-white p-5 rounded-2xl border border-zinc-200/90 shadow-2xs space-y-4">
-              <div class="flex flex-wrap items-center justify-between gap-2">
+          <!-- 3. USERS & RBAC TAB -->
+          <div id="mViewUsers" class="hidden space-y-6">
+            <div class="glisse-card overflow-hidden">
+              <div class="px-6 py-4 border-b border-white/60 flex items-center justify-between">
                 <div>
-                  <h3 class="text-sm font-bold text-zinc-900">Kubernetes Microservices &amp; Autoscaling</h3>
-                  <p class="text-xs text-zinc-500">4 isolated namespaces (<code class="font-mono-code">frontend</code>, <code class="font-mono-code">backend</code>, <code class="font-mono-code">ml-inference</code>, <code class="font-mono-code">data</code>)</p>
+                  <h3 class="text-sm font-bold text-zinc-900">User Identity &amp; Role-Based Governance</h3>
+                  <p class="text-[11px] text-zinc-500">Assign STUDENT, FACULTY, or ADMIN permissions according to institutional directory.</p>
                 </div>
-                <button type="button" onclick="simulateClusterScale()" class="px-3.5 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold transition">
-                  Simulate 200-User Load Spike (HPA)
+                <span class="px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-900 font-semibold text-[11px]">Active Directory Sync</span>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-xs text-left">
+                  <thead class="bg-white/40 text-zinc-500 uppercase tracking-wider font-semibold border-b border-white/50">
+                    <tr>
+                      <th class="py-3 px-5">User</th>
+                      <th class="py-3 px-5">Email</th>
+                      <th class="py-3 px-5">Role</th>
+                      <th class="py-3 px-5">Auth Provider</th>
+                      <th class="py-3 px-5 text-right">Role Assignment</th>
+                    </tr>
+                  </thead>
+                  <tbody id="usersTableBody" class="divide-y divide-white/40">
+                    <!-- Populated by JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. QUALITY AUDIT & FEEDBACK TAB -->
+          <div id="mViewFeedback" class="hidden space-y-6">
+            <div class="glisse-card overflow-hidden">
+              <div class="px-6 py-4 border-b border-white/60 flex items-center justify-between">
+                <div>
+                  <h3 class="text-sm font-bold text-zinc-900">Student &amp; Faculty Quality Feedback Logs</h3>
+                  <p class="text-[11px] text-zinc-500">Monitor citations and user feedback notes to detect gaps in knowledge base.</p>
+                </div>
+                <span class="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-900 font-semibold text-[11px]">Audited Responses</span>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-xs text-left">
+                  <thead class="bg-white/40 text-zinc-500 uppercase tracking-wider font-semibold border-b border-white/50">
+                    <tr>
+                      <th class="py-3 px-5">Response ID</th>
+                      <th class="py-3 px-5">Original User Query</th>
+                      <th class="py-3 px-5">Rating</th>
+                      <th class="py-3 px-5">User Note</th>
+                      <th class="py-3 px-5">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="feedbackTableBody" class="divide-y divide-white/40">
+                    <!-- Populated by JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5. CLUSTER & DATABASE PLATFORM TELEMETRY -->
+          <div id="mViewPlatform" class="hidden space-y-6">
+            <div class="glisse-card p-6 space-y-4">
+              <div class="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <h3 class="text-sm font-bold text-zinc-900">Kubernetes Microservices &amp; Pod Health</h3>
+                  <p class="text-xs text-zinc-500">Live deployment healthcheck across all containerized tiers.</p>
+                </div>
+                <button type="button" onclick="triggerHpaAutoscaleDemo()" class="px-3.5 py-1.5 rounded-full glisse-btn-secondary text-zinc-700 text-xs font-semibold transition">
+                  Simulate High Traffic (HPA Autoscale)
                 </button>
               </div>
-              <div id="clusterEventToast" class="hidden p-3 rounded-xl bg-blue-50 border border-blue-200 text-blue-900 text-xs font-mono-code"></div>
+              <div id="clusterEventToast" class="hidden p-3.5 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-900 text-xs font-mono-code"></div>
               <div id="clusterGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5"></div>
             </div>
 
-            <div class="bg-white p-5 rounded-2xl border border-zinc-200/90 shadow-2xs space-y-4">
+            <!-- Database Inspector -->
+            <div class="glisse-card p-6 space-y-4">
               <div class="flex flex-wrap items-center justify-between gap-2">
                 <div>
-                  <h3 class="text-sm font-bold text-zinc-900">Relational Schema Inspector (8 Tables)</h3>
-                  <p class="text-xs text-zinc-500">Inspect live foreign-key linked records in PostgreSQL / SQLite.</p>
+                  <h3 class="text-sm font-bold text-zinc-900">Relational SQLite / PostgreSQL Database Inspector</h3>
+                  <p class="text-xs text-zinc-500">Inspect schema and table rows directly.</p>
                 </div>
-                <div class="flex flex-wrap gap-1.5">
-                  <button onclick="switchDbInspector('Users')" class="px-2.5 py-1 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-xs font-semibold">Users</button>
-                  <button onclick="switchDbInspector('Sessions')" class="px-2.5 py-1 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-xs font-semibold">Sessions</button>
-                  <button onclick="switchDbInspector('Queries')" class="px-2.5 py-1 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-xs font-semibold">Queries</button>
-                  <button onclick="switchDbInspector('Responses')" class="px-2.5 py-1 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-xs font-semibold">Responses</button>
-                  <button onclick="switchDbInspector('ResponseCitations')" class="px-2.5 py-1 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-xs font-semibold">ResponseCitations</button>
-                  <button onclick="switchDbInspector('Feedback')" class="px-2.5 py-1 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-xs font-semibold">Feedback</button>
-                  <button onclick="switchDbInspector('Documents')" class="px-2.5 py-1 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-xs font-semibold">Documents</button>
-                  <button onclick="switchDbInspector('DocumentChunks')" class="px-2.5 py-1 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-xs font-semibold">DocumentChunks</button>
+                <div class="flex items-center gap-1.5 glisse-segmented text-xs font-semibold">
+                  <button onclick="switchDbInspector('Users')" class="px-3 py-1 rounded-full text-zinc-700 hover:text-zinc-900 transition">Users</button>
+                  <button onclick="switchDbInspector('Documents')" class="px-3 py-1 rounded-full text-zinc-700 hover:text-zinc-900 transition">Documents</button>
+                  <button onclick="switchDbInspector('DocumentChunks')" class="px-3 py-1 rounded-full text-zinc-700 hover:text-zinc-900 transition">DocumentChunks</button>
+                  <button onclick="switchDbInspector('Queries')" class="px-3 py-1 rounded-full text-zinc-700 hover:text-zinc-900 transition">Queries</button>
                 </div>
               </div>
-              <div id="dbInspectorContainer" class="overflow-x-auto border border-zinc-200 rounded-xl"></div>
+              <div class="overflow-x-auto rounded-2xl border border-white/60">
+                <table class="w-full text-xs text-left">
+                  <thead class="bg-white/40 text-zinc-500 uppercase tracking-wider font-semibold border-b border-white/50">
+                    <tr id="dbInspectorHead"></tr>
+                  </thead>
+                  <tbody id="dbInspectorBody" class="divide-y divide-white/40 font-mono-code"></tbody>
+                </table>
+              </div>
             </div>
           </div>
 
         </div>
       </div>
     </main>
+
   </div>
 
   <!-- ===================================================================== -->
-  <!-- MODAL 1: GOOGLE ACCOUNT CHOOSER (AUTHENTIC GOOGLE OAUTH FLOW)        -->
+  <!-- MODAL 1: GOOGLE ACCOUNT CHOOSER (Apple Liquid Glass Modal)            -->
   <!-- ===================================================================== -->
-  <div id="modalGoogleAuth" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl border border-zinc-200 space-y-5 animate-in fade-in zoom-in-95 duration-200">
+  <div id="modalGoogleAuth" class="fixed inset-0 bg-black/40 backdrop-blur-md z-50 hidden items-center justify-center p-4">
+    <div class="glisse-modal max-w-md w-full p-6 sm:p-7 shadow-2xl space-y-5 animate-in fade-in zoom-in-95 duration-200">
       
-      <!-- Google Modal Header -->
+      <!-- Google Modal Header with macOS Traffic Lights -->
       <div class="flex items-start justify-between">
         <div class="space-y-1">
           <div class="flex items-center gap-2 mb-2">
@@ -744,16 +933,16 @@
           <h2 class="text-xl font-bold text-zinc-900 tracking-tight">Choose an account</h2>
           <p class="text-xs text-zinc-600">to continue to <strong class="text-zinc-800">NIIT University Knowledge Assistant</strong></p>
         </div>
-        <button type="button" onclick="closeGoogleAccountModal()" class="w-8 h-8 rounded-full hover:bg-zinc-100 flex items-center justify-center text-zinc-400 hover:text-zinc-700 transition" title="Close">✕</button>
+        <button type="button" onclick="closeGoogleAccountModal()" class="w-8 h-8 rounded-full glisse-pill flex items-center justify-center text-zinc-400 hover:text-zinc-800 transition" title="Close">✕</button>
       </div>
 
       <!-- Account List (Choose Account) -->
-      <div class="divide-y divide-zinc-100 border-y border-zinc-100 -mx-6 px-6">
+      <div class="divide-y divide-zinc-200/50 border-y border-zinc-200/50 -mx-6 px-6">
         
         <!-- Account 1: Yammanuru Vijay Vardhan Reddy -->
-        <button type="button" onclick="completeGoogleLogin('vijay.reddy23@st.niituniversity.in')" class="w-full py-3.5 px-3 rounded-2xl hover:bg-zinc-50 flex items-center gap-3.5 text-left transition group">
+        <button type="button" onclick="completeGoogleLogin('vijay.reddy23@st.niituniversity.in')" class="w-full py-3.5 px-3 rounded-2xl hover:bg-white/60 flex items-center gap-3.5 text-left transition group">
           <div class="relative shrink-0">
-            <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-[#7A1C1C] to-red-600 text-white font-bold text-sm flex items-center justify-center shadow-xs">VR</div>
+            <div class="w-10 h-10 rounded-full nu-brand-gradient text-white font-bold text-sm flex items-center justify-center shadow-xs">VR</div>
             <div class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-white p-0.5 shadow-2xs flex items-center justify-center">
               <svg viewBox="0 0 24 24" class="w-full h-full"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.14C3.26 21.3 7.31 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.24c-.24-.72-.38-1.49-.38-2.24s.14-1.52.38-2.24V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.14z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.14c.95-2.85 3.6-4.96 6.72-4.96z"/></svg>
             </div>
@@ -762,11 +951,11 @@
             <div class="text-sm font-semibold text-zinc-900 group-hover:text-[#7A1C1C] transition">Yammanuru Vijay Vardhan Reddy</div>
             <div class="text-xs text-zinc-500 truncate">vijay.reddy23@st.niituniversity.in</div>
           </div>
-          <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-50 text-[#7A1C1C] border border-red-100 shrink-0">Student</span>
+          <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-red-50 text-[#7A1C1C] border border-red-100 shrink-0">Student</span>
         </button>
 
         <!-- Account 2: Prof. Manish Hurkat -->
-        <button type="button" onclick="completeGoogleLogin('manish.hurkat@niituniversity.in')" class="w-full py-3.5 px-3 rounded-2xl hover:bg-zinc-50 flex items-center gap-3.5 text-left transition group">
+        <button type="button" onclick="completeGoogleLogin('manish.hurkat@niituniversity.in')" class="w-full py-3.5 px-3 rounded-2xl hover:bg-white/60 flex items-center gap-3.5 text-left transition group">
           <div class="relative shrink-0">
             <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-600 to-amber-700 text-white font-bold text-sm flex items-center justify-center shadow-xs">MH</div>
             <div class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-white p-0.5 shadow-2xs flex items-center justify-center">
@@ -777,11 +966,11 @@
             <div class="text-sm font-semibold text-zinc-900 group-hover:text-amber-700 transition">Prof. Manish Hurkat</div>
             <div class="text-xs text-zinc-500 truncate">manish.hurkat@niituniversity.in</div>
           </div>
-          <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 shrink-0">Faculty</span>
+          <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 shrink-0">Faculty</span>
         </button>
 
         <!-- Account 3: Bandi Ananthagari Bharadwaj -->
-        <button type="button" onclick="completeGoogleLogin('bharadwaj.bandi23@st.niituniversity.in')" class="w-full py-3.5 px-3 rounded-2xl hover:bg-zinc-50 flex items-center gap-3.5 text-left transition group">
+        <button type="button" onclick="completeGoogleLogin('bharadwaj.bandi23@st.niituniversity.in')" class="w-full py-3.5 px-3 rounded-2xl hover:bg-white/60 flex items-center gap-3.5 text-left transition group">
           <div class="relative shrink-0">
             <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-bold text-sm flex items-center justify-center shadow-xs">BB</div>
             <div class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-white p-0.5 shadow-2xs flex items-center justify-center">
@@ -792,11 +981,11 @@
             <div class="text-sm font-semibold text-zinc-900 group-hover:text-blue-700 transition">Bandi Ananthagari Bharadwaj</div>
             <div class="text-xs text-zinc-500 truncate">bharadwaj.bandi23@st.niituniversity.in</div>
           </div>
-          <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-800 border border-blue-200 shrink-0">Student</span>
+          <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-800 border border-blue-200 shrink-0">Student</span>
         </button>
 
         <!-- Account 4: NU Knowledge Admin -->
-        <button type="button" onclick="completeGoogleLogin('admin@niituniversity.in')" class="w-full py-3.5 px-3 rounded-2xl hover:bg-zinc-50 flex items-center gap-3.5 text-left transition group">
+        <button type="button" onclick="completeGoogleLogin('admin@niituniversity.in')" class="w-full py-3.5 px-3 rounded-2xl hover:bg-white/60 flex items-center gap-3.5 text-left transition group">
           <div class="relative shrink-0">
             <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-700 text-white font-bold text-sm flex items-center justify-center shadow-xs">AD</div>
             <div class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-white p-0.5 shadow-2xs flex items-center justify-center">
@@ -807,21 +996,21 @@
             <div class="text-sm font-semibold text-zinc-900 group-hover:text-emerald-700 transition">NU Knowledge Admin</div>
             <div class="text-xs text-zinc-500 truncate">admin@niituniversity.in</div>
           </div>
-          <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 shrink-0">Admin</span>
+          <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 shrink-0">Admin</span>
         </button>
 
         <!-- Option 5: Use another account -->
         <div class="py-2.5 px-3">
           <button type="button" onclick="toggleCustomGoogleInput()" class="w-full py-1.5 flex items-center gap-3.5 text-left text-zinc-700 hover:text-zinc-900 transition font-medium text-xs">
-            <div class="w-10 h-10 rounded-full border border-zinc-200 flex items-center justify-center text-zinc-500 shrink-0">
+            <div class="w-10 h-10 rounded-full glisse-pill flex items-center justify-center text-zinc-500 shrink-0">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
             </div>
             <span class="font-semibold text-zinc-800 hover:text-[#7A1C1C]">Use another Google or university account</span>
           </button>
-          <div id="customGoogleInputBox" class="hidden mt-3 p-3 bg-zinc-50 rounded-2xl border border-zinc-200 space-y-2">
+          <div id="customGoogleInputBox" class="hidden mt-3 p-3.5 glisse-glass rounded-2xl border border-white/60 space-y-2">
             <label for="inputAnotherGoogleEmail" class="block text-[11px] font-semibold text-zinc-600">Enter your Google / University Email:</label>
-            <input id="inputAnotherGoogleEmail" type="email" placeholder="e.g. name@st.niituniversity.in" class="w-full px-3 py-2 rounded-xl border border-zinc-300 text-xs bg-white focus:outline-none focus:border-[#7A1C1C]" />
-            <button type="button" onclick="submitAnotherGoogleEmail()" class="w-full py-2 rounded-xl bg-[#7A1C1C] hover:bg-[#5E1414] text-white text-xs font-semibold transition">Sign in with this Google account</button>
+            <input id="inputAnotherGoogleEmail" type="email" placeholder="e.g. name@st.niituniversity.in" class="w-full px-3.5 py-2 rounded-xl bg-white/70 border border-zinc-300 text-xs focus:outline-none focus:border-[#7A1C1C]" />
+            <button type="button" onclick="submitAnotherGoogleEmail()" class="w-full py-2.5 rounded-xl glisse-btn-action text-white text-xs font-semibold transition">Sign in with this Google account</button>
           </div>
         </div>
 
@@ -838,37 +1027,37 @@
   <!-- ===================================================================== -->
   <!-- MODAL 2: SAFE DOCUMENT DELETION WARNING (UC-03)                       -->
   <!-- ===================================================================== -->
-  <div id="modalDeleteConfirm" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-zinc-200 space-y-4">
+  <div id="modalDeleteConfirm" class="fixed inset-0 bg-black/40 backdrop-blur-md z-50 hidden items-center justify-center p-4">
+    <div class="glisse-modal max-w-md w-full p-6 shadow-2xl space-y-4">
       <div class="srs-alert-banner">
         <div class="font-bold text-xs sm:text-sm mb-1">Active Query Citation Warning</div>
         <p id="deleteWarningBody" class="text-xs leading-relaxed"></p>
       </div>
-      <div class="flex justify-end gap-2">
-        <button onclick="closeDeleteConfirmModal()" class="px-4 py-2 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-xs font-semibold text-zinc-700">Cancel</button>
-        <button onclick="executePermanentDelete()" class="px-4 py-2 rounded-xl bg-red-700 hover:bg-red-800 text-white text-xs font-bold">Delete Document &amp; Vectors</button>
+      <div class="flex justify-end gap-2.5">
+        <button onclick="closeDeleteConfirmModal()" class="px-4 py-2 rounded-full glisse-btn-secondary text-zinc-700 text-xs font-semibold">Cancel</button>
+        <button onclick="executeSafeDelete()" class="px-4 py-2 rounded-full bg-red-600 hover:bg-red-700 text-white text-xs font-semibold shadow-sm transition">Confirm Removal</button>
       </div>
     </div>
   </div>
 
   <!-- ===================================================================== -->
-  <!-- MODAL 3: HELP & INSTITUTIONAL AI GUIDE                                -->
+  <!-- MODAL 3: QUICK HELP GUIDE & SYSTEM ARCHITECTURE                       -->
   <!-- ===================================================================== -->
-  <div id="modalHelp" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-zinc-200 space-y-4">
-      <div class="flex items-center justify-between border-b border-zinc-100 pb-3">
+  <div id="modalHelpGuide" class="fixed inset-0 bg-black/40 backdrop-blur-md z-50 hidden items-center justify-center p-4">
+    <div class="glisse-modal max-w-lg w-full p-6 sm:p-7 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-white/50">
         <div>
           <h3 class="text-sm font-extrabold text-zinc-900">About NIIT University Knowledge Assistant</h3>
-          <p class="text-[11px] text-zinc-500">Institutional RAG Platform • Capstone Project II (Team-20)</p>
+          <p class="text-[11px] text-zinc-500">Apple Liquid Glass RAG Architecture • Capstone Project II (Team-20)</p>
         </div>
-        <button onclick="toggleHelpModal(false)" class="text-xs font-bold text-zinc-400 hover:text-zinc-800">✕</button>
+        <button onclick="toggleHelpModal(false)" class="w-7 h-7 rounded-full glisse-pill flex items-center justify-center text-xs font-bold text-zinc-400 hover:text-zinc-800">✕</button>
       </div>
       <div class="space-y-3 text-xs text-zinc-600 leading-relaxed">
-        <div class="p-3.5 rounded-2xl bg-zinc-50 border border-zinc-200/80">
+        <div class="p-4 rounded-2xl glisse-card">
           <div class="font-bold text-zinc-900 mb-1">How Grounded Citations Work</div>
           <p>Every question is matched against official NIIT University handbooks, circulars, and syllabi. Click any numbered citation badge (<span class="font-bold text-[#7A1C1C]">[1]</span>) or source card to inspect the exact source paragraph in the right-hand Evidence Drawer.</p>
         </div>
-        <div class="p-3.5 rounded-2xl bg-zinc-50 border border-zinc-200/80">
+        <div class="p-4 rounded-2xl glisse-card">
           <div class="font-bold text-zinc-900 mb-1">Role-Based Workspace Separation</div>
           <p>• <strong>Students:</strong> Full conversational assistant with 5-turn follow-up context and source verification.<br/>
              • <strong>Faculty:</strong> Conversational assistant + Course Knowledge Studio to upload PDF, DOCX, and TXT course files.<br/>
@@ -878,10 +1067,7 @@
     </div>
   </div>
 
-  <!-- ===================================================================== -->
-  <!-- APPLICATION STATE & INTERACTIVE LOGIC                                 -->
-  <!-- ===================================================================== -->
-  <script>
+<script>
     const app = {
       currentUser: null,
       workspace: 'CHAT', // 'CHAT' or 'MANAGE'
@@ -1211,12 +1397,12 @@
       const btnChat = document.getElementById('wsBtnChat');
       const btnManage = document.getElementById('wsBtnManage');
       if (target === 'CHAT') {
-        btnChat.className = 'py-1.5 px-2.5 rounded-lg bg-white text-zinc-900 shadow-2xs transition';
+        btnChat.className = 'py-1.5 px-3 rounded-full bg-white text-zinc-900 shadow-sm font-semibold transition';
         btnManage.className = 'py-1.5 px-2.5 rounded-lg text-zinc-600 hover:text-zinc-900 transition';
         renderSidebarHistory();
         renderChatStream();
       } else {
-        btnManage.className = 'py-1.5 px-2.5 rounded-lg bg-white text-zinc-900 shadow-2xs transition';
+        btnManage.className = 'py-1.5 px-3 rounded-full bg-white text-zinc-900 shadow-sm font-semibold transition';
         btnChat.className = 'py-1.5 px-2.5 rounded-lg text-zinc-600 hover:text-zinc-900 transition';
 
         // Configure sub-tabs for Faculty vs Admin
@@ -1537,7 +1723,7 @@
             const title = doc ? doc.title : 'Archived Document';
             const dept = doc ? doc.department : 'University';
             return `
-              <button type="button" onclick="inspectCitationInDrawer(${c.citation_id})" class="px-3 py-2 rounded-xl bg-zinc-50 hover:bg-red-50/50 border border-zinc-200/90 hover:border-[#7A1C1C]/40 text-left flex items-center gap-2.5 transition group">
+              <button type="button" onclick="inspectCitationInDrawer(${c.citation_id})" class="px-3.5 py-2.5 rounded-2xl glisse-pill text-left flex items-center gap-3 transition group">
                 <span class="w-5 h-5 rounded-md bg-white border border-zinc-200 text-[#7A1C1C] font-bold text-[11px] flex items-center justify-center shrink-0 group-hover:bg-[#7A1C1C] group-hover:text-white transition">${c.rank}</span>
                 <div class="min-w-0">
                   <div class="text-xs font-semibold text-zinc-800 truncate">${escapeHtml(title)}</div>
@@ -1551,7 +1737,7 @@
           const downActive = fb && fb.rating === 'DOWN' ? 'bg-red-50 text-red-800 border-red-300 font-semibold' : 'text-zinc-500 hover:text-zinc-800 hover:bg-zinc-100 border-transparent';
 
           assistantCard = `
-            <div class="bg-white rounded-2xl border border-zinc-200/90 p-5 shadow-2xs space-y-4 msg-enter">
+            <div class="glisse-card p-5 sm:p-6 space-y-4 msg-enter">
               <!-- Source Pills Row (Perplexity / BearGPT pattern) -->
               <div class="space-y-1.5">
                 <div class="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Verified Sources (${cites.length})</div>
@@ -1582,7 +1768,7 @@
         return `
           <div class="space-y-3">
             <div class="flex justify-end msg-enter">
-              <div class="max-w-xl bg-zinc-900 text-white px-4 py-2.5 rounded-2xl rounded-tr-xs text-xs sm:text-sm font-medium shadow-2xs">
+              <div class="max-w-xl glisse-user-bubble text-white px-5 py-3 text-xs sm:text-sm font-medium shadow-sm">
                 ${escapeHtml(q.query_text)}
               </div>
             </div>
