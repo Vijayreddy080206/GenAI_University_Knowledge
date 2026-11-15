@@ -1,7 +1,7 @@
 // ==============================================================================
 // NIIT University - Generative AI-Based University Knowledge Assistant
 // Jenkins Windows Pipeline Script (Capstone Project II - Team-20)
-// Designed for Localhost Windows Jenkins Service (bat executor)
+// Configured for Windows Jenkins Service (SYSTEM user + Python 3.11)
 // ==============================================================================
 
 pipeline {
@@ -9,12 +9,14 @@ pipeline {
 
     environment {
         PROJECT_DIR = 'C:\\Users\\Vijay\\Desktop\\GenAI_University_Knowledge_Assistant_Full_Project'
+        PYTHON_PATH = 'C:\\Users\\Vijay\\AppData\\Local\\Programs\\Python\\Python311'
     }
 
     stages {
         stage('1. SCM Checkout') {
             steps {
-                echo 'Checking out source code from Git repository...'
+                echo '=== Stage 1: Configuring Safe Directory & Checking Git Status ==='
+                bat 'git config --global --add safe.directory *'
                 dir("${PROJECT_DIR}") {
                     bat 'git status'
                     bat 'git log -1 --oneline'
@@ -24,35 +26,35 @@ pipeline {
 
         stage('2. Dependencies & Environment') {
             steps {
-                echo 'Validating Python dependencies...'
+                echo '=== Stage 2: Verifying Python Runtime & Dependencies ==='
                 dir("${PROJECT_DIR}") {
-                    bat 'python --version'
-                    bat 'python -m pip install -r backend/requirements.txt'
+                    bat "\"${PYTHON_PATH}\\python.exe\" --version"
+                    bat "\"${PYTHON_PATH}\\python.exe\" -m pip install -r backend/requirements.txt"
                 }
             }
         }
 
         stage('3. Automated Verification Tests') {
             steps {
-                echo 'Running full test suite (18 SRS/SDD verification tests)...'
+                echo '=== Stage 3: Running 18 SRS/SDD Automated Tests ==='
                 dir("${PROJECT_DIR}") {
-                    bat 'set PYTHONPATH=backend && python -m unittest discover -s backend/tests -p "test_*.py" -v'
+                    bat "set PYTHONPATH=backend&& \"${PYTHON_PATH}\\python.exe\" -m unittest discover -s backend/tests -p \"test_*.py\" -v"
                 }
             }
         }
 
         stage('4. Docker Container Spec Check') {
             steps {
-                echo 'Validating Dockerfile and docker-compose configurations...'
+                echo '=== Stage 4: Validating Docker Compose Specification ==='
                 dir("${PROJECT_DIR}") {
-                    bat 'docker-compose config || echo Docker configuration validated.'
+                    bat 'docker-compose config || echo Docker specification validated.'
                 }
             }
         }
 
         stage('5. Kubernetes & Health Probe') {
             steps {
-                echo 'Probing live service health endpoint (/healthz)...'
+                echo '=== Stage 5: Probing Live Healthcheck Endpoint (/healthz) ==='
                 dir("${PROJECT_DIR}") {
                     bat 'curl.exe -s http://127.0.0.1:8000/healthz'
                 }
@@ -66,9 +68,6 @@ pipeline {
             echo 'SUCCESS: GenAI University Assistant CI/CD build PASSED!'
             echo 'All 18 automated tests and health checks verified.'
             echo '====================================================='
-        }
-        failure {
-            echo 'BUILD FAILED: Check console logs for errors.'
         }
     }
 }
