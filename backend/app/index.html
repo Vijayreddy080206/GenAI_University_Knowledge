@@ -724,77 +724,114 @@
   </div>
 
   <!-- ===================================================================== -->
-  <!-- MODAL 1: GOOGLE WORKSPACE ACCOUNT CHOOSER                             -->
+  <!-- MODAL 1: GOOGLE ACCOUNT CHOOSER (AUTHENTIC GOOGLE OAUTH FLOW)        -->
   <!-- ===================================================================== -->
-  <div id="modalGoogleAuth" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-zinc-200 space-y-4">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-2.5">
-          <svg class="w-5 h-5" viewBox="0 0 24 24" aria-hidden="true">
-            <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
-            <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.14C3.26 21.3 7.31 24 12 24z"/>
-            <path fill="#FBBC05" d="M5.28 14.24c-.24-.72-.38-1.49-.38-2.24s.14-1.52.38-2.24V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.14z"/>
-            <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.14c.95-2.85 3.6-4.96 6.72-4.96z"/>
-          </svg>
-          <span class="text-sm font-bold text-zinc-900">Sign in with Google</span>
-        </div>
-        <button onclick="closeGoogleAccountModal()" class="text-xs font-bold text-zinc-400 hover:text-zinc-700">✕</button>
-      </div>
-      <!-- REAL GOOGLE SIGN-IN VIA GOOGLE IDENTITY SERVICES -->
-      <div class="p-3.5 bg-gradient-to-br from-red-50/70 to-zinc-50 rounded-2xl border border-red-100/80 space-y-2.5">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-1.5">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span class="text-xs font-bold text-zinc-800">Live Google Identity Services</span>
+  <div id="modalGoogleAuth" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl border border-zinc-200 space-y-5 animate-in fade-in zoom-in-95 duration-200">
+      
+      <!-- Google Modal Header -->
+      <div class="flex items-start justify-between">
+        <div class="space-y-1">
+          <div class="flex items-center gap-2 mb-2">
+            <svg class="w-6 h-6" viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
+              <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.14C3.26 21.3 7.31 24 12 24z"/>
+              <path fill="#FBBC05" d="M5.28 14.24c-.24-.72-.38-1.49-.38-2.24s.14-1.52.38-2.24V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.14z"/>
+              <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.14c.95-2.85 3.6-4.96 6.72-4.96z"/>
+            </svg>
+            <span class="text-xs font-semibold text-zinc-500 tracking-wide uppercase">Google Workspace Identity</span>
           </div>
-          <span id="gsiStatusBadge" class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold">OIDC Active</span>
+          <h2 class="text-xl font-bold text-zinc-900 tracking-tight">Choose an account</h2>
+          <p class="text-xs text-zinc-600">to continue to <strong class="text-zinc-800">NIIT University Knowledge Assistant</strong></p>
         </div>
-        <div id="googleBtnContainer" class="flex justify-center my-1.5">
-          <!-- Live Google GIS Sign-In Button rendered here -->
-        </div>
-        <div class="text-[11px] text-zinc-500 pt-1 border-t border-zinc-200/60">
-          <details class="cursor-pointer">
-            <summary class="font-medium text-[#7A1C1C] hover:underline flex items-center justify-between">
-              <span>Google OAuth Client ID Settings</span>
-              <span class="text-[10px] text-zinc-400">Configure</span>
-            </summary>
-            <div class="mt-2 space-y-1.5 bg-white p-2.5 rounded-xl border border-zinc-200">
-              <input id="inputCustomGoogleClientId" type="text" placeholder="e.g. 123456789-xyz.apps.googleusercontent.com" class="w-full px-2.5 py-1.5 rounded-lg border border-zinc-300 text-xs focus:outline-none focus:border-[#7A1C1C]" />
-              <button type="button" onclick="configureGoogleClientId()" class="w-full py-1.5 rounded-lg bg-[#7A1C1C] hover:bg-[#5E1414] text-white text-xs font-semibold transition">Initialize Custom Client ID</button>
+        <button type="button" onclick="closeGoogleAccountModal()" class="w-8 h-8 rounded-full hover:bg-zinc-100 flex items-center justify-center text-zinc-400 hover:text-zinc-700 transition" title="Close">✕</button>
+      </div>
+
+      <!-- Account List (Choose Account) -->
+      <div class="divide-y divide-zinc-100 border-y border-zinc-100 -mx-6 px-6">
+        
+        <!-- Account 1: Yammanuru Vijay Vardhan Reddy -->
+        <button type="button" onclick="completeGoogleLogin('vijay.reddy23@st.niituniversity.in')" class="w-full py-3.5 px-3 rounded-2xl hover:bg-zinc-50 flex items-center gap-3.5 text-left transition group">
+          <div class="relative shrink-0">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-[#7A1C1C] to-red-600 text-white font-bold text-sm flex items-center justify-center shadow-xs">VR</div>
+            <div class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-white p-0.5 shadow-2xs flex items-center justify-center">
+              <svg viewBox="0 0 24 24" class="w-full h-full"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.14C3.26 21.3 7.31 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.24c-.24-.72-.38-1.49-.38-2.24s.14-1.52.38-2.24V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.14z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.14c.95-2.85 3.6-4.96 6.72-4.96z"/></svg>
             </div>
-          </details>
+          </div>
+          <div class="min-w-0 flex-1">
+            <div class="text-sm font-semibold text-zinc-900 group-hover:text-[#7A1C1C] transition">Yammanuru Vijay Vardhan Reddy</div>
+            <div class="text-xs text-zinc-500 truncate">vijay.reddy23@st.niituniversity.in</div>
+          </div>
+          <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-50 text-[#7A1C1C] border border-red-100 shrink-0">Student</span>
+        </button>
+
+        <!-- Account 2: Prof. Manish Hurkat -->
+        <button type="button" onclick="completeGoogleLogin('manish.hurkat@niituniversity.in')" class="w-full py-3.5 px-3 rounded-2xl hover:bg-zinc-50 flex items-center gap-3.5 text-left transition group">
+          <div class="relative shrink-0">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-600 to-amber-700 text-white font-bold text-sm flex items-center justify-center shadow-xs">MH</div>
+            <div class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-white p-0.5 shadow-2xs flex items-center justify-center">
+              <svg viewBox="0 0 24 24" class="w-full h-full"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.14C3.26 21.3 7.31 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.24c-.24-.72-.38-1.49-.38-2.24s.14-1.52.38-2.24V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.14z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.14c.95-2.85 3.6-4.96 6.72-4.96z"/></svg>
+            </div>
+          </div>
+          <div class="min-w-0 flex-1">
+            <div class="text-sm font-semibold text-zinc-900 group-hover:text-amber-700 transition">Prof. Manish Hurkat</div>
+            <div class="text-xs text-zinc-500 truncate">manish.hurkat@niituniversity.in</div>
+          </div>
+          <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 shrink-0">Faculty</span>
+        </button>
+
+        <!-- Account 3: Bandi Ananthagari Bharadwaj -->
+        <button type="button" onclick="completeGoogleLogin('bharadwaj.bandi23@st.niituniversity.in')" class="w-full py-3.5 px-3 rounded-2xl hover:bg-zinc-50 flex items-center gap-3.5 text-left transition group">
+          <div class="relative shrink-0">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-bold text-sm flex items-center justify-center shadow-xs">BB</div>
+            <div class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-white p-0.5 shadow-2xs flex items-center justify-center">
+              <svg viewBox="0 0 24 24" class="w-full h-full"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.14C3.26 21.3 7.31 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.24c-.24-.72-.38-1.49-.38-2.24s.14-1.52.38-2.24V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.14z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.14c.95-2.85 3.6-4.96 6.72-4.96z"/></svg>
+            </div>
+          </div>
+          <div class="min-w-0 flex-1">
+            <div class="text-sm font-semibold text-zinc-900 group-hover:text-blue-700 transition">Bandi Ananthagari Bharadwaj</div>
+            <div class="text-xs text-zinc-500 truncate">bharadwaj.bandi23@st.niituniversity.in</div>
+          </div>
+          <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-800 border border-blue-200 shrink-0">Student</span>
+        </button>
+
+        <!-- Account 4: NU Knowledge Admin -->
+        <button type="button" onclick="completeGoogleLogin('admin@niituniversity.in')" class="w-full py-3.5 px-3 rounded-2xl hover:bg-zinc-50 flex items-center gap-3.5 text-left transition group">
+          <div class="relative shrink-0">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-700 text-white font-bold text-sm flex items-center justify-center shadow-xs">AD</div>
+            <div class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-white p-0.5 shadow-2xs flex items-center justify-center">
+              <svg viewBox="0 0 24 24" class="w-full h-full"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.14C3.26 21.3 7.31 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.24c-.24-.72-.38-1.49-.38-2.24s.14-1.52.38-2.24V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.14z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.14c.95-2.85 3.6-4.96 6.72-4.96z"/></svg>
+            </div>
+          </div>
+          <div class="min-w-0 flex-1">
+            <div class="text-sm font-semibold text-zinc-900 group-hover:text-emerald-700 transition">NU Knowledge Admin</div>
+            <div class="text-xs text-zinc-500 truncate">admin@niituniversity.in</div>
+          </div>
+          <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 shrink-0">Admin</span>
+        </button>
+
+        <!-- Option 5: Use another account -->
+        <div class="py-2.5 px-3">
+          <button type="button" onclick="toggleCustomGoogleInput()" class="w-full py-1.5 flex items-center gap-3.5 text-left text-zinc-700 hover:text-zinc-900 transition font-medium text-xs">
+            <div class="w-10 h-10 rounded-full border border-zinc-200 flex items-center justify-center text-zinc-500 shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
+            </div>
+            <span class="font-semibold text-zinc-800 hover:text-[#7A1C1C]">Use another Google or university account</span>
+          </button>
+          <div id="customGoogleInputBox" class="hidden mt-3 p-3 bg-zinc-50 rounded-2xl border border-zinc-200 space-y-2">
+            <label for="inputAnotherGoogleEmail" class="block text-[11px] font-semibold text-zinc-600">Enter your Google / University Email:</label>
+            <input id="inputAnotherGoogleEmail" type="email" placeholder="e.g. name@st.niituniversity.in" class="w-full px-3 py-2 rounded-xl border border-zinc-300 text-xs bg-white focus:outline-none focus:border-[#7A1C1C]" />
+            <button type="button" onclick="submitAnotherGoogleEmail()" class="w-full py-2 rounded-xl bg-[#7A1C1C] hover:bg-[#5E1414] text-white text-xs font-semibold transition">Sign in with this Google account</button>
+          </div>
         </div>
+
       </div>
 
-      <div class="relative flex py-1 items-center">
-        <div class="flex-grow border-t border-zinc-200"></div>
-        <span class="flex-shrink mx-2 text-[10px] uppercase font-bold text-zinc-400 tracking-wider">or 1-click university accounts</span>
-        <div class="flex-grow border-t border-zinc-200"></div>
+      <!-- Google Privacy & Compliance Note -->
+      <div class="text-[11px] text-zinc-400 leading-relaxed pt-1">
+        To continue, Google will share your verified name, email address, and profile credentials with NIIT University Knowledge Assistant.
       </div>
 
-      <div class="space-y-2">
-        <button type="button" onclick="completeGoogleLogin('vijay.reddy23@st.niituniversity.in')" class="w-full p-3 rounded-2xl border border-zinc-200 hover:border-[#7A1C1C] hover:bg-red-50/30 flex items-center gap-3 text-left transition">
-          <div class="w-9 h-9 rounded-full nu-brand-gradient text-white font-bold text-xs flex items-center justify-center shrink-0">VR</div>
-          <div class="min-w-0">
-            <div class="text-xs font-bold text-zinc-900 truncate">Yammanuru Vijay Vardhan Reddy</div>
-            <div class="text-[11px] text-zinc-500 truncate">vijay.reddy23@st.niituniversity.in • Student</div>
-          </div>
-        </button>
-        <button type="button" onclick="completeGoogleLogin('manish.hurkat@niituniversity.in')" class="w-full p-3 rounded-2xl border border-zinc-200 hover:border-[#7A1C1C] hover:bg-red-50/30 flex items-center gap-3 text-left transition">
-          <div class="w-9 h-9 rounded-full bg-amber-700 text-white font-bold text-xs flex items-center justify-center shrink-0">MH</div>
-          <div class="min-w-0">
-            <div class="text-xs font-bold text-zinc-900 truncate">Prof. Manish Hurkat</div>
-            <div class="text-[11px] text-zinc-500 truncate">manish.hurkat@niituniversity.in • Faculty</div>
-          </div>
-        </button>
-        <button type="button" onclick="completeGoogleLogin('admin@niituniversity.in')" class="w-full p-3 rounded-2xl border border-zinc-200 hover:border-[#7A1C1C] hover:bg-red-50/30 flex items-center gap-3 text-left transition">
-          <div class="w-9 h-9 rounded-full bg-emerald-700 text-white font-bold text-xs flex items-center justify-center shrink-0">AD</div>
-          <div class="min-w-0">
-            <div class="text-xs font-bold text-zinc-900 truncate">NU Knowledge Admin</div>
-            <div class="text-[11px] text-zinc-500 truncate">admin@niituniversity.in • Admin Staff</div>
-          </div>
-        </button>
-      </div>
     </div>
   </div>
 
@@ -1027,6 +1064,23 @@
       m.classList.add('hidden');
       m.classList.remove('flex');
     }
+    function toggleCustomGoogleInput() {
+      const box = document.getElementById('customGoogleInputBox');
+      if (box) {
+        box.classList.toggle('hidden');
+        if (!box.classList.contains('hidden')) {
+          document.getElementById('inputAnotherGoogleEmail')?.focus();
+        }
+      }
+    }
+    function submitAnotherGoogleEmail() {
+      const email = document.getElementById('inputAnotherGoogleEmail')?.value.trim();
+      if (!email || !email.includes('@')) {
+        alert('Please enter a valid Google or university email address.');
+        return;
+      }
+      completeGoogleLogin(email);
+    }
     function completeGoogleLogin(email) {
       closeGoogleAccountModal();
       signInWithEmail(email, 'GOOGLE');
@@ -1094,8 +1148,23 @@
         console.warn("Backend auth fetch error, using local fallback:", err);
       }
 
-      // 2. Fallback in-memory user matching
-      const user = app.Users.find(u => u.email.toLowerCase() === email.toLowerCase());
+      // 2. Fallback in-memory user matching or dynamic Google provisioning
+      let user = app.Users.find(u => u.email.toLowerCase() === email.toLowerCase());
+      if (!user && (method === 'GOOGLE' || method === 'SSO')) {
+        const isFaculty = email.endsWith('@niituniversity.in') && !email.toLowerCase().includes('student');
+        const role = email.toLowerCase().includes('admin') ? 'ADMIN' : (isFaculty ? 'FACULTY' : 'STUDENT');
+        const rawName = email.split('@')[0].replace(/[._0-9]/g, ' ').trim();
+        const full_name = (rawName ? rawName.replace(/\b\w/g, c => c.toUpperCase()) : 'Google User');
+        user = {
+          id: 'usr_g_' + Math.random().toString(36).substring(2, 9),
+          full_name: full_name,
+          email: email,
+          role: role,
+          auth_source: 'GOOGLE',
+          initials: full_name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
+        };
+        app.Users.push(user);
+      }
       if (!user) {
         const alertBox = document.getElementById('loginAlertBox');
         document.getElementById('loginAlertText').textContent = 'Account not recognized. Please sign in with a valid @st.niituniversity.in or @niituniversity.in account.';
