@@ -162,7 +162,7 @@ The repository includes two ready-to-run Jenkins pipeline specifications:
 
 ---
 
-## Automated Testing Suite (3 Marks)
+## Automated Testing Suite 
 
 Run all 18 automated tests locally:
 ```bash
