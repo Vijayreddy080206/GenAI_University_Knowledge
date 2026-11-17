@@ -1,12 +1,4 @@
-"""
-SDD Section 5.2.8: Document Ingestion Service
-Implements REQ-KB-01, REQ-KB-02, REQ-KB-03, REQ-KB-04, REQ-KB-05, NFR-SAFE-02, UC-02, UC-03
-- Validates file type (PDF, DOCX, TXT) and size limit (<= 25 MB) per REQ-KB-05
-- Extracts text from PDF (pypdf), DOCX (python-docx), and TXT
-- Splits into semantic chunks (~500 tokens with ~50 tokens overlap)
-- Generates embeddings and indexes in Vector Store + PostgreSQL/SQLite DocumentChunks
-- Handles Admin tagging, updates, re-indexing (REQ-KB-04), and UC-03 deletion warnings
-"""
+
 import os
 import re
 import uuid
