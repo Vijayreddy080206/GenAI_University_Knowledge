@@ -126,7 +126,7 @@ Open **`http://127.0.0.1:8000`** in your browser.
 
 ---
 
-## Docker Containerization (3 Marks)
+## Docker Containerization 
 
 ### Build and Run with Docker Compose
 ```bash
@@ -145,7 +145,7 @@ docker run -p 8000:8000 -v ./backend/storage:/app/storage nu-knowledge-assistant
 
 ---
 
-## Jenkins CI/CD Pipeline (3 Marks)
+## Jenkins CI/CD Pipeline
 
 The repository includes two ready-to-run Jenkins pipeline specifications:
 * **`Jenkinsfile`**: Industry-standard 7-stage declarative pipeline for cloud Linux nodes and Kubernetes clusters (`REQ-OPS-04`).
@@ -188,7 +188,7 @@ python -m unittest discover -s backend/tests -p "test_*.py" -v
 
 ## Demo Login Credentials (`REQ-AUTH-01` & `REQ-AUTH-02`)
 
-| Role | Email | Password | Permissions (`SRS 5.5` & `SDD 6.2`) |
+| Role | Email | Password | Permissions  |
 | :--- | :--- | :--- | :--- |
 | **Student** | `vijay.reddy23@st.niituniversity.in` | `student123` | Natural language chat, session history, answer feedback (Thumbs Up/Down + comment). |
 | **Faculty** | `manish.hurkat@niituniversity.in` | `faculty123` | Student features + upload course documents (`PDF`, `DOCX`, `TXT` ≤ 25 MB). |
