@@ -1,7 +1,7 @@
 # ==============================================================================
 # NIIT University - Generative AI-Based University Knowledge Assistant
 # Production Multi-Stage Dockerfile (REQ-OPS-01, SDD Section 5.5)
-# Capstone Project II - Team-20 (Supervised by Prof. Manish Hurkat)
+
 # ==============================================================================
 
 FROM python:3.11-slim as builder
