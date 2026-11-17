@@ -1,7 +1,7 @@
 // ==============================================================================
 // NIIT University - Generative AI-Based University Knowledge Assistant
 // Jenkins Declarative Pipeline (REQ-OPS-04, CI/CD Pipeline for Kubernetes & Docker)
-// Capstone Project II - Team-20 (Under Supervision of Prof. Manish Hurkat)
+
 // ==============================================================================
 
 pipeline {
