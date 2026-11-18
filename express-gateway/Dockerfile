@@ -1,6 +1,6 @@
 # ==============================================================================
 # NIIT University - REST API Gateway (Node.js + Express)
-# Matches Presentation Architecture & SDD Microservice Gateway Spec
+
 # ==============================================================================
 
 FROM node:20-alpine
