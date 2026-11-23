@@ -2,14 +2,17 @@
 SDD Section 5.2.2: API Gateway & Unified Microservice Entrypoint
 Exposes all REST endpoints for Auth (Google OAuth2 + SSO/Local), Chat/RAG,
 Document Ingestion, Analytics/Feedback, Users/RBAC, and Kubernetes Health/Readiness probes.
+Includes Production OpenAPI Swagger metadata with JWT Bearer Authorize support.
 """
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, UploadFile, File, Form, Header, HTTPException, Query
+from fastapi import FastAPI, UploadFile, File, Form, Header, HTTPException, Query, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse
-from pydantic import BaseModel
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi.openapi.docs import get_swagger_ui_html
+from pydantic import BaseModel, Field
 from pathlib import Path
-from typing import Optional, List
+from typing import Optional, List, Dict, Any
 
 from app.config import settings
 from app.database import get_db_connection
@@ -19,6 +22,33 @@ from app.services.ingestion_service import DocumentIngestionService
 from app.services.chat_orchestrator import ChatOrchestratorService
 from app.services.analytics_service import AnalyticsFeedbackService
 
+tags_metadata = [
+    {
+        "name": "Health & Probes",
+        "description": "Liveness (/healthz), Readiness (/readyz), and Kubernetes multi-cluster telemetry probes (REQ-OPS-03).",
+    },
+    {
+        "name": "Authentication & Identity",
+        "description": "Google OAuth2 / OIDC token verification, institutional SSO, local JWT auth, and active session validation (REQ-AUTH-01 to 04).",
+    },
+    {
+        "name": "Conversational RAG & Chat",
+        "description": "Ground-truth university question answering with conversational context rewriting, cosine vector retrieval, and citation verification (REQ-CHAT-01 to 06).",
+    },
+    {
+        "name": "Knowledge Base Management",
+        "description": "Document ingestion (PDF, DOCX, TXT), semantic chunking (500 tokens), ChromaDB vector indexing, tag updates, and deletion (REQ-KB-01 to 05).",
+    },
+    {
+        "name": "Feedback & Quality Evaluation",
+        "description": "User answer rating (UP/DOWN) and feedback comment capture for continuous RAG quality improvement (REQ-FB-01).",
+    },
+    {
+        "name": "Admin Analytics & RBAC",
+        "description": "Executive metrics, query volume time-series, category distributions, user directory management, and role promotion/demotion (REQ-AN-01, REQ-AN-02, REQ-AUTH-03).",
+    },
+]
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Initialize DB schema and seed baseline documents on startup
@@ -26,9 +56,22 @@ async def lifespan(app: FastAPI):
     yield
 
 app = FastAPI(
-    title=settings.PROJECT_NAME,
+    title="NIIT University - AI Knowledge Assistant API",
     version=settings.VERSION,
-    description="CAPSTONE PROJECT II - Team-20, NIIT University (Under Supervision of Prof. Manish Hurkat)",
+    description="""
+## Enterprise Generative AI Knowledge Assistant Microservice API
+Built for **NIIT University** under the supervision of **Prof. Manish Hurkat** (Capstone Project II, Team-20).
+
+### Architecture & Capabilities:
+* **Retrieval-Augmented Generation (RAG):** Context-grounded Q&A against official circulars, syllabi, handbooks, and exam schedules with citation badges `[1]`.
+* **Enterprise Security & Governance:** Strict Role-Based Access Control (**STUDENT**, **FACULTY**, **ADMIN**), Google OAuth2 (OIDC) token validation, automated 30-min inactivity expiration, and PII anonymization.
+* **3-Tier Microservice Topology:** Nginx Reverse Proxy (SSL) -> Node.js Express API Gateway -> FastAPI Core RAG Engine.
+* **ChromaDB Vector Store:** Normalized semantic embeddings with dynamic cosine similarity thresholding (0.18) and anti-hallucination guardrails.
+    """,
+    openapi_tags=tags_metadata,
+    docs_url="/docs",
+    redoc_url="/redoc",
+    openapi_url="/openapi.json",
     lifespan=lifespan
 )
 
@@ -40,42 +83,62 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-def extract_token(authorization: Optional[str]) -> str:
-    if not authorization:
-        raise HTTPException(status_code=401, detail="Missing Authorization Bearer token.")
-    if authorization.lower().startswith("bearer "):
-        return authorization[7:].strip()
-    return authorization.strip()
+# JWT Bearer Security Scheme for Swagger UI Authorize button
+security_scheme = HTTPBearer(
+    auto_error=False,
+    description="Paste your JWT Bearer token obtained from `/api/auth/login` or `/api/auth/google`."
+)
+
+def extract_token(
+    authorization: Optional[str] = Header(None),
+    token_creds: Optional[HTTPAuthorizationCredentials] = Depends(security_scheme)
+) -> str:
+    if token_creds and token_creds.credentials:
+        return token_creds.credentials
+    if authorization:
+        if authorization.lower().startswith("bearer "):
+            return authorization[7:].strip()
+        return authorization.strip()
+    raise HTTPException(status_code=401, detail="Missing Authorization Bearer token.")
 
 # --- Request Schemas ---
 class LoginRequest(BaseModel):
-    email: str
-    password: Optional[str] = None
-    is_sso: bool = False
+    email: str = Field(..., example="vijay.reddy23@st.niituniversity.in")
+    password: Optional[str] = Field("student123", example="student123")
+    is_sso: bool = Field(False, example=False)
 
 class GoogleLoginRequest(BaseModel):
-    credential: str
+    credential: str = Field(..., description="Google Identity Services (GSI) JWT ID Token", example="eyJhbGciOiJSUzI1NiIs...")
 
 class ChatQueryRequest(BaseModel):
-    query_text: str
-    session_id: Optional[int] = None
-    department_filter: Optional[str] = None
-    simulate_llm_error: bool = False
+    query_text: str = Field(..., example="When is the last date to pay semester fees?")
+    session_id: Optional[int] = Field(None, example=1)
+    department_filter: Optional[str] = Field(None, example="Accounts")
+    simulate_llm_error: bool = Field(False, example=False)
 
 class FeedbackRequest(BaseModel):
-    response_id: int
-    rating: str
-    comment: Optional[str] = None
+    response_id: int = Field(..., example=1)
+    rating: str = Field(..., example="UP")
+    comment: Optional[str] = Field(None, example="Accurate circular deadline and late fine cited clearly.")
 
 class TagUpdateRequest(BaseModel):
-    department: str
-    category: str
+    department: str = Field(..., example="Academics")
+    category: str = Field(..., example="Handbooks")
 
 class RoleUpdateRequest(BaseModel):
-    role: str
+    role: str = Field(..., example="FACULTY")
+
+# Swagger UI Alias for Nginx /api/docs routing
+@app.get("/api/docs", include_in_schema=False)
+async def api_docs_alias():
+    return get_swagger_ui_html(openapi_url="/openapi.json", title="NIIT University Knowledge Assistant - API Docs")
+
+@app.get("/api/openapi.json", include_in_schema=False)
+async def api_openapi_alias():
+    return app.openapi()
 
 # --- 1. Health & Readiness Probes (REQ-OPS-03, SRS 5.4.2) ---
-@app.get("/healthz")
+@app.get("/healthz", tags=["Health & Probes"], summary="Kubernetes Liveness Probe")
 def liveness_probe():
     return {
         "status": "UP",
@@ -96,7 +159,7 @@ def liveness_probe():
         }
     }
 
-@app.get("/readyz")
+@app.get("/readyz", tags=["Health & Probes"], summary="Kubernetes Readiness Probe")
 def readiness_probe():
     conn = get_db_connection()
     try:
@@ -105,7 +168,7 @@ def readiness_probe():
     finally:
         conn.close()
 
-@app.get("/api/config")
+@app.get("/api/config", tags=["Health & Probes"], summary="Public System Configuration & LLM Metadata")
 def get_public_config():
     """Provides public configuration and metadata to the web frontend."""
     return {
@@ -118,24 +181,23 @@ def get_public_config():
     }
 
 # --- 2. Authentication & Session Endpoints (REQ-AUTH-01 to 04) ---
-@app.post("/api/auth/login")
+@app.post("/api/auth/login", tags=["Authentication & Identity"], summary="SSO and Local Credentials Login")
 def login(req: LoginRequest):
     return AuthService.authenticate_user(email=req.email, password=req.password, is_sso=req.is_sso)
 
-@app.post("/api/auth/google")
+@app.post("/api/auth/google", tags=["Authentication & Identity"], summary="Real Google OAuth2 / OpenID Connect Token Verification")
 def google_login(req: GoogleLoginRequest):
     """Real Google OAuth2 / OpenID Connect login via Google Identity Services."""
     return AuthService.authenticate_google_user(credential=req.credential)
 
-@app.get("/api/auth/me")
-def get_current_user(authorization: Optional[str] = Header(None)):
-    token = extract_token(authorization)
+@app.get("/api/auth/me", tags=["Authentication & Identity"], summary="Validate Current Active Session & RBAC Role")
+def get_current_user(token: str = Depends(extract_token)):
     return AuthService.validate_session_and_role(token)
 
 # --- 3. Conversational RAG Endpoints (REQ-CHAT-01 to 06) ---
-@app.get("/api/chat/sessions")
-def list_user_sessions(authorization: Optional[str] = Header(None)):
-    user = AuthService.validate_session_and_role(extract_token(authorization))
+@app.get("/api/chat/sessions", tags=["Conversational RAG & Chat"], summary="List User Conversation Sessions")
+def list_user_sessions(token: str = Depends(extract_token)):
+    user = AuthService.validate_session_and_role(token)
     conn = get_db_connection()
     try:
         rows = conn.execute(
@@ -146,9 +208,9 @@ def list_user_sessions(authorization: Optional[str] = Header(None)):
     finally:
         conn.close()
 
-@app.post("/api/chat/sessions/new")
-def create_new_session(authorization: Optional[str] = Header(None)):
-    user = AuthService.validate_session_and_role(extract_token(authorization))
+@app.post("/api/chat/sessions/new", tags=["Conversational RAG & Chat"], summary="Create New Chat Session")
+def create_new_session(token: str = Depends(extract_token)):
+    user = AuthService.validate_session_and_role(token)
     conn = get_db_connection()
     try:
         from app.services.auth_service import now_iso
@@ -162,9 +224,9 @@ def create_new_session(authorization: Optional[str] = Header(None)):
     finally:
         conn.close()
 
-@app.get("/api/chat/sessions/{session_id}/messages")
-def get_session_messages(session_id: int, authorization: Optional[str] = Header(None)):
-    AuthService.validate_session_and_role(extract_token(authorization))
+@app.get("/api/chat/sessions/{session_id}/messages", tags=["Conversational RAG & Chat"], summary="Retrieve Session Chat History and Citations")
+def get_session_messages(session_id: int, token: str = Depends(extract_token)):
+    AuthService.validate_session_and_role(token)
     conn = get_db_connection()
     try:
         rows = conn.execute(
@@ -200,10 +262,10 @@ def get_session_messages(session_id: int, authorization: Optional[str] = Header(
     finally:
         conn.close()
 
-@app.post("/api/chat/query")
-def ask_question(req: ChatQueryRequest, authorization: Optional[str] = Header(None)):
+@app.post("/api/chat/query", tags=["Conversational RAG & Chat"], summary="Submit Question for Grounded RAG Answer Synthesis")
+def ask_question(req: ChatQueryRequest, token: str = Depends(extract_token)):
     user = AuthService.validate_session_and_role(
-        extract_token(authorization),
+        token,
         allowed_roles=["STUDENT", "FACULTY", "ADMIN"]
     )
     sess_id = req.session_id or user["session_id"]
@@ -216,10 +278,10 @@ def ask_question(req: ChatQueryRequest, authorization: Optional[str] = Header(No
     )
 
 # --- 4. Knowledge Base & Document Management Endpoints (REQ-KB-01 to 05) ---
-@app.get("/api/documents")
-def list_documents(authorization: Optional[str] = Header(None)):
+@app.get("/api/documents", tags=["Knowledge Base Management"], summary="List All Indexed University Documents")
+def list_documents(token: str = Depends(extract_token)):
     AuthService.validate_session_and_role(
-        extract_token(authorization),
+        token,
         allowed_roles=["FACULTY", "ADMIN"]
     )
     conn = get_db_connection()
@@ -237,15 +299,15 @@ def list_documents(authorization: Optional[str] = Header(None)):
     finally:
         conn.close()
 
-@app.post("/api/documents/upload")
+@app.post("/api/documents/upload", tags=["Knowledge Base Management"], summary="Upload & Ingest Document (PDF, DOCX, TXT)")
 async def upload_document(
-    file: UploadFile = File(...),
-    department: str = Form("Academics"),
-    category: str = Form("General"),
-    authorization: Optional[str] = Header(None)
+    file: UploadFile = File(..., description="Uploaded document (PDF, DOCX, TXT, max 25MB)"),
+    department: str = Form("Academics", description="Academic or administrative department"),
+    category: str = Form("General", description="Document topic category tag"),
+    token: str = Depends(extract_token)
 ):
     user = AuthService.validate_session_and_role(
-        extract_token(authorization),
+        token,
         allowed_roles=["FACULTY", "ADMIN"]
     )
     file_bytes = await file.read()
@@ -257,22 +319,22 @@ async def upload_document(
         category=category
     )
 
-@app.put("/api/documents/{document_id}/tags")
-def update_tags(document_id: int, req: TagUpdateRequest, authorization: Optional[str] = Header(None)):
+@app.put("/api/documents/{document_id}/tags", tags=["Knowledge Base Management"], summary="Update Document Department & Category Tags")
+def update_tags(document_id: int, req: TagUpdateRequest, token: str = Depends(extract_token)):
     # SRS 5.5 Business Rule: Only Admin may tag documents
-    AuthService.validate_session_and_role(extract_token(authorization), allowed_roles=["ADMIN"])
+    AuthService.validate_session_and_role(token, allowed_roles=["ADMIN"])
     return DocumentIngestionService.update_document_tags(document_id, req.department, req.category)
 
-@app.delete("/api/documents/{document_id}")
-def remove_document(document_id: int, force: bool = Query(False), authorization: Optional[str] = Header(None)):
+@app.delete("/api/documents/{document_id}", tags=["Knowledge Base Management"], summary="Permanently Delete Document & ChromaDB Embeddings")
+def remove_document(document_id: int, force: bool = Query(False), token: str = Depends(extract_token)):
     # SRS 5.5 Business Rule: Only Admin may permanently delete a document
-    AuthService.validate_session_and_role(extract_token(authorization), allowed_roles=["ADMIN"])
+    AuthService.validate_session_and_role(token, allowed_roles=["ADMIN"])
     return DocumentIngestionService.delete_document(document_id, force=force)
 
 # --- 5. Feedback & Admin Analytics Endpoints (REQ-FB-01, REQ-AN-01, REQ-AN-02) ---
-@app.post("/api/feedback")
-def submit_answer_feedback(req: FeedbackRequest, authorization: Optional[str] = Header(None)):
-    user = AuthService.validate_session_and_role(extract_token(authorization))
+@app.post("/api/feedback", tags=["Feedback & Quality Evaluation"], summary="Submit Response Rating (UP/DOWN) and Comment")
+def submit_answer_feedback(req: FeedbackRequest, token: str = Depends(extract_token)):
+    user = AuthService.validate_session_and_role(token)
     return AnalyticsFeedbackService.submit_feedback(
         response_id=req.response_id,
         user_id=user["user_id"],
@@ -280,20 +342,20 @@ def submit_answer_feedback(req: FeedbackRequest, authorization: Optional[str] = 
         comment=req.comment
     )
 
-@app.get("/api/admin/analytics")
+@app.get("/api/admin/analytics", tags=["Admin Analytics & RBAC"], summary="Executive Dashboard Analytics & Metric Summaries")
 def get_analytics(
-    days: int = Query(30),
-    start_date: Optional[str] = Query(None),
-    end_date: Optional[str] = Query(None),
-    authorization: Optional[str] = Header(None)
+    days: int = Query(30, description="Rolling time window in days"),
+    start_date: Optional[str] = Query(None, description="Start date timestamp filter"),
+    end_date: Optional[str] = Query(None, description="End date timestamp filter"),
+    token: str = Depends(extract_token)
 ):
-    AuthService.validate_session_and_role(extract_token(authorization), allowed_roles=["ADMIN"])
+    AuthService.validate_session_and_role(token, allowed_roles=["ADMIN"])
     return AnalyticsFeedbackService.get_dashboard_analytics(days=days, start_date=start_date, end_date=end_date)
 
 # --- 6. Admin Users & Roles Management Endpoints (REQ-AUTH-02, REQ-AUTH-03, SRS 5.5) ---
-@app.get("/api/admin/users")
-def list_users(authorization: Optional[str] = Header(None)):
-    AuthService.validate_session_and_role(extract_token(authorization), allowed_roles=["ADMIN"])
+@app.get("/api/admin/users", tags=["Admin Analytics & RBAC"], summary="List Registered University Users")
+def list_users(token: str = Depends(extract_token)):
+    AuthService.validate_session_and_role(token, allowed_roles=["ADMIN"])
     conn = get_db_connection()
     try:
         rows = conn.execute(
@@ -303,10 +365,10 @@ def list_users(authorization: Optional[str] = Header(None)):
     finally:
         conn.close()
 
-@app.put("/api/admin/users/{target_user_id}/role")
-def change_user_role(target_user_id: int, req: RoleUpdateRequest, authorization: Optional[str] = Header(None)):
+@app.put("/api/admin/users/{target_user_id}/role", tags=["Admin Analytics & RBAC"], summary="Update User RBAC Role Assignment")
+def change_user_role(target_user_id: int, req: RoleUpdateRequest, token: str = Depends(extract_token)):
     # SRS 5.5 Business Rule: Only Admin may modify another user's role
-    AuthService.validate_session_and_role(extract_token(authorization), allowed_roles=["ADMIN"])
+    AuthService.validate_session_and_role(token, allowed_roles=["ADMIN"])
     new_role = req.role.upper().strip()
     if new_role not in ("STUDENT", "FACULTY", "ADMIN"):
         raise HTTPException(status_code=400, detail="Role must be STUDENT, FACULTY, or ADMIN.")
@@ -324,7 +386,7 @@ def change_user_role(target_user_id: int, req: RoleUpdateRequest, authorization:
     finally:
         conn.close()
 
-@app.get("/", response_class=HTMLResponse)
+@app.get("/", response_class=HTMLResponse, include_in_schema=False)
 def serve_web_application():
     ui_path = Path(__file__).resolve().parent / "index.html"
     if ui_path.exists():

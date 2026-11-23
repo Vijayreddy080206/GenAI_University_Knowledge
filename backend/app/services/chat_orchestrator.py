@@ -76,9 +76,15 @@ class ChatOrchestratorService:
         """REQ-CHAT-04: Rewrites short or pronoun-referencing follow-up queries using recent session context."""
         if not history:
             return query_text
-        pronouns_or_followups = {"it", "that", "they", "their", "this", "what about", "and for", "how much", "when is it", "penalty", "late"}
+        single_word_cues = {"it", "that", "they", "their", "this", "penalty", "late"}
+        multi_word_cues = ("what about", "and for", "how much", "when is it")
         q_low = query_text.lower()
-        needs_context = len(query_text.split()) <= 6 or any(p in q_low for p in pronouns_or_followups)
+        tokens = set(re.findall(r"\b[a-z]+\b", q_low))
+        needs_context = (
+            len(query_text.split()) <= 6
+            or any(w in tokens for w in single_word_cues)
+            or any(phrase in q_low for phrase in multi_word_cues)
+        )
         if needs_context:
             last_turn = history[-1]
             return f"{last_turn['query_text']} {query_text}"

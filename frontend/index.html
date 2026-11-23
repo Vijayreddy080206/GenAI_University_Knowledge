@@ -606,7 +606,7 @@
       <!-- FLOATING COMPOSER DOCK (Apple Liquid Glass Capsule) -->
       <div class="px-4 sm:px-6 pb-5 pt-2 bg-gradient-to-t from-[#F5F5F7] via-[#F5F5F7]/80 to-transparent shrink-0">
         <div class="max-w-3xl mx-auto">
-          <form id="chatComposer" onsubmit="handleComposerSubmit(event)" class="glisse-composer p-2.5 sm:p-3">
+          <form id="chatComposer" onsubmit="handleComposerSubmit(event); return false;" class="glisse-composer p-2.5 sm:p-3">
             <textarea
               id="composerInput"
               rows="2"
@@ -1545,11 +1545,15 @@
     function handleComposerKeydown(e) {
       if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
-        handleComposerSubmit();
+        handleComposerSubmit(e);
       }
     }
 
-    async function handleComposerSubmit() {
+    async function handleComposerSubmit(event) {
+      if (event) {
+        if (typeof event.preventDefault === 'function') event.preventDefault();
+        if (typeof event.stopPropagation === 'function') event.stopPropagation();
+      }
       const input = document.getElementById('composerInput');
       if (!input) return;
       const text = input.value.trim();

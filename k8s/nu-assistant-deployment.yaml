@@ -1,0 +1,240 @@
+# ==============================================================================
+# NIIT University Knowledge Assistant - Kubernetes Production Deployment
+# Namespace: nu-assistant
+# 3-Tier Architecture: Nginx Frontend -> Express API Gateway -> FastAPI Backend
+# ==============================================================================
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nu-assistant
+  labels:
+    app.kubernetes.io/part-of: nu-knowledge-assistant
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nu-assistant-config
+  namespace: nu-assistant
+data:
+  APP_ENV: "production"
+  CHUNK_SIZE_TOKENS: "500"
+  CHUNK_OVERLAP_TOKENS: "50"
+  TOP_K_CHUNKS: "5"
+  SIMILARITY_THRESHOLD: "0.18"
+  LLM_MODEL_NAME: "gemini-2.5-flash"
+  BACKEND_URL: "http://nu-knowledge-backend:8000"
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: nu-assistant-secrets
+  namespace: nu-assistant
+type: Opaque
+stringData:
+  JWT_SECRET_KEY: "niit-university-capstone-prod-secret-key-2026"
+  GEMINI_API_KEY: ""
+
+---
+# 1. FastAPI Core RAG Backend Deployment & Service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nu-knowledge-backend
+  namespace: nu-assistant
+  labels:
+    app: nu-knowledge-backend
+    tier: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nu-knowledge-backend
+  template:
+    metadata:
+      labels:
+        app: nu-knowledge-backend
+        tier: backend
+    spec:
+      containers:
+        - name: backend
+          image: vijayreddy080206/genai-university-knowledge:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - configMapRef:
+                name: nu-assistant-config
+            - secretRef:
+                name: nu-assistant-secrets
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 15
+          resources:
+            requests:
+              cpu: "150m"
+              memory: "256Mi"
+            limits:
+              cpu: "1000m"
+              memory: "1Gi"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nu-knowledge-backend
+  namespace: nu-assistant
+spec:
+  selector:
+    app: nu-knowledge-backend
+  ports:
+    - name: http
+      port: 8000
+      targetPort: 8000
+
+---
+# 2. Express API Gateway Deployment & Service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nu-knowledge-api-gateway
+  namespace: nu-assistant
+  labels:
+    app: nu-knowledge-api-gateway
+    tier: gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nu-knowledge-api-gateway
+  template:
+    metadata:
+      labels:
+        app: nu-knowledge-api-gateway
+        tier: gateway
+    spec:
+      containers:
+        - name: gateway
+          image: vijayreddy080206/genai-university-gateway:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 4000
+          env:
+            - name: PORT
+              value: "4000"
+            - name: PYTHON_RAG_BACKEND
+              value: "http://nu-knowledge-backend:8000"
+          readinessProbe:
+            httpGet:
+              path: /gateway/health
+              port: 4000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /gateway/health
+              port: 4000
+            initialDelaySeconds: 10
+            periodSeconds: 15
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nu-knowledge-api-gateway
+  namespace: nu-assistant
+spec:
+  selector:
+    app: nu-knowledge-api-gateway
+  ports:
+    - name: http
+      port: 4000
+      targetPort: 4000
+
+---
+# 3. Nginx Web Presentation Tier Deployment & NodePort Service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nu-knowledge-frontend
+  namespace: nu-assistant
+  labels:
+    app: nu-knowledge-frontend
+    tier: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nu-knowledge-frontend
+  template:
+    metadata:
+      labels:
+        app: nu-knowledge-frontend
+        tier: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: vijayreddy080206/genai-university-frontend:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+            - containerPort: 443
+          volumeMounts:
+            - name: tls-certs
+              mountPath: /etc/nginx/certs
+              readOnly: true
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "250m"
+              memory: "256Mi"
+      volumes:
+        - name: tls-certs
+          secret:
+            secretName: nu-tls-certs
+            items:
+              - key: tls.crt
+                path: localhost.pem
+              - key: tls.key
+                path: localhost-key.pem
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nu-knowledge-frontend
+  namespace: nu-assistant
+spec:
+  type: NodePort
+  selector:
+    app: nu-knowledge-frontend
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80

@@ -1,0 +1,37 @@
+# ==============================================================================
+# NIIT University - Generative AI Knowledge Assistant
+# Render Cloud Deployment Blueprint (render.yaml)
+# Single Unified Production Web Service (Frontend + FastAPI RAG Core + Swagger)
+# ==============================================================================
+
+services:
+  - type: web
+    name: nu-knowledge-assistant
+    runtime: python
+    region: oregon
+    plan: free
+    branch: main
+    buildCommand: "pip install -r backend/requirements.txt"
+    startCommand: "cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    healthCheckPath: /healthz
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: APP_ENV
+        value: production
+      - key: CHUNK_SIZE_TOKENS
+        value: "500"
+      - key: CHUNK_OVERLAP_TOKENS
+        value: "50"
+      - key: TOP_K_CHUNKS
+        value: "5"
+      - key: SIMILARITY_THRESHOLD
+        value: "0.18"
+      - key: CONVERSATION_WINDOW_TURNS
+        value: "5"
+      - key: LLM_MODEL_NAME
+        value: "gemini-2.5-flash"
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: GEMINI_API_KEY
+        sync: false

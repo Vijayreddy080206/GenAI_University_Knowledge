@@ -194,3 +194,124 @@ python -m unittest discover -s backend/tests -p "test_*.py" -v
 | **Faculty** | `manish.hurkat@niituniversity.in` | `faculty123` | Student features + upload course documents (`PDF`, `DOCX`, `TXT` ≤ 25 MB). |
 | **Admin Staff** | `admin@niituniversity.in` | `admin123` | Full access: tag/delete documents (`UC-03`), manage user roles, view Analytics & System Health. |
 | **Google Sign-In** | Any Google Workspace Account | *Google OAuth* | Authenticates via Google ID Token with automatic student/faculty role detection. |
+
+---
+
+## Production & Faculty Demo Deliverables Guide
+
+### 1. True 3-Tier Architecture Flow & Live Logging
+Requests travel through all 3 microservices:
+1. **Client / Browser:** `https://localhost` (Port 443 with mkcert SSL, automatic Port 80 redirect).
+2. **Web Tier (Nginx):** Reverse proxies `/api/*`, `/docs`, `/healthz`, `/readyz` to `nu-knowledge-api-gateway:4000`.
+3. **API Gateway (Express):** Performs request throttling, cross-origin header injection, and structured logging `[API-GATEWAY] <METHOD> <URL> -> <BACKEND>` before proxying to `nu-knowledge-backend:8000`.
+4. **Core RAG Service (FastAPI):** Authenticates JWT, queries ChromaDB/vector store, generates grounded citations, and records audit metrics.
+
+To inspect live multi-container traffic:
+```bash
+docker compose up -d
+docker compose logs -f
+```
+
+### 2. Local HTTPS with Trusted mkcert SSL
+- Validated with `mkcert -install` in Windows Certificate Store.
+- Green HTTPS padlock in Google Chrome with zero security warnings at `https://localhost`.
+- Private keys (`certs/*-key.pem`) excluded from version control via `.gitignore`.
+
+### 3. Production Swagger & OpenAPI Documentation
+- Interactive Swagger UI available at:
+  - `https://localhost/api/docs` (via Nginx & Express Gateway)
+  - `http://localhost:8000/docs` (direct FastAPI backend)
+  - Cloud Deployed URL: `/docs`
+- Click the **Authorize** button in Swagger and paste the JWT Bearer token to test protected endpoints directly.
+
+### 4. Postman Desktop App Integration
+Located in the `postman/` directory:
+- `GenAI_University_Assistant.postman_collection.json`: 16 production test requests with automated `pm.test` assertions and auto-JWT saving.
+- `Local_HTTPS.postman_environment.json`: Targets `https://localhost` with `mkcert`.
+- `Cloud_Production.postman_environment.json`: Configured for live Cloud deployment.
+
+### 5. Automated Pytest & Selenium 4 E2E Test Suite
+- **18 SRS/SDD Unit & Service Tests:**
+  ```bash
+  pytest backend/tests/ -v --junitxml=reports/unit_junit.xml --html=reports/unit_test_report.html --self-contained-html
+  ```
+- **Live Visible Faculty Demo (Selenium 4):**
+  Double-click `RUN_SELENIUM_DEMO.bat` or run:
+  ```bash
+  python tests/selenium/test_e2e_ui.py
+  ```
+- **Headless CI Mode:**
+  ```bash
+  $env:HEADLESS="true"; pytest tests/selenium/test_e2e_ui.py -v --junitxml=reports/selenium_junit.xml --html=reports/selenium_report.html --self-contained-html
+  ```
+
+### 6. Kubernetes Cluster Deployment (`nu-assistant` Namespace)
+Production manifest located in `k8s/nu-assistant-deployment.yaml`:
+```bash
+kubectl apply -f k8s/nu-assistant-deployment.yaml
+kubectl get pods,svc -n nu-assistant
+```
+Status: All 3 pods (`nu-knowledge-frontend`, `nu-knowledge-api-gateway`, `nu-knowledge-backend`) running 1/1 healthy.
+
+### 7. Jenkins CI/CD Pipeline & GitHub Webhook Relay
+- Pipeline script: `Jenkinsfile.windows`
+- Automated Stages:
+  1. SCM Checkout & Safe Directory
+  2. Python Dependencies (`requirements.txt`, `pytest`, `selenium`)
+  3. Automated Unit Tests (18/18 Verified)
+  4. Docker Compose & Microservice Health Check
+  5. Headless Selenium E2E Tests (6/6 Journeys Verified)
+  6. Post Execution: Publish JUnit Reports (`reports/*_junit.xml`)
+- **Webhook Forwarder:**
+  Double-click `RUN_WEBHOOK_FORWARDER.bat` to relay GitHub push events from `https://smee.io/nu-knowledge-webhook` to `http://localhost:8080/github-webhook/`.
+
+### 8. Cloud Deployment (Render Blueprint)
+Configured via `render.yaml`:
+- Build Command: `pip install -r backend/requirements.txt`
+- Start Command: `cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+- Healthcheck Endpoint: `/healthz`
+
+---
+
+## Faculty Live Demo Presentation Order
+
+When presenting live to university faculty, follow this step-by-step sequence:
+
+1. **Docker Desktop & 3-Tier Architecture:**
+   - Open Docker Desktop. Show `nu-knowledge-frontend`, `nu-knowledge-api-gateway`, and `nu-knowledge-backend` running healthy.
+   - Show live logs in Docker Desktop as requests route through all 3 tiers.
+
+2. **Chrome Browser & Trusted HTTPS Padlock:**
+   - Open `https://localhost`. Point out the trusted SSL padlock in Chrome (configured with `mkcert`).
+   - Log in using Quick SSO as **Student (Vijay)**. Show the Apple Liquid Glass design, glass cards, and conversation history.
+
+3. **Grounded RAG Query & Citation Inspection:**
+   - Ask: *"When is the last date to pay the semester fees and what is the late fine?"*
+   - Show the response generated under 5 seconds with bracketed citation badge `[1]`.
+   - Click `[1]` to slide open the **Verified Source Evidence Drawer** showing the exact excerpt from `Fee_Circular_2026.pdf` (76% Semantic Match).
+
+4. **Anti-Hallucination Fallback:**
+   - Ask an out-of-scope query: *"How do I bake a chocolate sourdough cake on Mars in zero gravity?"*
+   - Show the `FALLBACK` response badge: assistant refuses to hallucinate and cites official university channels.
+
+5. **Role-Based Access Control (RBAC):**
+   - Click the "Console" tab as a Student — demonstrate the red access warning badge.
+   - Sign out and log in as **Admin (`admin@niituniversity.in`)**.
+   - Show the Executive Governance Console: Knowledge Base documents (upload, reindex, delete), User Role management, and System Health metrics.
+
+6. **Swagger / OpenAPI Documentation:**
+   - Navigate to `https://localhost/api/docs`.
+   - Demonstrate grouped endpoint tags, click **Authorize** with a JWT token, and execute a live `/healthz` or `/api/chat/query` test.
+
+7. **Postman Desktop App Verification:**
+   - Open Postman Desktop, select `Local_HTTPS` environment.
+   - Run the `GenAI_University_Assistant` collection. Show 16/16 test assertions passing green.
+
+8. **Kubernetes Cluster Inspection:**
+   - Open terminal and run: `kubectl get pods,svc -n nu-assistant`.
+   - Show 3-tier microservices running 1/1 Ready in the dedicated `nu-assistant` namespace.
+
+9. **Jenkins CI/CD Pipeline & GitHub Webhook:**
+   - Open `http://localhost:8080/job/capstone/` in the browser.
+   - Show the 5 pipeline stages and the JUnit test report summary (24 total tests: 18 unit + 6 Selenium E2E).
+   - Show `RUN_WEBHOOK_FORWARDER.bat` relaying live GitHub commits to automated Jenkins triggers.
