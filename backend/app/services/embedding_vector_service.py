@@ -23,7 +23,9 @@ STOPWORDS = {
     "from", "as", "are", "was", "were", "be", "been", "being", "have", "has", "had", "do", "does",
     "did", "will", "would", "shall", "should", "can", "could", "may", "might", "must", "what",
     "when", "where", "who", "whom", "whose", "why", "how", "please", "tell", "me", "about", "my",
-    "our", "uni", "university", "niit", "neemrana"
+    "our", "uni", "university", "niit", "neemrana", "without", "make", "makes", "made", "making",
+    "use", "uses", "used", "using", "want", "wants", "need", "needs", "get", "gets", "give", "gives",
+    "know", "knows"
 }
 
 SYNONYM_MAP = {
@@ -187,6 +189,17 @@ class VectorStoreRepository:
                     continue
 
                 c_tokens = set(tokenize(row["chunk_text"], expand_synonyms=False))
+
+                # Anti-hallucination guardrail: substantive keywords in query must have at least one match
+                base_q_keywords = [t for t in q_raw_tokens if not t.startswith("g4_") and len(t) > 2]
+                if base_q_keywords:
+                    has_kw_match = any(
+                        t in c_tokens or any(syn in c_tokens for syn in SYNONYM_MAP.get(t, []))
+                        for t in base_q_keywords
+                    )
+                    if not has_kw_match:
+                        continue
+
                 overlap_raw = len(q_raw_tokens & c_tokens) / max(1, len(q_raw_tokens))
                 overlap_exp = len(q_tokens & c_tokens) / max(1, len(q_tokens))
                 hybrid_score = round(min(0.99, (0.55 * max(0.0, cosine_sim)) + (0.30 * overlap_raw) + (0.15 * overlap_exp)), 4)

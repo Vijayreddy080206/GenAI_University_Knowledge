@@ -236,7 +236,7 @@ Located in the `postman/` directory:
   pytest backend/tests/ -v --junitxml=reports/unit_junit.xml --html=reports/unit_test_report.html --self-contained-html
   ```
 - **Live Visible Faculty Demo (Selenium 4):**
-  Double-click `RUN_SELENIUM_DEMO.bat` or run:
+  Run directly from your terminal:
   ```bash
   python tests/selenium/test_e2e_ui.py
   ```
@@ -262,8 +262,11 @@ Status: All 3 pods (`nu-knowledge-frontend`, `nu-knowledge-api-gateway`, `nu-kno
   4. Docker Compose & Microservice Health Check
   5. Headless Selenium E2E Tests (6/6 Journeys Verified)
   6. Post Execution: Publish JUnit Reports (`reports/*_junit.xml`)
-- **Webhook Forwarder:**
-  Double-click `RUN_WEBHOOK_FORWARDER.bat` to relay GitHub push events from `https://smee.io/nu-knowledge-webhook` to `http://localhost:8080/github-webhook/`.
+- **Webhook Forwarder (Terminal Command):**
+  To relay GitHub push events from `https://smee.io/nu-knowledge-webhook` to `http://localhost:8080/github-webhook/`:
+  ```bash
+  smee -u https://smee.io/nu-knowledge-webhook -t http://localhost:8080/github-webhook/
+  ```
 
 ### 8. Cloud Deployment (Render Blueprint)
 Configured via `render.yaml`:
@@ -311,7 +314,11 @@ When presenting live to university faculty, follow this step-by-step sequence:
    - Open terminal and run: `kubectl get pods,svc -n nu-assistant`.
    - Show 3-tier microservices running 1/1 Ready in the dedicated `nu-assistant` namespace.
 
-9. **Jenkins CI/CD Pipeline & GitHub Webhook:**
-   - Open `http://localhost:8080/job/capstone/` in the browser.
-   - Show the 5 pipeline stages and the JUnit test report summary (24 total tests: 18 unit + 6 Selenium E2E).
-   - Show `RUN_WEBHOOK_FORWARDER.bat` relaying live GitHub commits to automated Jenkins triggers.
+9. **Selenium 4 Automated E2E User Journeys:**
+   - In terminal, run: `python tests/selenium/test_e2e_ui.py`
+   - Chrome will launch automatically in visible mode, demonstrating the 6 user journeys (branding, login, RAG query with citation, evidence drawer, anti-hallucination fallback, session reload, and clean logout) at deliberate demonstration pace.
+
+10. **Jenkins CI/CD Pipeline & GitHub Webhook:**
+   - Open `http://localhost:8080/job/capstone/` in Chrome.
+   - Click **▶ Build Now** to execute the 5-stage automated pipeline (SCM, Dependencies, Unit Tests, Docker Check, Selenium E2E) and inspect the published JUnit test reports (24 total verified tests).
+   - Show webhook forwarding in terminal: `smee -u https://smee.io/nu-knowledge-webhook -t http://localhost:8080/github-webhook/`
