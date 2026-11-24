@@ -1,0 +1,1 @@
+NIIT University Capstone Project II Evaluation Guidelines 2026. All final presentations must be demonstrated live with 3-tier architecture, trusted SSL, and complete test suites.
