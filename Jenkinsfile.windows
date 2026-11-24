@@ -12,6 +12,8 @@ pipeline {
         PYTHON_PATH = 'C:\\Users\\Vijay\\AppData\\Local\\Programs\\Python\\Python311'
         HEADLESS = 'true'
         APP_URL = 'https://localhost'
+        RENDER_URL = 'https://genai-university-knowledge.onrender.com'
+        VERCEL_URL = 'https://genaiuniversityknowledge-frontend.vercel.app'
     }
 
     stages {
@@ -62,6 +64,30 @@ pipeline {
                 dir("${PROJECT_DIR}") {
                     bat "set HEADLESS=true&& set APP_URL=https://localhost&& \"${PYTHON_PATH}\\python.exe\" -m pytest tests/selenium/test_e2e_ui.py -v --junitxml=reports/selenium_junit.xml --html=reports/selenium_report.html --self-contained-html"
                 }
+            }
+        }
+
+        stage('6. Cloud Deployment & Live Smoke Check (Render + Vercel)') {
+            steps {
+                echo '=== Stage 6: Triggering Cloud Deploy Hooks & Verifying Live Render + Vercel ==='
+                bat '''
+                    if defined RENDER_DEPLOY_HOOK (
+                        echo Triggering Render Deploy Hook...
+                        curl.exe -s -X POST "%RENDER_DEPLOY_HOOK%"
+                    ) else (
+                        echo RENDER_DEPLOY_HOOK not set - skipping manual hook ^(Render auto-deploys from GitHub main^)
+                    )
+                    if defined VERCEL_DEPLOY_HOOK (
+                        echo Triggering Vercel Deploy Hook...
+                        curl.exe -s -X POST "%VERCEL_DEPLOY_HOOK%"
+                    ) else (
+                        echo VERCEL_DEPLOY_HOOK not set - skipping manual hook ^(Vercel auto-deploys from GitHub main^)
+                    )
+                    echo Checking live Render Backend health...
+                    curl.exe -s -f "%RENDER_URL%/healthz" || exit /b 1
+                    echo Checking live Vercel Frontend -> Render API proxy...
+                    curl.exe -s -f "%VERCEL_URL%/api/config" || exit /b 1
+                '''
             }
         }
     }
