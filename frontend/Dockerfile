@@ -1,5 +1,5 @@
 # ==============================================================================
-# NIIT University - Generative AI Knowledge Assistant Frontend
+# NIIT University - gen AI Knowledge Assistant Frontend
 # Multi-stage / Lightweight Production Nginx Container with SSL & HTTP/2
 # ==============================================================================
 
