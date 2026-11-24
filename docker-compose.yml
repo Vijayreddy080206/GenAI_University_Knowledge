@@ -76,6 +76,12 @@ services:
       - LLM_MODEL_NAME=gemini-2.5-flash
       - GEMINI_API_KEY=${GEMINI_API_KEY:-}
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}
+      - SMTP_HOST=${SMTP_HOST:-}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - SMTP_USER=${SMTP_USER:-}
+      - SMTP_PASS=${SMTP_PASS:-}
+      - SMTP_FROM=${SMTP_FROM:-}
       - JWT_SECRET_KEY=${JWT_SECRET_KEY:-nu-capstone-team20-k8s-secret-key-2026}
     volumes:
       - ./backend/storage:/app/storage

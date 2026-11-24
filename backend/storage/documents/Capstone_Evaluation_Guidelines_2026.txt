@@ -1,1 +1,1 @@
-NIIT University Capstone Project II Evaluation Guidelines 2026. All final presentations must be demonstrated live with 3-tier architecture, trusted SSL, and complete test suites.
+NIIT University Capstone Project II Evaluation Guidelines: Students are evaluated on a 100-mark scale across Technical Architecture (20 marks), Microservices & Docker Orchestration (20 marks), CI/CD Automation with Jenkins (20 marks), Automated Unit and Selenium E2E Testing (20 marks), and Security, RBAC, and Production Documentation (20 marks). Minimum passing threshold is 50%.
