@@ -1,5 +1,5 @@
 /**
- * NIIT University - Generative AI Knowledge Assistant
+ * NIIT University - Gen AI Knowledge Assistant
  * Node.js + Express REST API Gateway Microservice Tier
  * Routes client requests to Python FastAPI RAG Orchestrator & ChromaDB backend.
  */
