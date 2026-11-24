@@ -1,5 +1,5 @@
 # ==============================================================================
-# NIIT University - Generative AI-Based University Knowledge Assistant
+# NIIT University - Gen AI-Based University Knowledge Assistant
 # Production Multi-Stage Dockerfile (REQ-OPS-01, SDD Section 5.5)
 
 # ==============================================================================
