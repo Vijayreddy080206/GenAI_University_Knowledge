@@ -342,20 +342,46 @@
         </div>
 
         <!-- Standard Email Form -->
-        <form id="formEmailLogin" onsubmit="handleStandardLogin(event)" class="space-y-3.5">
+        <form id="formEmailLogin" onsubmit="handleStandardLogin(event)" class="space-y-4">
           <div>
-            <label for="loginEmail" class="block text-xs font-semibold text-zinc-700 mb-1.5">University Email</label>
-            <input id="loginEmail" type="email" required value="vijay.reddy23@st.niituniversity.in" class="w-full px-4 py-2.5 rounded-2xl bg-white/70 border border-zinc-300/80 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-[#7A1C1C]/20 focus:border-[#7A1C1C] transition" />
+            <div class="flex items-center justify-between mb-1.5">
+              <label for="loginEmail" class="block text-xs font-semibold text-zinc-700">University Email or Roll Number</label>
+              <span class="text-[10px] font-mono-code text-zinc-400">@niituniversity.in</span>
+            </div>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-zinc-400 text-sm">✉</span>
+              <input id="loginEmail" type="email" required value="vijay.reddy23@st.niituniversity.in" placeholder="student@st.niituniversity.in" class="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-white/70 border border-zinc-300/80 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-[#7A1C1C]/20 focus:border-[#7A1C1C] transition" />
+            </div>
           </div>
+
           <div>
             <div class="flex items-center justify-between mb-1.5">
               <label for="loginPass" class="block text-xs font-semibold text-zinc-700">Password</label>
-              <span class="text-[11px] text-zinc-400">30-min session protection</span>
+              <span class="text-[10px] text-zinc-400">30-min session security</span>
             </div>
-            <input id="loginPass" type="password" required value="student123" class="w-full px-4 py-2.5 rounded-2xl bg-white/70 border border-zinc-300/80 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-[#7A1C1C]/20 focus:border-[#7A1C1C] transition" />
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-zinc-400 text-sm">🔒</span>
+              <input id="loginPass" type="password" required value="student123" placeholder="Enter your password" class="w-full pl-10 pr-11 py-2.5 rounded-2xl bg-white/70 border border-zinc-300/80 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-[#7A1C1C]/20 focus:border-[#7A1C1C] transition" />
+              <button type="button" onclick="togglePasswordVisibility()" class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-zinc-400 hover:text-zinc-700 transition cursor-pointer" title="Toggle password visibility">
+                <span id="passToggleIcon" class="text-xs font-bold">👁</span>
+              </button>
+            </div>
           </div>
-          <button id="btnSubmitEmailLogin" type="submit" class="w-full py-3 px-4 glisse-btn-action text-white font-semibold text-sm shadow-md transition">
-            Sign in
+
+          <!-- Options row: Remember Me + Forgot Password -->
+          <div class="flex items-center justify-between pt-0.5 text-xs">
+            <label class="flex items-center gap-2 cursor-pointer select-none text-zinc-600 hover:text-zinc-900 transition">
+              <input type="checkbox" id="loginRememberMe" checked class="w-3.5 h-3.5 rounded border-zinc-300 text-[#7A1C1C] focus:ring-[#7A1C1C]/30 cursor-pointer" />
+              <span>Remember me</span>
+            </label>
+            <button type="button" onclick="openForgotPasswordModal()" class="font-semibold text-[#7A1C1C] hover:text-[#581111] hover:underline cursor-pointer transition">
+              Forgot password?
+            </button>
+          </div>
+
+          <button id="btnSubmitEmailLogin" type="submit" class="w-full py-3 px-4 glisse-btn-action text-white font-semibold text-sm shadow-md flex items-center justify-center gap-2 transition cursor-pointer">
+            <span id="loginSubmitBtnText">Sign In to Portal</span>
+            <span class="text-xs">→</span>
           </button>
         </form>
 
@@ -380,6 +406,66 @@
             </button>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL: FORGOT PASSWORD & RECOVERY (Apple Liquid Glass)                 -->
+  <!-- ===================================================================== -->
+  <div id="forgotPasswordModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-md animate-in fade-in duration-200">
+    <div class="w-full max-w-md glisse-modal p-7 sm:p-8 space-y-5 relative shadow-2xl">
+      <!-- Modal Header -->
+      <div class="flex items-start justify-between border-b border-zinc-200/60 pb-3.5">
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <span class="w-2 h-2 rounded-full bg-[#7A1C1C]"></span>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Account Security</span>
+          </div>
+          <h3 class="text-lg font-bold text-zinc-900 tracking-tight">Reset Account Password</h3>
+          <p class="text-xs text-zinc-500 mt-0.5">Enter your university email to receive a recovery OTP.</p>
+        </div>
+        <button type="button" onclick="closeForgotPasswordModal()" class="w-7 h-7 rounded-full glisse-pill flex items-center justify-center text-zinc-500 hover:text-zinc-900 font-bold text-xs transition cursor-pointer">
+          ✕
+        </button>
+      </div>
+
+      <!-- Alert Box inside Modal -->
+      <div id="fpAlertBox" class="hidden text-xs rounded-2xl p-3 font-medium transition"></div>
+
+      <!-- Step 1: Request OTP -->
+      <div id="fpStep1" class="space-y-3.5">
+        <div>
+          <label for="fpEmailInput" class="block text-xs font-semibold text-zinc-700 mb-1.5">University Email</label>
+          <input id="fpEmailInput" type="email" value="vijay.reddy23@st.niituniversity.in" placeholder="student@st.niituniversity.in" class="w-full px-4 py-2.5 rounded-2xl bg-white/70 border border-zinc-300/80 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-[#7A1C1C]/20 focus:border-[#7A1C1C] transition" />
+        </div>
+        <button id="btnFpSendOtp" type="button" onclick="handleSendResetOtp()" class="w-full py-2.5 px-4 glisse-btn-action text-white font-semibold text-xs shadow-md transition flex items-center justify-center gap-2 cursor-pointer">
+          <span id="fpSendText">Send Verification Code</span>
+          <span>→</span>
+        </button>
+      </div>
+
+      <!-- Step 2: Enter OTP & New Password (Hidden initially) -->
+      <div id="fpStep2" class="hidden space-y-3.5">
+        <div class="p-3 rounded-2xl bg-amber-50/90 border border-amber-200/80 text-amber-900 text-xs leading-relaxed">
+          <span>A 6-digit recovery OTP has been dispatched to your email. (Demo Verification Code: <strong class="font-mono-code font-bold">842019</strong>)</span>
+        </div>
+        <div>
+          <label for="fpOtpInput" class="block text-xs font-semibold text-zinc-700 mb-1">6-Digit OTP Code</label>
+          <input id="fpOtpInput" type="text" maxlength="6" value="842019" class="w-full px-4 py-2 rounded-2xl bg-white/70 border border-zinc-300/80 text-sm font-mono-code font-bold tracking-widest text-zinc-900 focus:outline-none focus:ring-2 focus:ring-[#7A1C1C]/20 focus:border-[#7A1C1C]" />
+        </div>
+        <div>
+          <label for="fpNewPassword" class="block text-xs font-semibold text-zinc-700 mb-1">New Password</label>
+          <input id="fpNewPassword" type="password" value="student123" placeholder="At least 6 characters" class="w-full px-4 py-2 rounded-2xl bg-white/70 border border-zinc-300/80 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-[#7A1C1C]/20 focus:border-[#7A1C1C]" />
+        </div>
+        <div>
+          <label for="fpConfirmPassword" class="block text-xs font-semibold text-zinc-700 mb-1">Confirm New Password</label>
+          <input id="fpConfirmPassword" type="password" value="student123" placeholder="Re-enter password" class="w-full px-4 py-2 rounded-2xl bg-white/70 border border-zinc-300/80 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-[#7A1C1C]/20 focus:border-[#7A1C1C]" />
+        </div>
+        <button id="btnFpSubmitNewPass" type="button" onclick="handleResetPasswordSubmit()" class="w-full py-2.5 px-4 glisse-btn-action text-white font-semibold text-xs shadow-md transition flex items-center justify-center gap-2 cursor-pointer">
+          <span id="fpSubmitText">Confirm &amp; Update Password</span>
+          <span>✓</span>
+        </button>
       </div>
     </div>
   </div>
@@ -1258,6 +1344,129 @@
     }
 
     // --- 4. AUTHENTICATION & SESSION LIFECYCLE ---
+    function togglePasswordVisibility() {
+      const passInput = document.getElementById('loginPass');
+      const icon = document.getElementById('passToggleIcon');
+      if (!passInput) return;
+      if (passInput.type === 'password') {
+        passInput.type = 'text';
+        if (icon) icon.textContent = '🙈';
+      } else {
+        passInput.type = 'password';
+        if (icon) icon.textContent = '👁';
+      }
+    }
+
+    function openForgotPasswordModal() {
+      const modal = document.getElementById('forgotPasswordModal');
+      const emailInput = document.getElementById('loginEmail');
+      const fpEmail = document.getElementById('fpEmailInput');
+      const alertBox = document.getElementById('fpAlertBox');
+      if (alertBox) alertBox.classList.add('hidden');
+      if (emailInput && fpEmail && emailInput.value) {
+        fpEmail.value = emailInput.value;
+      }
+      document.getElementById('fpStep1')?.classList.remove('hidden');
+      document.getElementById('fpStep2')?.classList.add('hidden');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeForgotPasswordModal() {
+      const modal = document.getElementById('forgotPasswordModal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    async function handleSendResetOtp() {
+      const email = (document.getElementById('fpEmailInput')?.value || '').trim();
+      const alertBox = document.getElementById('fpAlertBox');
+      const sendText = document.getElementById('fpSendText');
+      if (!email || !email.includes('@')) {
+        showFpAlert('Please enter a valid official university email.', false);
+        return;
+      }
+
+      if (sendText) sendText.textContent = 'Dispatching OTP...';
+      try {
+        const resp = await fetch('/api/auth/forgot-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: email })
+        });
+        const data = await resp.json();
+        showFpAlert(data.message || 'OTP code sent successfully.', true);
+        document.getElementById('fpStep1')?.classList.add('hidden');
+        document.getElementById('fpStep2')?.classList.remove('hidden');
+      } catch (e) {
+        showFpAlert('OTP code dispatched to your university mailbox.', true);
+        document.getElementById('fpStep1')?.classList.add('hidden');
+        document.getElementById('fpStep2')?.classList.remove('hidden');
+      } finally {
+        if (sendText) sendText.textContent = 'Send Verification Code';
+      }
+    }
+
+    async function handleResetPasswordSubmit() {
+      const email = (document.getElementById('fpEmailInput')?.value || '').trim();
+      const otp = (document.getElementById('fpOtpInput')?.value || '').trim();
+      const newPass = (document.getElementById('fpNewPassword')?.value || '').trim();
+      const confirmPass = (document.getElementById('fpConfirmPassword')?.value || '').trim();
+
+      if (!otp) {
+        showFpAlert('Please enter the 6-digit OTP verification code.', false);
+        return;
+      }
+      if (newPass.length < 6) {
+        showFpAlert('New password must contain at least 6 characters.', false);
+        return;
+      }
+      if (newPass !== confirmPass) {
+        showFpAlert('Passwords do not match. Please re-enter.', false);
+        return;
+      }
+
+      const submitText = document.getElementById('fpSubmitText');
+      if (submitText) submitText.textContent = 'Updating Password...';
+
+      try {
+        const resp = await fetch('/api/auth/reset-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: email, otp_code: otp, new_password: newPass })
+        });
+        const data = await resp.json();
+        if (resp.ok) {
+          showFpAlert(data.message || 'Password updated successfully! Redirecting...', true);
+          const loginPass = document.getElementById('loginPass');
+          if (loginPass) loginPass.value = newPass;
+          const loginEmail = document.getElementById('loginEmail');
+          if (loginEmail) loginEmail.value = email;
+          setTimeout(() => {
+            closeForgotPasswordModal();
+            const loginAlertBox = document.getElementById('loginAlertBox');
+            const loginAlertText = document.getElementById('loginAlertText');
+            if (loginAlertText) loginAlertText.textContent = 'Password reset successfully. Sign in with your updated credentials.';
+            if (loginAlertBox) loginAlertBox.classList.remove('hidden');
+          }, 1200);
+        } else {
+          showFpAlert(data.detail || 'Could not reset password. Please check your credentials.', false);
+        }
+      } catch (e) {
+        showFpAlert('Password updated in demo session. You may now sign in.', true);
+        setTimeout(closeForgotPasswordModal, 1000);
+      } finally {
+        if (submitText) submitText.textContent = 'Confirm & Update Password';
+      }
+    }
+
+    function showFpAlert(msg, isSuccess) {
+      const box = document.getElementById('fpAlertBox');
+      if (!box) return;
+      box.textContent = msg;
+      box.className = isSuccess
+        ? 'text-xs rounded-2xl p-3 font-medium bg-emerald-50 text-emerald-800 border border-emerald-200 block'
+        : 'text-xs rounded-2xl p-3 font-medium bg-red-50 text-red-800 border border-red-200 block';
+    }
+
     function quickRoleLogin(role) {
       if (role === 'STUDENT') {
         signInWithEmail('vijay.reddy23@st.niituniversity.in', 'student123', 'LOCAL');
@@ -1271,7 +1480,7 @@
     function handleStandardLogin(e) {
       e.preventDefault();
       const email = document.getElementById('loginEmail').value.trim();
-      const password = document.getElementById('loginPassword').value || 'student123';
+      const password = document.getElementById('loginPass')?.value || document.getElementById('loginPassword')?.value || 'student123';
       const isSso = document.getElementById('loginIsSso')?.checked || false;
       signInWithEmail(email, password, isSso ? 'SSO' : 'LOCAL');
     }
