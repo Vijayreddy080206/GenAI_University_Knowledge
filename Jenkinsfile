@@ -1,5 +1,5 @@
 // ==============================================================================
-// NIIT University - Generative AI-Based University Knowledge Assistant
+// NIIT University - Gen AI-Based University Knowledge Assistant
 // Jenkins Declarative Pipeline (REQ-OPS-04, CI/CD Pipeline for Kubernetes & Docker)
 
 // ==============================================================================
