@@ -8,7 +8,7 @@ Enforces surrogate primary keys and foreign-key constraints across all 8 tables:
 5. ResponseCitations
 6. Feedback
 7. Documents
-8. DocumentChunks
+8. 
 """
 import sqlite3
 import os
