@@ -34,6 +34,13 @@ class Settings:
     GOOGLE_CLIENT_ID: str = os.getenv("GOOGLE_CLIENT_ID", "")
     GOOGLE_CLIENT_SECRET: str = os.getenv("GOOGLE_CLIENT_SECRET", "")
 
+    # Real SMTP Email Delivery for OTP / Password Reset
+    SMTP_HOST: str = os.getenv("SMTP_HOST", "")
+    SMTP_PORT: int = int(os.getenv("SMTP_PORT", "587"))
+    SMTP_USER: str = os.getenv("SMTP_USER", "")
+    SMTP_PASS: str = os.getenv("SMTP_PASS", "")
+    SMTP_FROM: str = os.getenv("SMTP_FROM", "")
+
     SUPPORTED_FILE_TYPES = {"PDF", "DOCX", "TXT"}
     FALLBACK_MESSAGE = "I don't have information on that in the official NIIT University knowledge base. Please contact the relevant university department or Academic Office."
 

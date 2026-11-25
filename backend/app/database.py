@@ -101,6 +101,15 @@ CREATE TABLE IF NOT EXISTS Feedback (
     UNIQUE(response_id, user_id)
 );
 
+CREATE TABLE IF NOT EXISTS PasswordResetOTPs (
+    otp_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email VARCHAR(255) NOT NULL,
+    otp_hash VARCHAR(255) NOT NULL,
+    expires_at TIMESTAMP NOT NULL,
+    used BOOLEAN NOT NULL DEFAULT 0,
+    created_at TIMESTAMP NOT NULL
+);
+
 CREATE INDEX IF NOT EXISTS idx_queries_submitted_at ON Queries(submitted_at);
 CREATE INDEX IF NOT EXISTS idx_queries_category ON Queries(category);
 CREATE INDEX IF NOT EXISTS idx_documents_status ON Documents(status);
@@ -190,6 +199,15 @@ CREATE TABLE IF NOT EXISTS Feedback (
     comment TEXT,
     created_at TIMESTAMP NOT NULL,
     UNIQUE(response_id, user_id)
+);
+
+CREATE TABLE IF NOT EXISTS PasswordResetOTPs (
+    otp_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email VARCHAR(255) NOT NULL,
+    otp_hash VARCHAR(255) NOT NULL,
+    expires_at TIMESTAMP NOT NULL,
+    used BOOLEAN NOT NULL DEFAULT 0,
+    created_at TIMESTAMP NOT NULL
 );
 
 CREATE INDEX IF NOT EXISTS idx_queries_submitted_at ON Queries(submitted_at);

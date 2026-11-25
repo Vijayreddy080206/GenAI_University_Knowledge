@@ -110,6 +110,17 @@ class LoginRequest(BaseModel):
 class GoogleLoginRequest(BaseModel):
     credential: str = Field(..., description="Google Identity Services (GSI) JWT ID Token", example="eyJhbGciOiJSUzI1NiIs...")
 
+class RegisterRequest(BaseModel):
+    email: str = Field(..., example="student.name23@st.niituniversity.in")
+    password: str = Field(..., example="securePass123")
+    full_name: str = Field(..., example="Student Name")
+    role: str = Field("STUDENT", example="STUDENT")
+    department: str = Field("CSE", example="CSE")
+
+class GoogleWorkspaceRequest(BaseModel):
+    email: str = Field(..., example="vijayvardhanreddy.yammanuru23@st.niituniversity.in")
+    full_name: Optional[str] = Field(None, example="Vijay Vardhan Reddy")
+
 class ForgotPasswordRequest(BaseModel):
     email: str = Field(..., example="vijay.reddy23@st.niituniversity.in")
 
@@ -198,41 +209,35 @@ def google_login(req: GoogleLoginRequest):
     """Real Google OAuth2 / OpenID Connect login via Google Identity Services."""
     return AuthService.authenticate_google_user(credential=req.credential)
 
-@app.post("/api/auth/forgot-password", tags=["Authentication & Identity"], summary="Request Password Reset Link & OTP")
+@app.post("/api/auth/register", tags=["Authentication & Identity"], summary="Create a New Institutional Account")
+def register(req: RegisterRequest):
+    """Registers a new user in the SQLite database and issues an active JWT Bearer session."""
+    return AuthService.register_user(
+        email=req.email,
+        password=req.password,
+        full_name=req.full_name,
+        role=req.role,
+        department=req.department,
+    )
+
+@app.post("/api/auth/google-workspace", tags=["Authentication & Identity"], summary="Google Workspace / University Email Sign-In")
+def google_workspace_login(req: GoogleWorkspaceRequest):
+    """Signs in or auto-provisions a user via their Google / university email in SQLite."""
+    return AuthService.authenticate_google_email(email=req.email, full_name=req.full_name)
+
+@app.post("/api/auth/forgot-password", tags=["Authentication & Identity"], summary="Request Password Reset OTP")
 def forgot_password(req: ForgotPasswordRequest):
-    """Dispatches a password reset OTP and verification link to official university email."""
-    conn = get_db_connection()
-    try:
-        user = conn.execute("SELECT * FROM Users WHERE LOWER(email) = LOWER(?)", (req.email.strip(),)).fetchone()
-        return {
-            "status": "SUCCESS",
-            "message": f"Password reset instructions and a 6-digit OTP have been dispatched to {req.email}.",
-            "email": req.email,
-            "demo_otp": "842019"
-        }
-    finally:
-        conn.close()
+    """Generates a real 6-digit OTP, stores it in SQLite, and sends it via SMTP."""
+    return AuthService.request_password_reset(email=req.email)
 
 @app.post("/api/auth/reset-password", tags=["Authentication & Identity"], summary="Reset Password with OTP Verification")
 def reset_password(req: ResetPasswordRequest):
-    """Verifies OTP and resets user password securely."""
-    if len(req.new_password) < 6:
-        raise HTTPException(status_code=400, detail="Password must be at least 6 characters.")
-    conn = get_db_connection()
-    try:
-        user = conn.execute("SELECT * FROM Users WHERE LOWER(email) = LOWER(?)", (req.email.strip(),)).fetchone()
-        if not user:
-            raise HTTPException(status_code=404, detail="Account not found.")
-        from app.services.auth_service import hash_password
-        new_hash = hash_password(req.new_password)
-        conn.execute("UPDATE Users SET password_hash = ? WHERE user_id = ?", (new_hash, user["user_id"]))
-        conn.commit()
-        return {
-            "status": "SUCCESS",
-            "message": "Password updated successfully! You can now sign in with your new credentials."
-        }
-    finally:
-        conn.close()
+    """Verifies the 6-digit OTP from SQLite and resets the user's password."""
+    return AuthService.confirm_password_reset(
+        email=req.email,
+        otp_code=req.otp_code,
+        new_password=req.new_password,
+    )
 
 @app.get("/api/auth/me", tags=["Authentication & Identity"], summary="Validate Current Active Session & RBAC Role")
 def get_current_user(token: str = Depends(extract_token)):

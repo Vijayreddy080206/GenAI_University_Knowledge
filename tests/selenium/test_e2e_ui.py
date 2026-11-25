@@ -62,7 +62,7 @@ class TestUniversityKnowledgeAssistantE2E:
     """Complete Faculty Evaluation User Journey Test Cases."""
 
     def test_01_page_load_and_branding(self, driver):
-        """Verify Apple Liquid Glass UI and institutional branding on page load."""
+        """Verify institutional branding and login portal on page load."""
         driver.get(APP_URL)
         WebDriverWait(driver, 15).until(
             EC.presence_of_element_located((By.ID, "screenLogin"))
@@ -75,11 +75,19 @@ class TestUniversityKnowledgeAssistantE2E:
         faculty_pace()
 
     def test_02_student_authentication_flow(self, driver):
-        """Verify 1-click Student Login and workspace session initialization."""
-        btn_student = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, "//button[contains(., 'Student') or contains(., 'Vijay')]"))
+        """Verify Student email/password Login and workspace session initialization."""
+        email_input = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.ID, "loginEmail"))
         )
-        btn_student.click()
+        email_input.clear()
+        email_input.send_keys("vijay.reddy23@st.niituniversity.in")
+
+        pass_input = driver.find_element(By.ID, "loginPass")
+        pass_input.clear()
+        pass_input.send_keys("student123")
+
+        btn_login = driver.find_element(By.ID, "btnSubmitEmailLogin")
+        btn_login.click()
         faculty_pace(1.2)
 
         # Verify main application shell appears
